@@ -197,8 +197,9 @@
 
   <main>
     <div class="info-banner" id="data-hint">
-      Data enriched by Claude (<strong>weeklyBrief</strong>, summaries, next steps). <strong>Last touch</strong> uses <code>lastActivityDate</code> when available, else note dates.
-      Stalled = open deals with 90+ days idle or no activity. Click any deal row for full detail.
+      Latest Introw export: weekly brief, deal summaries, and recommended next steps.
+      <strong>Last touch</strong> uses the CRM activity date when available; otherwise the newest date in deal notes.
+      <strong>Stalled</strong> = open deals with no activity for 90+ days. Click any row for notes and full detail.
     </div>
 
     <div class="global-filters">
@@ -282,7 +283,7 @@
       </div>
       <div class="chart-card">
         <h3>Pipeline health</h3>
-        <p class="chart-sub">Open deals by last activity (Claude lastActivityDate or notes)</p>
+        <p class="chart-sub">Open deals by last activity (CRM date or notes)</p>
         <div class="chart-wrap tall"><canvas id="chart-health"></canvas></div>
       </div>
       <div class="chart-card">
@@ -381,8 +382,8 @@
 
     <div id="view-actions" class="view-panel">
       <div class="info-banner" style="margin-bottom:16px">
-        <strong>Claude suggestions</strong> from the latest export, with rule-based fallback when missing.
-        Use this list in your weekly Davyn call. Assign each line to an owner.
+        <strong>Suggested next steps</strong> from the latest export, with automatic fallback when a step is missing.
+        Use this list in your weekly Davyn call and assign each line to an owner.
       </div>
       <div style="margin-bottom:12px">
         <button type="button" class="btn-download" onclick="downloadCsv('actions')">Download CSV</button>
@@ -721,7 +722,7 @@ function computeScores(deals) {
   const amounts = openDeals.map(d => d.amount || 0)
   openDeals.forEach(d => {
     if (typeof d.priorityScore === 'number' && d.priorityScore > 0) {
-      if (!d.priorityWhy) d.priorityWhy = 'Claude priority score'
+      if (!d.priorityWhy) d.priorityWhy = 'Partner priority score'
       return
     }
     const amountN = norm(amounts, d.amount || 0)
@@ -1155,7 +1156,7 @@ function renderWeekly() {
   if (weeklyBrief && weeklyBrief.summary) {
     briefEl.innerHTML = `<div class="action-card urgency-medium"><div class="action-text">${esc(weeklyBrief.summary)}</div><div class="action-meta" style="margin-top:8px">Generated ${esc(weeklyBrief.generatedAt || '')}</div></div>`
   } else {
-    briefEl.innerHTML = '<p class="empty-state">No weekly brief in this export. Ask Claude to include weeklyBrief in data.json.</p>'
+    briefEl.innerHTML = '<p class="empty-state">No weekly brief in this export yet. It will appear after the next data refresh.</p>'
   }
 
   const actionsEl = document.getElementById('week-actions')
