@@ -50,11 +50,14 @@
   .kpi-sub{font-size:11px;color:#94a3b8}
 
   /* CHARTS */
-  .charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
-  @media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
-  .chart-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-  .chart-card h3{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:16px}
-  .chart-wrap{position:relative;height:220px}
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  @media(max-width:1000px){.charts-grid{grid-template-columns:1fr}}
+  .chart-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #f1f5f9;box-shadow:0 2px 8px rgba(15,23,42,.06)}
+  .chart-card h3{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:4px}
+  .chart-sub{font-size:11px;color:#94a3b8;margin-bottom:12px}
+  .chart-wrap{position:relative;height:260px}
+  .chart-wrap.tall{height:300px}
+  .chart-card.wide{grid-column:1/-1}
 
   /* TABLE */
   .table-card{background:#fff;border-radius:16px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04);overflow:hidden}
@@ -89,10 +92,17 @@
 
   .empty-state{text-align:center;padding:40px;color:#94a3b8;font-size:13px}
 
-  /* stage chart full width */
-  .stage-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:24px}
-  .stage-card h3{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:16px}
-  .stage-wrap{position:relative;height:160px}
+  .action-list{display:flex;flex-direction:column;gap:12px}
+  .action-card{background:#fff;border-radius:14px;padding:16px 18px;border:1px solid #e2e8f0;border-left:4px solid #2563eb;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+  .action-card.urgency-critical{border-left-color:#dc2626;background:#fef2f2}
+  .action-card.urgency-high{border-left-color:#f59e0b;background:#fffbeb}
+  .action-card.urgency-medium{border-left-color:#2563eb}
+  .action-card.urgency-low{border-left-color:#94a3b8}
+  .action-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+  .action-deal{font-size:14px;font-weight:700;color:#1e293b}
+  .action-meta{font-size:11px;color:#64748b}
+  .action-text{font-size:13px;color:#334155;line-height:1.5}
+  .action-owner{font-size:11px;color:#2563eb;font-weight:600;margin-top:8px}
 
   .info-banner{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:11px;padding:10px 14px;border-radius:10px;margin-bottom:16px;line-height:1.5}
   .view-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
@@ -161,6 +171,7 @@
       <button type="button" class="view-tab active" data-view="overview">Overview</button>
       <button type="button" class="view-tab" data-view="priority">Priority queue</button>
       <button type="button" class="view-tab" data-view="stalled">Stalled deals</button>
+      <button type="button" class="view-tab" data-view="actions">Next steps</button>
     </div>
 
     <div id="view-overview" class="view-panel active">
@@ -200,22 +211,33 @@
       </div>
     </div>
 
-    <!-- CHARTS ROW -->
+    <!-- INSIGHT CHARTS -->
     <div class="charts-grid">
       <div class="chart-card">
-        <h3>Deals by Pipeline</h3>
-        <div class="chart-wrap"><canvas id="chart-pipeline"></canvas></div>
+        <h3>Open pipeline by stage</h3>
+        <p class="chart-sub">Total deal value (open only) — where money is stuck</p>
+        <div class="chart-wrap tall"><canvas id="chart-pipeline-value"></canvas></div>
       </div>
       <div class="chart-card">
-        <h3>Overall Status</h3>
-        <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
+        <h3>Pipeline health</h3>
+        <p class="chart-sub">Open deals by last activity (from notes)</p>
+        <div class="chart-wrap tall"><canvas id="chart-health"></canvas></div>
       </div>
-    </div>
-
-    <!-- STAGE CHART -->
-    <div class="stage-card">
-      <h3>Top Stages</h3>
-      <div class="stage-wrap"><canvas id="chart-stage"></canvas></div>
+      <div class="chart-card">
+        <h3>Open funnel</h3>
+        <p class="chart-sub">Deal count per stage — conversion bottlenecks</p>
+        <div class="chart-wrap"><canvas id="chart-funnel"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Top deals by value</h3>
+        <p class="chart-sub">Largest open opportunities (concentration risk)</p>
+        <div class="chart-wrap"><canvas id="chart-top-deals"></canvas></div>
+      </div>
+      <div class="chart-card wide">
+        <h3>Activity vs deal size</h3>
+        <p class="chart-sub">Bubble = open deals · X = days idle · Y = amount · size = priority score</p>
+        <div class="chart-wrap tall"><canvas id="chart-scatter"></canvas></div>
+      </div>
     </div>
 
     <!-- TABLE -->
@@ -282,6 +304,7 @@
                 <th>Owner</th>
                 <th>Flags</th>
                 <th>Why</th>
+                <th>Suggested next step</th>
               </tr>
             </thead>
             <tbody id="priority-body"></tbody>
@@ -289,6 +312,15 @@
           <div class="empty-state" id="priority-empty" style="display:none">No open deals in this pipeline filter.</div>
         </div>
       </div>
+    </div>
+
+    <div id="view-actions" class="view-panel">
+      <div class="info-banner" style="margin-bottom:16px">
+        <strong>Smart suggestions (no AI)</strong> — rules based on stage, value, stale days, and note keywords.
+        Use this list in your weekly Davyn call. Assign each line to an owner.
+      </div>
+      <div class="action-list" id="action-list"></div>
+      <div class="empty-state" id="actions-empty" style="display:none">No open deals for this pipeline filter.</div>
     </div>
 
     <div id="view-stalled" class="view-panel">
@@ -413,6 +445,7 @@ function onFiltersChanged() {
   renderTable()
   renderPriorityQueue()
   renderStalled()
+  renderNextSteps()
 }
 
 function populatePipelineFilter() {
@@ -499,7 +532,7 @@ function enrichDeal(d) {
   const queueUnblock = isOpen && (d.amount || 0) >= 5000 && isStale
   const queueActivate = isOpen && (d.stage || '').toLowerCase().includes('new') && !d.notes
 
-  return {
+  const base = {
     ...d,
     lastNoteDate,
     daysSinceLastTouch,
@@ -513,7 +546,62 @@ function enrichDeal(d) {
     stageWeight: getStageWeight(d.stage),
     priorityScore: 0,
     priorityWhy: '',
+    suggestedStep: null,
+    actionUrgency: 'low',
   }
+  const suggestion = suggestNextStep(base)
+  if (suggestion) {
+    base.suggestedStep = suggestion.text
+    base.actionUrgency = suggestion.urgency
+  }
+  return base
+}
+
+const URGENCY_ORDER = { critical: 0, high: 1, medium: 2, low: 3 }
+
+function suggestNextStep(d) {
+  if (d.status !== 'open') return null
+  const owner = d.owner || 'deal owner'
+  const idle = d.daysSinceLastTouch
+
+  if (d.queueClose) {
+    return { text: 'Close push: confirm signature, procurement, or CFO approval this week.', urgency: 'critical' }
+  }
+  if (d.isStale && (d.amount || 0) >= 5000) {
+    return {
+      text: `Executive re-engagement: call with ${owner} + Factorial sponsor. Decide reactivate vs. close-lost (idle ${idle != null ? idle + 'd' : '90+d'}).`,
+      urgency: 'critical',
+    }
+  }
+  if (d.isStale) {
+    return { text: `Stale deal: mandatory follow-up or archive. Last touch ${idle != null ? idle + ' days ago' : 'unknown'}.`, urgency: 'high' }
+  }
+  if (!d.notes || !String(d.notes).trim()) {
+    return { text: 'First activation: log call, set Amount, book demo, add dated next step in CRM.', urgency: 'high' }
+  }
+  if (d.atRisk) {
+    return { text: 'Remove TBD/cold language: book a dated meeting or define clear exit criteria.', urgency: 'high' }
+  }
+  const st = (d.stage || '').toLowerCase()
+  if (st.includes('demo')) {
+    return { text: 'Post-demo: send proposal/pricing recap and lock decision date with economic buyer.', urgency: 'high' }
+  }
+  if (st.includes('new')) {
+    return { text: 'Qualify and advance: confirm employee count, schedule demo within 14 days.', urgency: 'medium' }
+  }
+  if (st.includes('economical') || st.includes('allignment') || st.includes('alignment')) {
+    return { text: 'Pricing lane: benchmark review, ROI doc, and economic buyer sign-off.', urgency: 'medium' }
+  }
+  if (st.includes('hold')) {
+    return { text: `On Hold review: binary decision with ${owner} — reactivate with date or move to Lost.`, urgency: 'medium' }
+  }
+  if (idle != null && idle > 45) {
+    return { text: `Follow up with ${owner}: last activity ${idle} days ago — schedule next touch within 7 days.`, urgency: 'medium' }
+  }
+  if ((d.amount || 0) >= 10000) {
+    return { text: `Whale account: weekly sync with ${owner} until stage advances.`, urgency: 'medium' }
+  }
+  return { text: `Maintain rhythm: next logged touch within 7 days (${owner}).`, urgency: 'low' }
 }
 
 function computeScores(deals) {
@@ -602,60 +690,268 @@ function renderKPIs() {
 
 // ── CHARTS ────────────────────────────────────────────────────────────────
 let charts = {}
-function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id] } }
+const PALETTE = ['#2563eb', '#7c3aed', '#0891b2', '#059669', '#d97706', '#dc2626', '#db2777', '#4f46e5']
+const FUNNEL_STAGE_ORDER = [
+  'New Deals',
+  'Factorial Project Alignment started',
+  'Demo Booked',
+  'Economical Allignment Started',
+  'To reschedule',
+  'On Hold',
+]
+
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id] } }
+
+function chartBaseOptions(extra = {}) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 600 },
+    plugins: {
+      legend: { labels: { font: { size: 11 }, usePointStyle: true, boxWidth: 8 } },
+      tooltip: {
+        backgroundColor: '#0f172a',
+        titleFont: { size: 12, weight: '600' },
+        bodyFont: { size: 11 },
+        padding: 12,
+        cornerRadius: 8,
+      },
+    },
+    ...extra,
+  }
+}
+
+function moneyTooltipLabel(ctx, prefix = '') {
+  const v = ctx.parsed.x ?? ctx.parsed.y ?? ctx.raw
+  if (v == null) return ''
+  return prefix + new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(v)
+}
+
+function sumByStage(deals, valueFn) {
+  const m = {}
+  deals.forEach(d => {
+    const k = d.stage || 'Unknown'
+    m[k] = (m[k] || 0) + valueFn(d)
+  })
+  return m
+}
 
 function renderCharts() {
   const scoped = getScopedDeals()
-  const pm = {}
-  scoped.forEach(d => pm[d.pipeline] = (pm[d.pipeline] || 0) + 1)
-  const pLabels = Object.keys(pm).sort((a,b)=>pm[b]-pm[a])
-  const pData   = pLabels.map(k=>pm[k])
-  destroyChart('pipeline')
-  charts['pipeline'] = new Chart(document.getElementById('chart-pipeline'), {
-    type:'bar',
-    data:{ labels:pLabels, datasets:[{data:pData, backgroundColor:'#3b82f6', borderRadius:6}]},
-    options:{
-      indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false}}, y:{ticks:{font:{size:10}}}}
-    }
-  })
+  computeScores(scoped)
+  const open = scoped.filter(d => d.status === 'open')
 
-  // Status pie
-  const won = scoped.filter(d => d.status === 'won').length
-  const lost = scoped.filter(d => d.status === 'lost').length
-  const open = scoped.filter(d => d.status === 'open').length
-  destroyChart('status')
-  charts['status'] = new Chart(document.getElementById('chart-status'), {
-    type:'doughnut',
-    data:{
-      labels:['Won','Lost','Open'],
-      datasets:[{data:[won,lost,open], backgroundColor:['#10b981','#ef4444','#3b82f6'], borderWidth:2}]
+  // 1) Open pipeline $ by stage
+  const byStageVal = sumByStage(open, d => d.amount || 0)
+  const valLabels = Object.keys(byStageVal).sort((a, b) => byStageVal[b] - byStageVal[a]).slice(0, 12)
+  const valData = valLabels.map(k => byStageVal[k])
+  destroyChart('pipeline-value')
+  const ctx1 = document.getElementById('chart-pipeline-value').getContext('2d')
+  const g1 = ctx1.createLinearGradient(0, 0, 400, 0)
+  g1.addColorStop(0, '#3b82f6')
+  g1.addColorStop(1, '#8b5cf6')
+  charts['pipeline-value'] = new Chart(ctx1, {
+    type: 'bar',
+    data: {
+      labels: valLabels.map(s => s.length > 28 ? s.slice(0, 26) + '…' : s),
+      datasets: [{ label: 'Pipeline value', data: valData, backgroundColor: g1, borderRadius: 8, borderSkipped: false }],
     },
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom', labels:{font:{size:11}}}}
-    }
+    options: chartBaseOptions({
+      indexAxis: 'y',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => moneyTooltipLabel(c) } },
+      },
+      scales: {
+        x: {
+          grid: { color: '#f1f5f9' },
+          ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) },
+        },
+        y: { ticks: { font: { size: 10 } } },
+      },
+    }),
   })
 
-  // Stage bar
-  const sm = {}
-  scoped.forEach(d => sm[d.stage] = (sm[d.stage] || 0) + 1)
-  const sLabels = Object.keys(sm).sort((a,b)=>sm[b]-sm[a]).slice(0,10)
-  const sData   = sLabels.map(k=>sm[k])
-  destroyChart('stage')
-  charts['stage'] = new Chart(document.getElementById('chart-stage'), {
-    type:'bar',
-    data:{ labels:sLabels, datasets:[{data:sData, backgroundColor:'#8b5cf6', borderRadius:6}]},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{font:{size:9}, maxRotation:25}},
-        y:{grid:{display:false}}
-      }
+  // 2) Health buckets
+  const buckets = { 'Active (0–30d)': 0, 'Warm (31–60d)': 0, 'Cooling (61–89d)': 0, 'Stale (90+d)': 0, 'No activity data': 0 }
+  const bucketAmt = { 'Active (0–30d)': 0, 'Warm (31–60d)': 0, 'Cooling (61–89d)': 0, 'Stale (90+d)': 0, 'No activity data': 0 }
+  open.forEach(d => {
+    let b = 'No activity data'
+    const n = d.daysSinceLastTouch
+    if (n != null) {
+      if (n <= 30) b = 'Active (0–30d)'
+      else if (n <= 60) b = 'Warm (31–60d)'
+      else if (n <= 89) b = 'Cooling (61–89d)'
+      else b = 'Stale (90+d)'
     }
+    buckets[b]++
+    bucketAmt[b] += d.amount || 0
   })
+  destroyChart('health')
+  charts.health = new Chart(document.getElementById('chart-health'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(buckets),
+      datasets: [{
+        data: Object.values(buckets),
+        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#94a3b8'],
+        borderWidth: 3,
+        borderColor: '#fff',
+        hoverOffset: 12,
+      }],
+    },
+    options: chartBaseOptions({
+      cutout: '58%',
+      plugins: {
+        tooltip: {
+          callbacks: {
+            afterLabel: (c) => {
+              const lab = Object.keys(buckets)[c.dataIndex]
+              return ' Pipeline: ' + fmt(bucketAmt[lab], 'USD')
+            },
+          },
+        },
+      },
+    }),
+  })
+
+  // 3) Funnel (open count by stage)
+  const funnelMap = sumByStage(open, () => 1)
+  const funnelLabels = FUNNEL_STAGE_ORDER.filter(s => funnelMap[s]).concat(
+    Object.keys(funnelMap).filter(s => !FUNNEL_STAGE_ORDER.includes(s))
+  )
+  const funnelData = funnelLabels.map(s => funnelMap[s] || 0)
+  destroyChart('funnel')
+  charts.funnel = new Chart(document.getElementById('chart-funnel'), {
+    type: 'bar',
+    data: {
+      labels: funnelLabels.map(s => (s.length > 22 ? s.slice(0, 20) + '…' : s)),
+      datasets: [{
+        label: 'Open deals',
+        data: funnelData,
+        backgroundColor: funnelLabels.map((_, i) => PALETTE[i % PALETTE.length]),
+        borderRadius: 8,
+      }],
+    },
+    options: chartBaseOptions({
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+        x: { ticks: { font: { size: 9 }, maxRotation: 35, minRotation: 25 } },
+      },
+    }),
+  })
+
+  // 4) Top deals by value
+  const top = [...open].sort((a, b) => (b.amount || 0) - (a.amount || 0)).slice(0, 8)
+  destroyChart('top-deals')
+  const ctx4 = document.getElementById('chart-top-deals').getContext('2d')
+  const g4 = ctx4.createLinearGradient(0, 0, 0, 260)
+  g4.addColorStop(0, '#059669')
+  g4.addColorStop(1, '#10b981')
+  charts['top-deals'] = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+      labels: top.map(d => (d.company || d.name).slice(0, 20)),
+      datasets: [{ label: 'Amount', data: top.map(d => d.amount || 0), backgroundColor: g4, borderRadius: 8 }],
+    },
+    options: chartBaseOptions({
+      indexAxis: 'y',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => moneyTooltipLabel(c) } } },
+      scales: { x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) } } },
+    }),
+  })
+
+  // 5) Scatter: idle vs amount
+  destroyChart('scatter')
+  charts.scatter = new Chart(document.getElementById('chart-scatter'), {
+    type: 'bubble',
+    data: {
+      datasets: [{
+        label: 'Open deals',
+        data: open.map(d => ({
+          x: d.daysSinceLastTouch != null ? d.daysSinceLastTouch : 120,
+          y: d.amount || 0,
+          r: Math.max(6, Math.min(22, (d.priorityScore || 10) / 4)),
+          _name: d.name,
+          _idle: d.daysSinceLastTouch,
+          _score: d.priorityScore,
+        })),
+        backgroundColor: open.map(d => (d.isStale ? 'rgba(239,68,68,0.65)' : d.queueClose ? 'rgba(16,185,129,0.7)' : 'rgba(37,99,235,0.55)')),
+        borderColor: '#fff',
+        borderWidth: 2,
+      }],
+    },
+    options: chartBaseOptions({
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (c) => {
+              const raw = c.raw
+              return [
+                raw._name,
+                'Amount: ' + fmt(raw.y, 'USD'),
+                'Days idle: ' + (raw._idle != null ? raw._idle : 'unknown'),
+                'Score: ' + raw._score,
+              ]
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Days since last note', font: { size: 11 } },
+          grid: { color: '#f1f5f9' },
+          suggestedMax: 200,
+        },
+        y: {
+          title: { display: true, text: 'Deal amount', font: { size: 11 } },
+          grid: { color: '#f1f5f9' },
+          ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) },
+        },
+      },
+    }),
+  })
+}
+
+// ── NEXT STEPS (rule-based) ───────────────────────────────────────────────
+function renderNextSteps() {
+  const scoped = getScopedDeals()
+  computeScores(scoped)
+  const list = document.getElementById('action-list')
+  const empty = document.getElementById('actions-empty')
+
+  let deals = scoped
+    .filter(d => d.status === 'open' && d.suggestedStep)
+    .sort((a, b) => {
+      const ua = URGENCY_ORDER[a.actionUrgency] ?? 9
+      const ub = URGENCY_ORDER[b.actionUrgency] ?? 9
+      if (ua !== ub) return ua - ub
+      return b.priorityScore - a.priorityScore
+    })
+    .slice(0, 15)
+
+  if (!deals.length) {
+    list.innerHTML = ''
+    empty.style.display = 'block'
+    return
+  }
+  empty.style.display = 'none'
+  list.innerHTML = deals.map((d, i) => {
+    const amt = d.amount != null ? fmt(d.amount, d.currency || 'USD') : '—'
+    return `<div class="action-card urgency-${d.actionUrgency}">
+      <div class="action-top">
+        <span style="font-size:11px;color:#94a3b8;font-weight:700">#${i + 1}</span>
+        <span class="action-deal">${esc(d.name)}</span>
+        <span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span>
+        <span class="badge badge-open">${esc(d.stage)}</span>
+      </div>
+      <div class="action-meta">${amt} · ${d.daysSinceLastTouch != null ? d.daysSinceLastTouch + 'd idle' : 'idle unknown'} · ${esc(d.owner || '—')}</div>
+      <div class="action-text">${esc(d.suggestedStep)}</div>
+      <div class="action-owner">Owner: ${esc(d.owner || 'Assign in HubSpot')}</div>
+    </div>`
+  }).join('')
 }
 
 // ── TABLE ─────────────────────────────────────────────────────────────────
@@ -773,6 +1069,7 @@ function renderPriorityQueue() {
       <td title="${esc(d.owner)}">${esc(d.owner)}</td>
       <td>${flagsHtml(d)}</td>
       <td class="why-text">${esc(d.priorityWhy)}</td>
+      <td class="why-text">${esc(d.suggestedStep || '—')}</td>
     </tr>`
   }).join('')
 }
