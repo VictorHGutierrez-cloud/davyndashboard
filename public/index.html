@@ -33,7 +33,9 @@
   .header-brand{display:flex;align-items:center;gap:10px}
   .header-logos{display:flex;align-items:center;gap:10px}
   .brand-mark{height:22px;width:auto;display:block}
-  .brand-divider{width:1px;height:18px;background:#e2e8f0}
+  .brand-mark-factorial{height:28px;width:28px;display:block;object-fit:contain}
+  .brand-divider{width:1px;height:22px;background:#e2e8f0;flex-shrink:0}
+  .login-logos{display:flex;align-items:center;justify-content:center;gap:12px;margin:0 auto 16px}
   .header-title{font-size:14px;font-weight:700;color:#1e293b}
   .header-sub{font-size:11px;color:#94a3b8}
   .header-right{display:flex;align-items:center;gap:10px}
@@ -185,8 +187,10 @@
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo" style="background:transparent">
-      <img src="davyn-logo.svg" alt="Davyn" style="height:26px;width:auto;display:block"/>
+    <div class="login-logos">
+      <img class="brand-mark-factorial" src="factorial-logo.png" alt="Factorial"/>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <img class="brand-mark" src="davyn-logo.svg" alt="Davyn" style="height:26px"/>
     </div>
     <h1 id="i18n-login-title">Davyn Dashboard</h1>
     <p id="i18n-login-sub">Factorial · Partner Opportunities</p>
@@ -208,7 +212,9 @@
   <header>
     <div class="header-inner">
       <div class="header-brand">
-        <div class="header-logos" aria-label="Davyn">
+        <div class="header-logos" aria-label="Factorial and Davyn">
+          <img class="brand-mark-factorial" src="factorial-logo.png" alt="Factorial"/>
+          <span class="brand-divider" aria-hidden="true"></span>
           <img class="brand-mark" src="davyn-logo.svg" alt="Davyn"/>
         </div>
         <div>
