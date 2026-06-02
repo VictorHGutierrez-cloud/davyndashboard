@@ -396,7 +396,7 @@
         <span class="search-icon" aria-hidden="true">⌕</span>
         <input type="text" id="search" placeholder="Search deals…" oninput="onFiltersChanged()"/>
       </div>
-      <select class="filter-select" id="filter-status" onchange="onFiltersChanged()">
+      <select class="filter-select" id="filter-status" onchange="onStatusFilterChange()">
         <option value="all">All statuses</option>
         <option value="won">Won</option>
         <option value="lost">Lost</option>
@@ -1696,8 +1696,21 @@ function applySearchStatus(deals) {
   const urgency = document.getElementById('filter-urgency').value
   return deals
     .filter(d => st === 'all' || d.status === st)
-    .filter(d => urgency === 'all' || (d.status === 'open' && d.actionUrgency === urgency))
+    .filter(d => {
+      // Urgency only applies to open deals — do not hide won/lost when urgency filter is set
+      if (urgency === 'all' || d.status !== 'open') return true
+      return d.actionUrgency === urgency
+    })
     .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner, d.sender, d.suggestedStep, d.dealSummary].join(' ').toLowerCase().includes(q))
+}
+
+function onStatusFilterChange() {
+  const st = document.getElementById('filter-status').value
+  const urg = document.getElementById('filter-urgency')
+  if (urg && st !== 'all' && st !== 'open' && urg.value !== 'all') {
+    urg.value = 'all'
+  }
+  onFiltersChanged()
 }
 
 function getFiltered() {
@@ -1716,7 +1729,11 @@ function getOpenPriorityDeals() {
 }
 
 function getStalledDeals() {
-  let deals = applySearchStatus(getScopedDeals()).filter(d => d.isStale)
+  const st = document.getElementById('filter-status').value
+  let deals = applySearchStatus(getScopedDeals())
+  if (st === 'all' || st === 'open') {
+    deals = deals.filter(d => d.isStale)
+  }
   deals = applyColumnFilters(deals, 'stalled')
   return deals.sort((a, b) => (b.amount || 0) - (a.amount || 0))
 }
@@ -1823,8 +1840,8 @@ function fmt(n, cur) {
 }
 
 function renderKPIs() {
-  const scoped = getScopedDeals()
-  computeScores(scoped)
+  const scoped = applySearchStatus(getScopedDeals())
+  computeScores(getScopedDeals())
   const won = scoped.filter(d => d.status === 'won')
   const lost = scoped.filter(d => d.status === 'lost')
   const open = scoped.filter(d => d.status === 'open')
