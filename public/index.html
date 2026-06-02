@@ -99,8 +99,25 @@
     .search-wrap input{width:100%}
   }
   table{width:100%;border-collapse:collapse;font-size:12px}
-  thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:#64748b;background:#f8fafc;white-space:nowrap;cursor:pointer;user-select:none}
-  thead th:hover{color:#1e293b}
+  thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:#64748b;background:#f8fafc;white-space:nowrap;user-select:none}
+  thead th.sortable{cursor:pointer}
+  thead th.sortable:hover{color:#1e293b}
+  thead th .sort-mark{font-size:9px;color:#94a3b8;margin-left:3px}
+  thead th.sorted{color:#1d4ed8}
+  .col-panel-wrap{position:relative}
+  .col-panel{display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;min-width:260px;max-height:360px;overflow:auto;z-index:120;box-shadow:0 12px 32px rgba(15,23,42,.12)}
+  .col-panel.open{display:block}
+  .col-panel h4{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px}
+  .col-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f8fafc}
+  .col-row:last-child{border-bottom:none}
+  .col-row label{flex:1;font-size:12px;color:#334155;cursor:pointer}
+  .col-row input[type=checkbox]{accent-color:#2563eb}
+  .col-move{background:#f1f5f9;border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:12px;color:#475569}
+  .col-move:hover{background:#e2e8f0}
+  .col-move:disabled{opacity:.35;cursor:not-allowed}
+  .btn-columns{background:#fff;color:#475569;border:1.5px solid #e2e8f0;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+  .btn-columns:hover{background:#f8fafc}
+  .col-reset{margin-top:10px;width:100%;background:#f8fafc;border:1px solid #e2e8f0;color:#64748b;padding:6px;border-radius:8px;font-size:11px;cursor:pointer}
   tbody tr{border-top:1px solid #f8fafc;transition:.1s}
   tbody tr:hover{background:#f8fafc}
   tbody td{padding:10px 14px;color:#475569;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -246,7 +263,7 @@
         <option value="all">All owners</option>
       </select>
       <select class="filter-select" id="filter-sender" onchange="onFiltersChanged()">
-        <option value="all">All Davyn senders</option>
+        <option value="all">All Owner (Davyn)</option>
       </select>
       <select class="filter-select" id="filter-urgency" onchange="onFiltersChanged()">
         <option value="all">All urgencies</option>
@@ -345,30 +362,16 @@
     <div class="table-card">
       <div class="table-header">
         <div class="table-title">Opportunities <span class="table-count" id="table-count"></span></div>
+        <div class="col-panel-wrap">
+          <button type="button" class="btn-columns" id="btn-cols-overview" onclick="toggleColPanel('overview')">Columns</button>
+          <div class="col-panel" id="col-panel-overview"></div>
+        </div>
         <button type="button" class="btn-download" onclick="downloadCsv('overview')">Download CSV</button>
       </div>
       <div class="mobile-cards" id="table-cards"></div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th onclick="sortBy('priorityScore')">Score ↕</th>
-              <th onclick="sortBy('name')">Deal ↕</th>
-              <th onclick="sortBy('company')">Company ↕</th>
-              <th onclick="sortBy('pipeline')">Pipeline ↕</th>
-              <th onclick="sortBy('stage')">Stage ↕</th>
-              <th onclick="sortBy('amount')">Amount ↕</th>
-              <th onclick="sortBy('lastNoteDate')">Last touch ↕</th>
-              <th onclick="sortBy('daysSinceLastTouch')">Days idle ↕</th>
-              <th onclick="sortBy('daysOpen')">Days in pipe ↕</th>
-              <th onclick="sortBy('closeDate')">Close Date ↕</th>
-              <th onclick="sortBy('owner')">Owner ↕</th>
-              <th onclick="sortBy('sender')">Davyn sender ↕</th>
-              <th onclick="sortBy('status')">Status ↕</th>
-              <th>Flags</th>
-              <th>Notes</th>
-            </tr>
-          </thead>
+          <thead id="overview-thead"><tr id="overview-header-row"></tr></thead>
           <tbody id="table-body"></tbody>
         </table>
         <div class="empty-state" id="empty-state" style="display:none">No deals found.</div>
@@ -394,27 +397,16 @@
         <div class="table-header">
           <div class="table-title">Priority queue <span class="table-count" id="priority-count"></span></div>
           <span class="table-count">Open deals ranked by score (highest first)</span>
+          <div class="col-panel-wrap">
+            <button type="button" class="btn-columns" id="btn-cols-priority" onclick="toggleColPanel('priority')">Columns</button>
+            <div class="col-panel" id="col-panel-priority"></div>
+          </div>
           <button type="button" class="btn-download" onclick="downloadCsv('priority')">Download CSV</button>
         </div>
         <div class="mobile-cards" id="priority-cards"></div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>Score</th>
-                <th>Deal</th>
-                <th>Company</th>
-                <th>Stage</th>
-                <th>Amount</th>
-                <th>Last touch</th>
-                <th>Days idle</th>
-                <th>Owner</th>
-                <th>Davyn sender</th>
-                <th>Flags</th>
-                <th>Why</th>
-                <th>Suggested next step</th>
-              </tr>
-            </thead>
+            <thead id="priority-thead"><tr id="priority-header-row"></tr></thead>
             <tbody id="priority-body"></tbody>
           </table>
           <div class="empty-state" id="priority-empty" style="display:none">No open deals in this pipeline filter.</div>
@@ -534,9 +526,29 @@ const I18N = {
     partnerOnly: 'Partner pipeline only',
     pipelinesAll: 'All pipelines',
     ownersAll: 'All owners',
-    sendersAll: 'All Davyn senders',
-    sendersNone: 'No Davyn sender',
-    colSender: 'Davyn sender',
+    ownerDavynAll: 'All Owner (Davyn)',
+    ownerDavynNone: 'No Owner (Davyn)',
+    colOwnerDavyn: 'Owner (Davyn)',
+    columnsBtn: 'Columns',
+    columnsTitle: 'Organize columns',
+    columnsReset: 'Reset to default',
+    colScore: 'Score',
+    colDeal: 'Deal',
+    colCompany: 'Company',
+    colPipeline: 'Pipeline',
+    colStage: 'Stage',
+    colAmount: 'Amount',
+    colLastTouch: 'Last touch',
+    colDaysIdle: 'Days idle',
+    colDaysPipe: 'Days in pipe',
+    colCloseDate: 'Close date',
+    colOwner: 'Owner',
+    colStatus: 'Status',
+    colFlags: 'Flags',
+    colNotes: 'Notes',
+    colWhy: 'Why',
+    colNextStep: 'Suggested next step',
+    colReason: 'Reason',
     urgenciesAll: 'All urgencies',
     statusesAll: 'All statuses',
     statusWon: 'Won',
@@ -568,9 +580,29 @@ const I18N = {
     partnerOnly: 'Só pipeline de parceiro',
     pipelinesAll: 'Todos os pipelines',
     ownersAll: 'Todos os owners',
-    sendersAll: 'Todos executivos Davyn',
-    sendersNone: 'Sem executivo Davyn',
-    colSender: 'Executivo Davyn',
+    ownerDavynAll: 'Todos Owner (Davyn)',
+    ownerDavynNone: 'Sem Owner (Davyn)',
+    colOwnerDavyn: 'Owner (Davyn)',
+    columnsBtn: 'Colunas',
+    columnsTitle: 'Organizar colunas',
+    columnsReset: 'Restaurar padrão',
+    colScore: 'Score',
+    colDeal: 'Deal',
+    colCompany: 'Empresa',
+    colPipeline: 'Pipeline',
+    colStage: 'Estágio',
+    colAmount: 'Valor',
+    colLastTouch: 'Último contato',
+    colDaysIdle: 'Dias parado',
+    colDaysPipe: 'Dias no pipe',
+    colCloseDate: 'Data fecho',
+    colOwner: 'Owner',
+    colStatus: 'Status',
+    colFlags: 'Flags',
+    colNotes: 'Notas',
+    colWhy: 'Porquê',
+    colNextStep: 'Próximo passo',
+    colReason: 'Motivo',
     urgenciesAll: 'Todas as urgências',
     statusesAll: 'Todos os status',
     statusWon: 'Won',
@@ -659,6 +691,12 @@ function applyI18n() {
   if (pEmpty) pEmpty.textContent = t('emptyNoPriority')
   const sEmpty = document.getElementById('stalled-empty')
   if (sEmpty) sEmpty.textContent = t('emptyNoStalled')
+
+  document.querySelectorAll('.btn-columns').forEach(b => { b.textContent = t('columnsBtn') })
+  renderTableHeader('overview')
+  renderTableHeader('priority')
+  buildColPanel('overview')
+  buildColPanel('priority')
 }
 
 function toggleLang() {
@@ -667,6 +705,7 @@ function toggleLang() {
   populatePipelineFilter()
   populateOwnerFilter()
   populateSenderFilter()
+  initColumnLayouts()
   applyI18n()
   onFiltersChanged()
 }
@@ -708,6 +747,7 @@ async function loadData() {
   populatePipelineFilter()
   populateOwnerFilter()
   populateSenderFilter()
+  initColumnLayouts()
   applyI18n()
   onFiltersChanged()
 }
@@ -729,7 +769,7 @@ function populateSenderFilter() {
   if (!sel) return
   const prev = sel.value
   const senders = [...new Set(enrichedDeals.map(d => d.sender).filter(Boolean))].sort()
-  sel.innerHTML = `<option value="all">${t('sendersAll')}</option>`
+  sel.innerHTML = `<option value="all">${t('ownerDavynAll')}</option>`
   senders.forEach(s => {
     const opt = document.createElement('option')
     opt.value = s
@@ -738,7 +778,7 @@ function populateSenderFilter() {
   })
   const optNone = document.createElement('option')
   optNone.value = '__none__'
-  optNone.textContent = t('sendersNone')
+  optNone.textContent = t('ownerDavynNone')
   sel.appendChild(optNone)
   if ([...sel.options].some(o => o.value === prev)) sel.value = prev
 }
@@ -753,7 +793,8 @@ function setView(name) {
   activeView = name
   document.querySelectorAll('.view-tab').forEach(b => b.classList.toggle('active', b.dataset.view === name))
   document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.id === 'view-' + name))
-  if (name === 'overview') renderCharts()
+  if (name === 'overview') { renderTableHeader('overview'); renderCharts() }
+  if (name === 'priority') renderTableHeader('priority')
   if (name === 'weekly') renderWeekly()
 }
 
@@ -1039,13 +1080,13 @@ function downloadCsv(kind) {
   let filename = 'davyn-export.csv'
   if (kind === 'priority') {
     filename = 'davyn-priority-queue.csv'
-    rows = [['Score', 'Deal', 'Company', 'Stage', 'Amount', 'Currency', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Davyn sender', 'Urgency', 'Suggested next step', 'Summary']]
+    rows = [['Score', 'Deal', 'Company', 'Stage', 'Amount', 'Currency', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Owner (Davyn)', 'Urgency', 'Suggested next step', 'Summary']]
     getOpenPriorityDeals().forEach(d => {
       rows.push([d.priorityScore, d.name, d.company, d.stage, d.amount, d.currency, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.sender, d.actionUrgency, d.suggestedStep, d.dealSummary])
     })
   } else if (kind === 'stalled') {
     filename = 'davyn-stalled-deals.csv'
-    rows = [['Deal', 'Company', 'Amount', 'Stage', 'Last touch', 'Days idle', 'Close date', 'Owner', 'Davyn sender', 'Reason', 'Suggested next step']]
+    rows = [['Deal', 'Company', 'Amount', 'Stage', 'Last touch', 'Days idle', 'Close date', 'Owner', 'Owner (Davyn)', 'Reason', 'Suggested next step']]
     getStalledDeals().forEach(d => {
       rows.push([d.name, d.company, d.amount, d.stage, d.lastNoteDate, d.daysSinceLastTouch, d.closeDate, d.owner, d.sender, d.staleReason, d.suggestedStep])
     })
@@ -1062,7 +1103,7 @@ function downloadCsv(kind) {
     })
   } else {
     filename = 'davyn-opportunities.csv'
-    rows = [['Score', 'Deal', 'Company', 'Pipeline', 'Stage', 'Amount', 'Status', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Davyn sender', 'Suggested next step']]
+    rows = [['Score', 'Deal', 'Company', 'Pipeline', 'Stage', 'Amount', 'Status', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Owner (Davyn)', 'Suggested next step']]
     getFiltered().forEach(d => {
       rows.push([d.priorityScore, d.name, d.company, d.pipeline, d.stage, d.amount, d.status, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.sender, d.suggestedStep])
     })
@@ -1089,7 +1130,7 @@ function openDealModal(id) {
     <div class="modal-section"><h4>Details</h4>
       Company: ${esc(d.company)}<br/>
       Owner (Factorial): ${esc(d.owner)}<br/>
-      Davyn sender: ${esc(d.sender || '—')}<br/>
+      Owner (Davyn): ${esc(d.sender || '—')}<br/>
       Stage: ${esc(d.stage)}<br/>
       Pipeline: ${esc(d.pipeline)}<br/>
       Amount: ${d.amount != null ? fmt(d.amount, d.currency) : '—'}<br/>
@@ -1477,10 +1518,227 @@ function renderNextSteps() {
   }).join('')
 }
 
+// ── COLUMN LAYOUT ─────────────────────────────────────────────────────────
+const TABLE_COLUMN_DEFS = {
+  overview: [
+    { id: 'priorityScore', labelKey: 'colScore', sortable: true, default: true },
+    { id: 'name', labelKey: 'colDeal', sortable: true, default: true },
+    { id: 'company', labelKey: 'colCompany', sortable: true, default: true },
+    { id: 'pipeline', labelKey: 'colPipeline', sortable: true, default: true },
+    { id: 'stage', labelKey: 'colStage', sortable: true, default: true },
+    { id: 'amount', labelKey: 'colAmount', sortable: true, default: true },
+    { id: 'lastNoteDate', labelKey: 'colLastTouch', sortable: true, default: true },
+    { id: 'daysSinceLastTouch', labelKey: 'colDaysIdle', sortable: true, default: true },
+    { id: 'daysOpen', labelKey: 'colDaysPipe', sortable: true, default: false },
+    { id: 'closeDate', labelKey: 'colCloseDate', sortable: true, default: false },
+    { id: 'owner', labelKey: 'colOwner', sortable: true, default: true },
+    { id: 'sender', labelKey: 'colOwnerDavyn', sortable: true, default: true },
+    { id: 'status', labelKey: 'colStatus', sortable: true, default: true },
+    { id: 'flags', labelKey: 'colFlags', sortable: false, default: true },
+    { id: 'notes', labelKey: 'colNotes', sortable: false, default: true },
+  ],
+  priority: [
+    { id: 'priorityScore', labelKey: 'colScore', sortable: true, default: true },
+    { id: 'name', labelKey: 'colDeal', sortable: true, default: true },
+    { id: 'company', labelKey: 'colCompany', sortable: true, default: true },
+    { id: 'stage', labelKey: 'colStage', sortable: true, default: true },
+    { id: 'amount', labelKey: 'colAmount', sortable: true, default: true },
+    { id: 'lastNoteDate', labelKey: 'colLastTouch', sortable: true, default: true },
+    { id: 'daysSinceLastTouch', labelKey: 'colDaysIdle', sortable: true, default: true },
+    { id: 'owner', labelKey: 'colOwner', sortable: true, default: true },
+    { id: 'sender', labelKey: 'colOwnerDavyn', sortable: true, default: true },
+    { id: 'flags', labelKey: 'colFlags', sortable: false, default: true },
+    { id: 'priorityWhy', labelKey: 'colWhy', sortable: false, default: true },
+    { id: 'suggestedStep', labelKey: 'colNextStep', sortable: false, default: true },
+  ],
+}
+
+let columnLayouts = { overview: null, priority: null }
+
+function defaultColumnLayout(tableId) {
+  const defs = TABLE_COLUMN_DEFS[tableId]
+  return {
+    order: defs.map(d => d.id),
+    visible: Object.fromEntries(defs.map(d => [d.id, d.default !== false])),
+  }
+}
+
+function loadColumnLayout(tableId) {
+  const key = 'davyn_cols_' + tableId
+  try {
+    const raw = localStorage.getItem(key)
+    if (raw) {
+      const parsed = JSON.parse(raw)
+      const defs = TABLE_COLUMN_DEFS[tableId]
+      const validIds = new Set(defs.map(d => d.id))
+      const order = (parsed.order || []).filter(id => validIds.has(id))
+      defs.forEach(d => { if (!order.includes(d.id)) order.push(d.id) })
+      const visible = { ...Object.fromEntries(defs.map(d => [d.id, d.default !== false])), ...parsed.visible }
+      return { order, visible }
+    }
+  } catch (e) { /* ignore */ }
+  return defaultColumnLayout(tableId)
+}
+
+function saveColumnLayout(tableId) {
+  localStorage.setItem('davyn_cols_' + tableId, JSON.stringify(columnLayouts[tableId]))
+}
+
+function initColumnLayouts() {
+  columnLayouts.overview = loadColumnLayout('overview')
+  columnLayouts.priority = loadColumnLayout('priority')
+}
+
+function getVisibleColumnIds(tableId) {
+  const layout = columnLayouts[tableId] || defaultColumnLayout(tableId)
+  return layout.order.filter(id => layout.visible[id] !== false)
+}
+
+function colDef(tableId, id) {
+  return TABLE_COLUMN_DEFS[tableId].find(c => c.id === id)
+}
+
+function renderTableHeader(tableId) {
+  const rowId = tableId === 'overview' ? 'overview-header-row' : 'priority-header-row'
+  const row = document.getElementById(rowId)
+  if (!row) return
+  row.innerHTML = getVisibleColumnIds(tableId).map(id => {
+    const def = colDef(tableId, id)
+    if (!def) return ''
+    const sorted = def.sortable && sortKey === id
+    const mark = sorted ? (sortAsc ? '↑' : '↓') : (def.sortable ? '↕' : '')
+    const cls = [def.sortable ? 'sortable' : '', sorted ? 'sorted' : ''].filter(Boolean).join(' ')
+    const click = def.sortable ? `onclick="sortBy('${id}')"` : ''
+    return `<th class="${cls}" ${click}>${t(def.labelKey)}${mark ? `<span class="sort-mark">${mark}</span>` : ''}</th>`
+  }).join('')
+}
+
+function buildColPanel(tableId) {
+  const panel = document.getElementById('col-panel-' + tableId)
+  if (!panel) return
+  const layout = columnLayouts[tableId]
+  const defs = TABLE_COLUMN_DEFS[tableId]
+  panel.innerHTML = `<h4>${t('columnsTitle')}</h4>` + layout.order.map((id, idx) => {
+    const def = defs.find(d => d.id === id)
+    if (!def) return ''
+    const checked = layout.visible[id] !== false ? 'checked' : ''
+    return `<div class="col-row">
+      <button type="button" class="col-move" ${idx === 0 ? 'disabled' : ''} onclick="moveColumn('${tableId}','${id}',-1)" title="Up">↑</button>
+      <button type="button" class="col-move" ${idx === layout.order.length - 1 ? 'disabled' : ''} onclick="moveColumn('${tableId}','${id}',1)" title="Down">↓</button>
+      <input type="checkbox" id="col-vis-${tableId}-${id}" ${checked} onchange="toggleColumnVisible('${tableId}','${id}',this.checked)"/>
+      <label for="col-vis-${tableId}-${id}">${t(def.labelKey)}</label>
+    </div>`
+  }).join('') + `<button type="button" class="col-reset" onclick="resetColumnLayout('${tableId}')">${t('columnsReset')}</button>`
+}
+
+function toggleColPanel(tableId) {
+  document.querySelectorAll('.col-panel').forEach(p => {
+    if (p.id !== 'col-panel-' + tableId) p.classList.remove('open')
+  })
+  const panel = document.getElementById('col-panel-' + tableId)
+  if (panel) {
+    panel.classList.toggle('open')
+    if (panel.classList.contains('open')) buildColPanel(tableId)
+  }
+}
+
+function moveColumn(tableId, id, delta) {
+  const layout = columnLayouts[tableId]
+  const i = layout.order.indexOf(id)
+  const j = i + delta
+  if (i < 0 || j < 0 || j >= layout.order.length) return
+  const tmp = layout.order[i]
+  layout.order[i] = layout.order[j]
+  layout.order[j] = tmp
+  saveColumnLayout(tableId)
+  buildColPanel(tableId)
+  renderTableHeader(tableId)
+  if (tableId === 'overview') renderTable()
+  else renderPriorityQueue()
+}
+
+function toggleColumnVisible(tableId, id, on) {
+  columnLayouts[tableId].visible[id] = on
+  saveColumnLayout(tableId)
+  renderTableHeader(tableId)
+  if (tableId === 'overview') renderTable()
+  else renderPriorityQueue()
+}
+
+function resetColumnLayout(tableId) {
+  columnLayouts[tableId] = defaultColumnLayout(tableId)
+  saveColumnLayout(tableId)
+  buildColPanel(tableId)
+  renderTableHeader(tableId)
+  if (tableId === 'overview') renderTable()
+  else renderPriorityQueue()
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.col-panel-wrap')) {
+    document.querySelectorAll('.col-panel').forEach(p => p.classList.remove('open'))
+  }
+})
+
+function formatAmount(d) {
+  return d.amount != null
+    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount)
+    : '—'
+}
+
+function renderOverviewCell(d, colId, ctx) {
+  const { statusBadge, isExp } = ctx
+  const amt = formatAmount(d)
+  const sc = d.status === 'open' ? d.priorityScore : '—'
+  switch (colId) {
+    case 'priorityScore':
+      return `<td>${d.status === 'open' ? `<span class="score-pill ${scoreClass(d.priorityScore)}">${sc}</span>` : '—'}</td>`
+    case 'name': return `<td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>`
+    case 'company': return `<td title="${esc(d.company)}">${esc(d.company)}</td>`
+    case 'pipeline': return `<td title="${esc(d.pipeline)}">${esc(d.pipeline)}</td>`
+    case 'stage': return `<td title="${esc(d.stage)}">${esc(d.stage)}</td>`
+    case 'amount': return `<td class="amount">${amt}</td>`
+    case 'lastNoteDate': return `<td>${d.lastNoteDate || '—'}</td>`
+    case 'daysSinceLastTouch': return `<td class="num">${idleLabel(d)}</td>`
+    case 'daysOpen': return `<td class="num">${d.daysOpen != null ? d.daysOpen : '—'}</td>`
+    case 'closeDate': return `<td>${d.closeDate || '—'}</td>`
+    case 'owner': return `<td title="${esc(d.owner)}">${esc(d.owner)}</td>`
+    case 'sender': return `<td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '<span style="color:#cbd5e1">—</span>'}</td>`
+    case 'status': return `<td>${statusBadge(d.status)}</td>`
+    case 'flags': return `<td>${flagsHtml(d)}</td>`
+    case 'notes':
+      return `<td>${d.notes
+        ? `<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(${JSON.stringify(String(d.id))})">${isExp ? 'Close notes' : 'View notes'}</button>`
+        : '<span style="color:#cbd5e1">—</span>'
+      }</td>`
+    default: return '<td>—</td>'
+  }
+}
+
+function renderPriorityCell(d, colId) {
+  const amt = formatAmount(d)
+  switch (colId) {
+    case 'priorityScore': return `<td><span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span></td>`
+    case 'name': return `<td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>`
+    case 'company': return `<td title="${esc(d.company)}">${esc(d.company)}</td>`
+    case 'stage': return `<td title="${esc(d.stage)}">${esc(d.stage)}</td>`
+    case 'amount': return `<td class="amount">${amt}</td>`
+    case 'lastNoteDate': return `<td>${d.lastNoteDate || '—'}</td>`
+    case 'daysSinceLastTouch': return `<td class="num">${idleLabel(d)}</td>`
+    case 'owner': return `<td title="${esc(d.owner)}">${esc(d.owner)}</td>`
+    case 'sender': return `<td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '—'}</td>`
+    case 'flags': return `<td>${flagsHtml(d)}</td>`
+    case 'priorityWhy': return `<td class="why-text">${esc(d.priorityWhy)}</td>`
+    case 'suggestedStep': return `<td class="why-text">${esc(d.suggestedStep || '—')}</td>`
+    default: return '<td>—</td>'
+  }
+}
+
 // ── TABLE ─────────────────────────────────────────────────────────────────
 function sortBy(key) {
   if (sortKey === key) sortAsc = !sortAsc
   else { sortKey = key; sortAsc = true }
+  renderTableHeader(activeView === 'priority' ? 'priority' : 'overview')
   onFiltersChanged()
 }
 
@@ -1530,7 +1788,7 @@ function dealCardHtml(d, variant) {
     rows.push(meta('Last touch', esc(last)))
     rows.push(meta('Idle days', esc(String(idle))))
     rows.push(meta('Owner', owner))
-    rows.push(meta('Davyn sender', esc(d.sender || '—')))
+    rows.push(meta(t('colOwnerDavyn'), esc(d.sender || '—')))
     rows.push(meta('Flags', flagsHtml(d)))
   } else if (variant === 'priority') {
     rows.push(meta('Stage', stage))
@@ -1538,7 +1796,7 @@ function dealCardHtml(d, variant) {
     rows.push(meta('Last touch', esc(last)))
     rows.push(meta('Idle days', esc(String(idle))))
     rows.push(meta('Owner', owner))
-    rows.push(meta('Davyn sender', esc(d.sender || '—')))
+    rows.push(meta(t('colOwnerDavyn'), esc(d.sender || '—')))
     rows.push(meta('Why', esc(d.priorityWhy || '—')))
   } else if (variant === 'stalled') {
     rows.push(meta('Stage', stage))
@@ -1546,7 +1804,7 @@ function dealCardHtml(d, variant) {
     rows.push(meta('Last touch', esc(last)))
     rows.push(meta('Idle days', esc(String(idle))))
     rows.push(meta('Owner', owner))
-    rows.push(meta('Davyn sender', esc(d.sender || '—')))
+    rows.push(meta(t('colOwnerDavyn'), esc(d.sender || '—')))
     rows.push(meta('Reason', esc(d.staleReason || '—')))
   }
 
@@ -1587,33 +1845,15 @@ function renderTable() {
     open: '<span class="badge badge-open">Open</span>',
   }[s] || s)
 
+  const cols = getVisibleColumnIds('overview')
+  const colSpan = cols.length
   tbody.innerHTML = filtered.map(d => {
     const isExp = expandedId === d.id
     const rowClass = d.status === 'won' ? 'style="background:#f0fdf4"' : d.status === 'lost' ? 'style="background:#fef2f2"' : ''
-    const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
-    const sc = d.status === 'open' ? d.priorityScore : '—'
-    const mainRow = `<tr ${rowClass} ${rowClickAttr(d)}>
-      <td>${d.status === 'open' ? `<span class="score-pill ${scoreClass(d.priorityScore)}">${sc}</span>` : '—'}</td>
-      <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
-      <td title="${esc(d.company)}">${esc(d.company)}</td>
-      <td title="${esc(d.pipeline)}">${esc(d.pipeline)}</td>
-      <td title="${esc(d.stage)}">${esc(d.stage)}</td>
-      <td class="amount">${amt}</td>
-      <td>${d.lastNoteDate || '—'}</td>
-      <td class="num">${idleLabel(d)}</td>
-      <td class="num">${d.daysOpen != null ? d.daysOpen : '—'}</td>
-      <td>${d.closeDate || '—'}</td>
-      <td title="${esc(d.owner)}">${esc(d.owner)}</td>
-      <td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '<span style="color:#cbd5e1">—</span>'}</td>
-      <td>${statusBadge(d.status)}</td>
-      <td>${flagsHtml(d)}</td>
-      <td>${d.notes
-        ? `<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(${JSON.stringify(String(d.id))})">${isExp ? 'Close notes' : 'View notes'}</button>`
-        : '<span style="color:#cbd5e1">—</span>'
-      }</td>
-    </tr>`
-    const notesRow = isExp && d.notes
-      ? `<tr class="notes-row"><td colspan="15">${esc(d.notes)}</td></tr>`
+    const ctx = { statusBadge, isExp }
+    const mainRow = `<tr ${rowClass} ${rowClickAttr(d)}>${cols.map(c => renderOverviewCell(d, c, ctx)).join('')}</tr>`
+    const notesRow = isExp && d.notes && cols.includes('notes')
+      ? `<tr class="notes-row"><td colspan="${colSpan}">${esc(d.notes)}</td></tr>`
       : ''
     return mainRow + notesRow
   }).join('')
@@ -1637,22 +1877,9 @@ function renderPriorityQueue() {
     return
   }
   empty.style.display = 'none'
+  const cols = getVisibleColumnIds('priority')
   tbody.innerHTML = deals.map(d => {
-    const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
-    return `<tr ${rowClickAttr(d)}>
-      <td><span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span></td>
-      <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
-      <td title="${esc(d.company)}">${esc(d.company)}</td>
-      <td title="${esc(d.stage)}">${esc(d.stage)}</td>
-      <td class="amount">${amt}</td>
-      <td>${d.lastNoteDate || '—'}</td>
-      <td class="num">${idleLabel(d)}</td>
-      <td title="${esc(d.owner)}">${esc(d.owner)}</td>
-      <td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '—'}</td>
-      <td>${flagsHtml(d)}</td>
-      <td class="why-text">${esc(d.priorityWhy)}</td>
-      <td class="why-text">${esc(d.suggestedStep || '—')}</td>
-    </tr>`
+    return `<tr ${rowClickAttr(d)}>${cols.map(c => renderPriorityCell(d, c)).join('')}</tr>`
   }).join('')
 
   if (cards) {

@@ -32,7 +32,7 @@ For EVERY deal include:
 - employees (employee count / company size) — number or null
 - hubspotUrl (full URL to deal in HubSpot if available), else null
 - nextStepDue (date of committed next step from CRM if exists), else null
-- **sender** (string): Davyn executive who owns/sent notes on the deal (e.g. `"Umar (Davyn)"`, `"Nicholas (Davyn)"`, `"Sekou (Davyn)"`). Derive from the most active @davyntt.com note author, or `dealOwnerDavyn.name` if you use that object. Use `null` if unknown.
+- **sender** (string): **Owner (Davyn)** — Davyn executive on the deal (e.g. `"Umar (Davyn)"`, `"Nicholas (Davyn)"`, `"Sekou (Davyn)"`). Derive from the most active @davyntt.com note author, or `dealOwnerDavyn.name`. Use `null` if unknown.
 
 ## AI enrichment (you generate)
 For deals with status "open":
@@ -142,7 +142,7 @@ Generate the complete data.json now.
 | createDate | Coluna "Days in pipe" |
 | lastActivityDate | Last touch / idle days |
 | hubspotUrl | Link no modal |
-| sender | Filtro **Davyn sender** (executivo Davyn nas notas) |
+| sender | Filtro **Owner (Davyn)** (executivo Davyn nas notas) |
 | priorityScore, isStale | Score e aba Stalled (stale só para open no app) |
 
 ## Prompt curto (atualização rápida)
