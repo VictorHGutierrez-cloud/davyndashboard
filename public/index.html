@@ -1218,13 +1218,31 @@ function toggleLang() {
 const STAGE_WEIGHTS = {
   'Economical Allignment Started': 1.0,
   'Economical Alignment Started': 1.0,
+  'Contracting': 0.95,
   'Demo Booked': 0.85,
   'Factorial Project Alignment started': 0.7,
   'To reschedule': 0.5,
   'On Hold': 0.35,
+  'Pre-qualified': 0.25,
   'New Deals': 0.2,
   'Closed Won': 0.1,
   'Closed Lost': 0.05,
+}
+
+/** HubSpot owner IDs → display names (update when team changes) */
+const HUBSPOT_OWNER_LABELS = {
+  '164472883': 'Leon Ribeiro Alves',
+  '130065336': 'Factorial team',
+  '84994514': 'Factorial team',
+  '1972513054': 'Onboarding',
+}
+
+function resolveOwnerLabel(owner) {
+  if (!owner) return ''
+  const s = String(owner).trim()
+  if (HUBSPOT_OWNER_LABELS[s]) return HUBSPOT_OWNER_LABELS[s]
+  if (!/^\d+$/.test(s)) return s
+  return 'HubSpot #' + s
 }
 
 // ── DATA ──────────────────────────────────────────────────────────────────
@@ -1332,7 +1350,7 @@ function populateOwnerFilter() {
   owners.forEach(o => {
     const opt = document.createElement('option')
     opt.value = o
-    opt.textContent = o
+    opt.textContent = resolveOwnerLabel(o)
     sel.appendChild(opt)
   })
 }
@@ -1423,6 +1441,8 @@ function getStageWeight(stage) {
   if (s.includes('demo')) return 0.85
   if (s.includes('alignment') || s.includes('allignment')) return 0.7
   if (s.includes('hold')) return 0.35
+  if (s.includes('contract')) return 0.95
+  if (s.includes('pre-qualified') || s.includes('prequalified')) return 0.25
   if (s.includes('new')) return 0.2
   if (s.includes('won')) return 0.1
   if (s.includes('lost')) return 0.05
@@ -1453,6 +1473,7 @@ function enrichDeal(d) {
   const noteDates = parseNoteDates(d.notes)
   let lastNoteDate = noteDates.length ? noteDates.sort().pop() : null
   if (d.lastActivityDate) lastNoteDate = String(d.lastActivityDate).slice(0, 10)
+  else if (d.lastContactedDate) lastNoteDate = String(d.lastContactedDate).slice(0, 10)
   const daysSinceLastTouch = lastNoteDate != null ? daysBetween(lastNoteDate, today) : null
   const daysOpen = d.createDate ? daysBetween(String(d.createDate).slice(0, 10), today) : null
 
@@ -1484,9 +1505,12 @@ function enrichDeal(d) {
 
   const sender = resolveSender(d)
 
+  const ownerLabel = resolveOwnerLabel(d.owner)
+
   const base = {
     ...d,
     sender,
+    ownerLabel,
     lastNoteDate,
     daysSinceLastTouch,
     daysOpen,
@@ -1506,6 +1530,10 @@ function enrichDeal(d) {
     base.suggestedStep = d.suggestedNextStep
     base.actionUrgency = d.actionUrgency || 'medium'
     base.dealSummary = d.dealSummary || null
+  } else if (d.nextStepCrm && String(d.nextStepCrm).trim()) {
+    base.suggestedStep = String(d.nextStepCrm).trim()
+    base.actionUrgency = d.actionUrgency || 'medium'
+    if (d.dealSummary) base.dealSummary = d.dealSummary
   } else {
     const suggestion = suggestNextStep(base)
     if (suggestion) {
@@ -1596,7 +1624,7 @@ const URGENCY_ORDER = { critical: 0, high: 1, medium: 2, low: 3 }
 
 function suggestNextStep(d) {
   if (d.status !== 'open') return null
-  const owner = d.owner || 'deal owner'
+  const owner = d.ownerLabel || d.owner || 'deal owner'
   const idle = d.daysSinceLastTouch
 
   if (d.queueClose) {
@@ -1701,7 +1729,7 @@ function applySearchStatus(deals) {
       if (urgency === 'all' || d.status !== 'open') return true
       return d.actionUrgency === urgency
     })
-    .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner, d.sender, d.suggestedStep, d.dealSummary].join(' ').toLowerCase().includes(q))
+    .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner, d.ownerLabel, d.sender, d.suggestedStep, d.dealSummary, d.nextStepCrm].join(' ').toLowerCase().includes(q))
 }
 
 function onStatusFilterChange() {
@@ -1798,7 +1826,10 @@ function openDealModal(id) {
     <div class="modal-section"><h4>Suggested next step</h4>${esc(d.suggestedStep || '—')}</div>
     <div class="modal-section"><h4>Details</h4>
       Company: ${esc(d.company)}<br/>
-      Owner (Factorial): ${esc(d.owner)}<br/>
+      Owner (Factorial): ${esc(d.ownerLabel || d.owner || '—')}<br/>
+      ${d.nextStepCrm ? `Next step (CRM): ${esc(d.nextStepCrm)}<br/>` : ''}
+      ${d.forecastProbability != null ? `Forecast probability: ${Math.round(d.forecastProbability * 100)}%<br/>` : ''}
+      ${d.stageProbability != null ? `Stage probability: ${Math.round(d.stageProbability * 100)}%<br/>` : ''}
       Owner (Davyn): ${esc(d.sender || '—')}<br/>
       Stage: ${esc(d.stage)}<br/>
       Pipeline: ${esc(d.pipeline)}<br/>
@@ -1980,10 +2011,12 @@ let charts = {}
 let chartsReady = false
 const PALETTE = ['#2563eb', '#7c3aed', '#0891b2', '#059669', '#d97706', '#dc2626', '#db2777', '#4f46e5']
 const FUNNEL_STAGE_ORDER = [
+  'Pre-qualified',
   'New Deals',
   'Factorial Project Alignment started',
   'Demo Booked',
   'Economical Allignment Started',
+  'Contracting',
   'To reschedule',
   'On Hold',
 ]
@@ -2272,7 +2305,7 @@ function renderWeekly() {
     return `
     <div class="action-card urgency-${a.urgency || 'medium'}">
       <div class="action-top"><span class="action-deal">#${a.priority} ${esc(a.dealName)}</span><span class="badge badge-open">${esc(a.urgency)}</span></div>
-      <div class="action-meta">${esc(a.company)} · ${esc(a.owner)}${sender ? ' · ' + esc(sender) : ''}</div>
+      <div class="action-meta">${esc(a.company)} · ${esc(resolveOwnerLabel(a.owner) || a.owner || '—')}${sender ? ' · ' + esc(sender) : ''}</div>
       <div class="action-text">${esc(a.action)}</div>
       ${hubspotLinkHtml(hs)}
     </div>`
@@ -2315,10 +2348,10 @@ function renderNextSteps() {
         <span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span>
         <span class="badge badge-open">${esc(d.stage)}</span>
       </div>
-      <div class="action-meta">${amt} · ${d.daysSinceLastTouch != null ? d.daysSinceLastTouch + 'd idle' : 'idle unknown'} · ${esc(d.owner || '—')}</div>
+      <div class="action-meta">${amt} · ${d.daysSinceLastTouch != null ? d.daysSinceLastTouch + 'd idle' : 'idle unknown'} · ${esc(d.ownerLabel || d.owner || '—')}</div>
       ${d.dealSummary ? `<div class="action-meta" style="margin-bottom:6px">${esc(d.dealSummary)}</div>` : ''}
       <div class="action-text">${esc(d.suggestedStep)}</div>
-      <div class="action-owner">${esc(d.owner || 'Assign in HubSpot')}${d.sender ? ' · ' + esc(d.sender) : ''}</div>
+      <div class="action-owner">${esc(d.ownerLabel || d.owner || 'Assign in HubSpot')}${d.sender ? ' · ' + esc(d.sender) : ''}</div>
       ${hubspotLinkHtml(d.hubspotUrl)}
     </div>`
   }).join('')
@@ -2459,7 +2492,7 @@ function getDealFilterText(d, colId) {
     case 'daysSinceLastTouch': return idleLabel(d)
     case 'daysOpen': return d.daysOpen != null ? String(d.daysOpen) : ''
     case 'closeDate': return d.closeDate || ''
-    case 'owner': return d.owner || ''
+    case 'owner': return d.ownerLabel || d.owner || ''
     case 'sender': return d.sender || ''
     case 'status': return d.status || ''
     case 'flags': {
@@ -2747,7 +2780,7 @@ function renderOverviewCell(d, colId, ctx) {
     case 'daysSinceLastTouch': return `<td class="num">${idleLabel(d)}</td>`
     case 'daysOpen': return `<td class="num">${d.daysOpen != null ? d.daysOpen : '—'}</td>`
     case 'closeDate': return `<td>${d.closeDate || '—'}</td>`
-    case 'owner': return `<td title="${esc(d.owner)}">${esc(d.owner)}</td>`
+    case 'owner': return `<td title="${esc(d.ownerLabel || d.owner)}">${esc(d.ownerLabel || d.owner || '—')}</td>`
     case 'sender': return `<td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '<span style="color:#cbd5e1">—</span>'}</td>`
     case 'status': return `<td>${statusBadge(d.status)}</td>`
     case 'flags': return `<td>${flagsHtml(d)}</td>`
@@ -2769,7 +2802,7 @@ function renderStalledCell(d, colId) {
     case 'lastNoteDate': return `<td>${d.lastNoteDate || '—'}</td>`
     case 'daysSinceLastTouch': return `<td class="num">${idleLabel(d)}</td>`
     case 'closeDate': return `<td>${d.closeDate || '—'}</td>`
-    case 'owner': return `<td title="${esc(d.owner)}">${esc(d.owner)}</td>`
+    case 'owner': return `<td title="${esc(d.ownerLabel || d.owner)}">${esc(d.ownerLabel || d.owner || '—')}</td>`
     case 'staleReason': return `<td class="why-text">${esc(d.staleReason)}</td>`
     case 'notes':
       return `<td><button class="notes-btn" onclick="event.stopPropagation();openDealModal(${JSON.stringify(String(d.id))})">Details</button></td>`
@@ -2787,7 +2820,7 @@ function renderPriorityCell(d, colId) {
     case 'amount': return `<td class="amount">${amt}</td>`
     case 'lastNoteDate': return `<td>${d.lastNoteDate || '—'}</td>`
     case 'daysSinceLastTouch': return `<td class="num">${idleLabel(d)}</td>`
-    case 'owner': return `<td title="${esc(d.owner)}">${esc(d.owner)}</td>`
+    case 'owner': return `<td title="${esc(d.ownerLabel || d.owner)}">${esc(d.ownerLabel || d.owner || '—')}</td>`
     case 'sender': return `<td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '—'}</td>`
     case 'flags': return `<td>${flagsHtml(d)}</td>`
     case 'priorityWhy': return `<td class="why-text">${esc(d.priorityWhy)}</td>`
@@ -2836,7 +2869,7 @@ function dealCardHtml(d, variant) {
   const title = esc(d.name || '—')
   const company = esc(d.company || '—')
   const stage = esc(d.stage || '—')
-  const owner = esc(d.owner || '—')
+  const owner = esc(d.ownerLabel || d.owner || '—')
   const last = d.lastNoteDate || '—'
   const idle = idleLabel(d)
   const score = (d.status === 'open' && d.priorityScore != null) ? `<span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span>` : ''
