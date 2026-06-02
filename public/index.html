@@ -12,19 +12,49 @@
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
 
-  /* LOGIN */
-  #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1e3a5f,#2563eb)}
-  .login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-  .login-logo{width:56px;height:56px;background:rgba(37,99,235,.1);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px}
-  .login-box h1{text-align:center;font-size:20px;font-weight:700;color:#1e293b;margin-bottom:4px}
-  .login-box p{text-align:center;font-size:12px;color:#94a3b8;margin-bottom:28px}
-  .form-group{margin-bottom:16px}
+  /* LOGIN — animated characters (vanilla port) */
+  #login-screen{display:none;min-height:100vh;grid-template-columns:1fr}
+  #login-screen.show{display:grid}
+  @media(min-width:1024px){#login-screen.show{grid-template-columns:1fr 1fr}}
+  .login-art{display:none;position:relative;flex-direction:column;justify-content:space-between;background:linear-gradient(145deg,#1e3a5f 0%,#2563eb 45%,#4361ee 100%);color:#fff;padding:40px;overflow:hidden}
+  @media(min-width:1024px){.login-art{display:flex}}
+  .login-art-brand{display:flex;align-items:center;gap:12px;z-index:2}
+  .login-art-brand img{height:28px;width:auto}
+  .login-art-brand .brand-divider{background:rgba(255,255,255,.25)}
+  .login-art-brand span{font-size:15px;font-weight:700;letter-spacing:.02em}
+  .login-characters-wrap{position:relative;z-index:2;flex:1;display:flex;align-items:flex-end;justify-content:center;min-height:280px;padding:20px 0}
+  .login-characters{position:relative;width:min(100%,420px);height:320px}
+  .login-char{position:absolute;bottom:0;transition:transform .7s cubic-bezier(.4,0,.2,1),height .7s cubic-bezier(.4,0,.2,1);transform-origin:bottom center}
+  #char-purple{left:14%;width:42%;height:78%;background:#4361ee;border-radius:10px 10px 0 0;z-index:1}
+  #char-black{left:48%;width:28%;height:58%;background:#2d2d2d;border-radius:8px 8px 0 0;z-index:2}
+  #char-orange{left:0;width:52%;height:48%;background:#ff9b6b;border-radius:120px 120px 0 0;z-index:3}
+  #char-yellow{left:58%;width:34%;height:54%;background:#e8d754;border-radius:70px 70px 0 0;z-index:4}
+  .char-eyes{position:absolute;display:flex;gap:clamp(12px,4vw,28px);transition:left .7s cubic-bezier(.4,0,.2,1),top .7s cubic-bezier(.4,0,.2,1)}
+  .eye-ball{border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:height .15s ease}
+  .eye-ball.blink{height:2px!important;min-height:2px}
+  .eye-pupil{border-radius:50%;background:#2d2d2d;transition:transform .1s ease-out;will-change:transform}
+  .pupil-dot{border-radius:50%;background:#2d2d2d;transition:transform .1s ease-out;will-change:transform}
+  .char-mouth{position:absolute;width:56px;height:4px;background:#2d2d2d;border-radius:999px;transition:left .2s ease-out,top .2s ease-out}
+  .login-art-footer{display:flex;flex-wrap:wrap;gap:16px;font-size:11px;color:rgba(255,255,255,.55);z-index:2}
+  .login-art-glow{position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none}
+  .login-art-glow.a{top:15%;right:10%;width:200px;height:200px;background:rgba(255,255,255,.08)}
+  .login-art-glow.b{bottom:10%;left:5%;width:280px;height:280px;background:rgba(255,255,255,.05)}
+  .login-form-panel{display:flex;align-items:center;justify-content:center;padding:32px 24px;background:#f8fafc}
+  .login-box{width:100%;max-width:400px;background:#fff;border-radius:20px;padding:36px 32px;box-shadow:0 16px 48px rgba(15,23,42,.08)}
+  .login-logos{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px}
+  @media(min-width:1024px){.login-logos{display:none}}
+  .login-box h1{text-align:center;font-size:22px;font-weight:800;color:#1e293b;margin-bottom:6px}
+  .login-box p{text-align:center;font-size:13px;color:#64748b;margin-bottom:28px}
+  .form-group{margin-bottom:16px;position:relative}
   .form-group label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px}
-  .form-group input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;outline:none;transition:.2s}
-  .form-group input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-  .btn-login{width:100%;background:#2563eb;color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;margin-top:4px}
+  .form-group input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:14px;outline:none;transition:.2s;background:#fff}
+  #inp-pass{padding-right:72px}
+  .form-group input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .pass-toggle{position:absolute;right:12px;bottom:12px;background:none;border:none;color:#94a3b8;cursor:pointer;padding:4px;font-size:11px;font-weight:600}
+  .pass-toggle:hover{color:#475569}
+  .btn-login{width:100%;background:#2563eb;color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;margin-top:8px}
   .btn-login:hover{background:#1d4ed8}
-  .login-error{color:#ef4444;font-size:12px;background:#fef2f2;border-radius:8px;padding:8px 12px;margin-top:12px;display:none}
+  .login-error{color:#ef4444;font-size:12px;background:#fef2f2;border-radius:8px;padding:10px 12px;margin-top:12px;display:none;text-align:center}
 
   /* DASHBOARD */
   #dashboard{display:none}
@@ -223,24 +253,69 @@
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-box">
-    <div class="login-logos">
-      <img class="brand-mark-factorial" src="factorial-logo.png" alt="Factorial"/>
+  <div class="login-art" aria-hidden="true">
+    <div class="login-art-glow a"></div>
+    <div class="login-art-glow b"></div>
+    <div class="login-art-brand">
+      <img src="factorial-logo.png" alt="Factorial"/>
       <span class="brand-divider" aria-hidden="true"></span>
-      <img class="brand-mark" src="davyn-logo.svg" alt="Davyn" style="height:26px"/>
+      <img src="davyn-logo.svg" alt="Davyn"/>
+      <span>Davyn × Factorial</span>
     </div>
-    <h1 id="i18n-login-title">Davyn Dashboard</h1>
-    <p id="i18n-login-sub">Factorial · Partner Opportunities</p>
-    <div class="form-group">
-      <label>Email</label>
-      <input type="email" id="inp-email" placeholder="you@factorial.co" autocomplete="email"/>
+    <div class="login-characters-wrap">
+      <div class="login-characters" id="login-characters">
+        <div class="login-char" id="char-purple">
+          <div class="char-eyes" id="eyes-purple" data-gap="22">
+            <div class="eye-ball" data-size="18" data-pupil="7" data-max="5"><div class="eye-pupil"></div></div>
+            <div class="eye-ball" data-size="18" data-pupil="7" data-max="5"><div class="eye-pupil"></div></div>
+          </div>
+        </div>
+        <div class="login-char" id="char-black">
+          <div class="char-eyes" id="eyes-black" data-gap="18">
+            <div class="eye-ball" data-size="16" data-pupil="6" data-max="4"><div class="eye-pupil"></div></div>
+            <div class="eye-ball" data-size="16" data-pupil="6" data-max="4"><div class="eye-pupil"></div></div>
+          </div>
+        </div>
+        <div class="login-char" id="char-orange">
+          <div class="char-eyes" id="eyes-orange" data-gap="22">
+            <div class="pupil-dot" data-size="12" data-max="5"></div>
+            <div class="pupil-dot" data-size="12" data-max="5"></div>
+          </div>
+        </div>
+        <div class="login-char" id="char-yellow">
+          <div class="char-eyes" id="eyes-yellow" data-gap="18">
+            <div class="pupil-dot" data-size="12" data-max="5"></div>
+            <div class="pupil-dot" data-size="12" data-max="5"></div>
+          </div>
+          <div class="char-mouth" id="mouth-yellow"></div>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password"/>
+    <div class="login-art-footer">
+      <span>Partner pipeline intelligence</span>
     </div>
-    <div class="login-error" id="login-error">Incorrect email or password.</div>
-    <button class="btn-login" id="i18n-login-cta" onclick="doLogin()">Sign in</button>
+  </div>
+  <div class="login-form-panel">
+    <div class="login-box">
+      <div class="login-logos">
+        <img class="brand-mark-factorial" src="factorial-logo.png" alt="Factorial"/>
+        <span class="brand-divider" aria-hidden="true"></span>
+        <img class="brand-mark" src="davyn-logo.svg" alt="Davyn" style="height:26px"/>
+      </div>
+      <h1 id="i18n-login-title">Davyn Dashboard</h1>
+      <p id="i18n-login-sub">Factorial · Partner Opportunities</p>
+      <div class="form-group">
+        <label for="inp-email">Email</label>
+        <input type="email" id="inp-email" placeholder="you@factorial.co" autocomplete="email"/>
+      </div>
+      <div class="form-group">
+        <label for="inp-pass">Password</label>
+        <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password"/>
+        <button type="button" class="pass-toggle" id="pass-toggle" aria-label="Show password">Show</button>
+      </div>
+      <div class="login-error" id="login-error">Incorrect email or password.</div>
+      <button class="btn-login" id="i18n-login-cta" onclick="doLogin()">Sign in</button>
+    </div>
   </div>
 </div>
 
@@ -521,15 +596,225 @@ function doLogin() {
 function doLogout() {
   sessionStorage.removeItem('davyn_auth')
   document.getElementById('dashboard').style.display = 'none'
-  document.getElementById('login-screen').style.display = 'flex'
+  showLoginScreen()
+}
+
+function showLoginScreen() {
+  document.getElementById('login-screen').classList.add('show')
 }
 
 document.getElementById('inp-pass').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin()
 })
 
+// ── LOGIN CHARACTER ANIMATION ─────────────────────────────────────────────
+const loginAnim = {
+  mouseX: innerWidth / 2,
+  mouseY: innerHeight / 2,
+  isTyping: false,
+  passLen: 0,
+  showPass: false,
+  purpleBlink: false,
+  blackBlink: false,
+  lookingAtEachOther: false,
+  purplePeek: false,
+}
+
+function pupilOffset(cx, cy, mx, my, maxDist, forceX, forceY) {
+  if (forceX != null && forceY != null) return { x: forceX, y: forceY }
+  const dx = mx - cx
+  const dy = my - cy
+  const dist = Math.min(Math.hypot(dx, dy), maxDist)
+  const ang = Math.atan2(dy, dx)
+  return { x: Math.cos(ang) * dist, y: Math.sin(ang) * dist }
+}
+
+function charBodySkew(el, mx, my) {
+  if (!el) return 0
+  const r = el.getBoundingClientRect()
+  const cx = r.left + r.width / 2
+  return Math.max(-6, Math.min(6, -(mx - cx) / 120))
+}
+
+function scheduleCharBlink(key) {
+  const delay = 3000 + Math.random() * 4000
+  setTimeout(() => {
+    loginAnim[key] = true
+    setTimeout(() => {
+      loginAnim[key] = false
+      scheduleCharBlink(key)
+    }, 150)
+  }, delay)
+}
+
+function updateLoginCharacters() {
+  const mx = loginAnim.mouseX
+  const my = loginAnim.mouseY
+  const typing = loginAnim.isTyping
+  const passHidden = loginAnim.passLen > 0 && !loginAnim.showPass
+  const passVisible = loginAnim.passLen > 0 && loginAnim.showPass
+  const lookEach = loginAnim.lookingAtEachOther
+
+  const purple = document.getElementById('char-purple')
+  const black = document.getElementById('char-black')
+  const orange = document.getElementById('char-orange')
+  const yellow = document.getElementById('char-yellow')
+
+  if (purple) {
+    const sk = passVisible ? 0 : (typing || passHidden) ? charBodySkew(purple, mx, my) - 12 : charBodySkew(purple, mx, my)
+    const h = (typing || passHidden) ? '88%' : '78%'
+    purple.style.height = h
+    purple.style.transform = passVisible ? 'skewX(0deg)' : `skewX(${sk}deg)` + ((typing || passHidden) ? ' translateX(8%)' : '')
+  }
+  if (black) {
+    const sk = passVisible ? 0 : lookEach ? charBodySkew(black, mx, my) * 1.5 + 10 : (typing || passHidden) ? charBodySkew(black, mx, my) * 1.5 : charBodySkew(black, mx, my)
+    black.style.transform = passVisible ? 'skewX(0deg)' : `skewX(${sk}deg)` + (lookEach ? ' translateX(5%)' : '')
+  }
+  if (orange) {
+    orange.style.transform = passVisible ? 'skewX(0deg)' : `skewX(${charBodySkew(orange, mx, my)}deg)`
+  }
+  if (yellow) {
+    yellow.style.transform = passVisible ? 'skewX(0deg)' : `skewX(${charBodySkew(yellow, mx, my)}deg)`
+  }
+
+  function placeEyes(eyesEl, charEl, opts) {
+    if (!eyesEl || !charEl) return
+    const cr = charEl.getBoundingClientRect()
+    const faceX = passVisible ? 0 : Math.max(-15, Math.min(15, (mx - (cr.left + cr.width / 2)) / 20))
+    const faceY = passVisible ? 0 : Math.max(-10, Math.min(10, (my - (cr.top + cr.height / 3)) / 30))
+    let left = passVisible ? opts.hideLeft : (lookEach && opts.lookLeft != null ? opts.lookLeft : opts.baseLeft + faceX)
+    let top = passVisible ? opts.hideTop : (lookEach && opts.lookTop != null ? opts.lookTop : opts.baseTop + faceY)
+    eyesEl.style.left = left + '%'
+    eyesEl.style.top = top + '%'
+  }
+
+  placeEyes(document.getElementById('eyes-purple'), purple, { baseLeft: 22, baseTop: 12, lookLeft: 28, lookTop: 18, hideLeft: 10, hideTop: 8 })
+  placeEyes(document.getElementById('eyes-black'), black, { baseLeft: 18, baseTop: 14, lookLeft: 24, lookTop: 4, hideLeft: 8, hideTop: 9 })
+  placeEyes(document.getElementById('eyes-orange'), orange, { baseLeft: 32, baseTop: 38, hideLeft: 20, hideTop: 42 })
+  placeEyes(document.getElementById('eyes-yellow'), yellow, { baseLeft: 28, baseTop: 14, hideLeft: 12, hideTop: 14 })
+
+  const mouth = document.getElementById('mouth-yellow')
+  if (mouth && yellow) {
+    const cr = yellow.getBoundingClientRect()
+    const fx = passVisible ? 0 : Math.max(-15, Math.min(15, (mx - (cr.left + cr.width / 2)) / 20))
+    const fy = passVisible ? 0 : Math.max(-10, Math.min(10, (my - (cr.top + cr.height / 3)) / 30))
+    mouth.style.left = (passVisible ? 8 : 28 + fx) + '%'
+    mouth.style.top = (passVisible ? 38 : 38 + fy) + '%'
+  }
+
+  document.querySelectorAll('#login-characters .eye-ball').forEach(eye => {
+    const size = parseFloat(eye.dataset.size) || 16
+    const pSize = parseFloat(eye.dataset.pupil) || 6
+    const maxD = parseFloat(eye.dataset.max) || 5
+    eye.style.width = eye.style.minWidth = size + 'px'
+    if (loginAnim.purpleBlink && eye.closest('#char-purple')) eye.classList.add('blink')
+    else if (loginAnim.blackBlink && eye.closest('#char-black')) eye.classList.add('blink')
+    else eye.classList.remove('blink')
+    if (!eye.classList.contains('blink')) {
+      eye.style.height = size + 'px'
+      const pr = eye.getBoundingClientRect()
+      const pcx = pr.left + pr.width / 2
+      const pcy = pr.top + pr.height / 2
+      let fx, fy
+      if (passVisible && eye.closest('#char-purple')) {
+        fx = loginAnim.purplePeek ? 4 : -4
+        fy = loginAnim.purplePeek ? 5 : -4
+      } else if (lookEach && eye.closest('#char-purple')) { fx = 3; fy = 4 }
+      else if (lookEach && eye.closest('#char-black')) { fx = 0; fy = -4 }
+      else if (passVisible && eye.closest('#char-black')) { fx = -4; fy = -4 }
+      const off = pupilOffset(pcx, pcy, mx, my, maxD, fx, fy)
+      const pupil = eye.querySelector('.eye-pupil')
+      if (pupil) {
+        pupil.style.width = pupil.style.height = pSize + 'px'
+        pupil.style.transform = `translate(${off.x}px,${off.y}px)`
+      }
+    }
+  })
+
+  document.querySelectorAll('#login-characters .pupil-dot').forEach(dot => {
+    const size = parseFloat(dot.dataset.size) || 12
+    const maxD = parseFloat(dot.dataset.max) || 5
+    dot.style.width = dot.style.height = size + 'px'
+    const dr = dot.getBoundingClientRect()
+    const dcx = dr.left + dr.width / 2
+    const dcy = dr.top + dr.height / 2
+    let fx, fy
+    if (passVisible) { fx = -5; fy = -4 }
+    const off = pupilOffset(dcx, dcy, mx, my, maxD, fx, fy)
+    dot.style.transform = `translate(${off.x}px,${off.y}px)`
+  })
+}
+
+function initLoginAnimation() {
+  window.addEventListener('mousemove', e => {
+    loginAnim.mouseX = e.clientX
+    loginAnim.mouseY = e.clientY
+  })
+
+  const email = document.getElementById('inp-email')
+  const pass = document.getElementById('inp-pass')
+  const toggle = document.getElementById('pass-toggle')
+
+  const setTyping = on => {
+    loginAnim.isTyping = on
+    if (on) {
+      loginAnim.lookingAtEachOther = true
+      setTimeout(() => { loginAnim.lookingAtEachOther = false }, 800)
+    }
+  }
+  email.addEventListener('focus', () => setTyping(true))
+  email.addEventListener('blur', () => setTyping(false))
+  pass.addEventListener('focus', () => setTyping(true))
+  pass.addEventListener('blur', () => setTyping(false))
+  email.addEventListener('input', () => setTyping(true))
+  pass.addEventListener('input', () => {
+    loginAnim.passLen = pass.value.length
+    loginAnim.isTyping = true
+    clearTimeout(pass._typingT)
+    pass._typingT = setTimeout(() => { loginAnim.isTyping = false }, 400)
+  })
+
+  toggle.addEventListener('click', () => {
+    loginAnim.showPass = !loginAnim.showPass
+    pass.type = loginAnim.showPass ? 'text' : 'password'
+    updatePassToggleLabel()
+    if (loginAnim.showPass && loginAnim.passLen > 0) schedulePurplePeek()
+  })
+
+  function schedulePurplePeek() {
+    clearTimeout(loginAnim._peekT)
+    loginAnim._peekT = setTimeout(() => {
+      if (loginAnim.showPass && loginAnim.passLen > 0) {
+        loginAnim.purplePeek = true
+        setTimeout(() => {
+          loginAnim.purplePeek = false
+          if (loginAnim.showPass) schedulePurplePeek()
+        }, 800)
+      }
+    }, 2000 + Math.random() * 3000)
+  }
+
+  scheduleCharBlink('purpleBlink')
+  scheduleCharBlink('blackBlink')
+
+  function tick() {
+    if (document.getElementById('login-screen').classList.contains('show')) updateLoginCharacters()
+    requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}
+
+function updatePassToggleLabel() {
+  const tgl = document.getElementById('pass-toggle')
+  if (!tgl) return
+  tgl.textContent = loginAnim.showPass ? t('passHide') : t('passShow')
+}
+
+initLoginAnimation()
+
 // Check session on load
 if (sessionStorage.getItem('davyn_auth')) showDashboard()
+else showLoginScreen()
 
 // ── CONFIG ───────────────────────────────────────────────────────────────
 const DEFAULT_PIPELINE = 'Partners Distribution'
@@ -543,6 +828,9 @@ const I18N = {
     loginTitle: 'Davyn Dashboard',
     loginSub: 'Factorial · Partner Opportunities',
     loginCta: 'Sign in',
+    passShow: 'Show',
+    passHide: 'Hide',
+    loginError: 'Incorrect email or password.',
     headerTitle: 'Davyn Dashboard',
     headerSub: 'Factorial · Partner Opportunities',
     updatedAsOf: (d) => 'Data as of ' + d,
@@ -609,6 +897,9 @@ const I18N = {
     loginTitle: 'Davyn Dashboard',
     loginSub: 'Factorial · Oportunidades do Parceiro',
     loginCta: 'Entrar',
+    passShow: 'Mostrar',
+    passHide: 'Ocultar',
+    loginError: 'E-mail ou senha incorretos.',
     headerTitle: 'Davyn Dashboard',
     headerSub: 'Factorial · Oportunidades do Parceiro',
     updatedAsOf: (d) => 'Dados em ' + d,
@@ -732,6 +1023,9 @@ function applyI18n() {
   if (lt) lt.textContent = t('loginTitle')
   if (ls) ls.textContent = t('loginSub')
   if (lc) lc.textContent = t('loginCta')
+  updatePassToggleLabel()
+  const le = document.getElementById('login-error')
+  if (le && le.style.display !== 'block') le.textContent = t('loginError')
 
   const ht = document.getElementById('i18n-header-title')
   const hs = document.getElementById('i18n-header-sub')
@@ -794,7 +1088,7 @@ let expandedId = null
 let activeView = 'overview'
 
 async function showDashboard() {
-  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('login-screen').classList.remove('show')
   document.getElementById('dashboard').style.display = 'block'
   await loadData()
   setupTabs()
@@ -2239,6 +2533,8 @@ function toggleNotes(id) {
   expandedId = expandedId === id ? null : id
   renderTable()
 }
+
+applyI18n()
 </script>
 </body>
 </html>
