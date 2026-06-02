@@ -94,6 +94,17 @@
   .velocity-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
   .velocity-table th,.velocity-table td{padding:8px 12px;border-bottom:1px solid #f1f5f9;text-align:left}
   .velocity-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .scorecard-row-warn{background:#fef2f2}
+  .scorecard-row-warn:hover{background:#fee2e2!important}
+  .scorecard-row-clickable{cursor:pointer}
+  .scorecard-row-clickable:hover{background:#f8fafc}
+  .scorecard-action-link{font-size:11px;font-weight:600;color:#2563eb;margin-top:4px;display:inline-block}
+  .scorecard-action-link:hover{text-decoration:underline}
+  .kpi-help-btn{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:4px;border:1px solid #e2e8f0;border-radius:50%;background:#fff;font-size:10px;font-weight:700;color:#64748b;cursor:pointer;vertical-align:middle;padding:0}
+  .kpi-help-btn:hover{background:#f1f5f9;color:#334155}
+  .kpi-help-panel{display:none;font-size:11px;color:#64748b;line-height:1.45;margin-top:6px}
+  .kpi-help-panel.open{display:block}
+  .wow-source{font-size:10px;color:#94a3b8;font-style:italic;margin-top:4px}
   .kpi-violet{background:#f5f3ff}
   .kpi{background:#fff;border-radius:16px;padding:20px;display:flex;gap:14px;align-items:flex-start;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04)}
   .kpi-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
@@ -449,9 +460,13 @@
       <div class="kpi">
         <div class="kpi-icon kpi-violet" aria-hidden="true">W</div>
         <div>
-          <div class="kpi-label" id="kpi-weighted-label">Weighted pipeline</div>
+          <div class="kpi-label">
+            <span id="kpi-weighted-label">Weighted pipeline</span>
+            <button type="button" class="kpi-help-btn" onclick="toggleKpiHelp('weighted')" aria-label="Help">?</button>
+          </div>
           <div class="kpi-value" id="kpi-weighted">—</div>
           <div class="kpi-sub" id="kpi-weighted-sub"></div>
+          <div class="kpi-help-panel" id="kpi-help-weighted"></div>
         </div>
       </div>
     </div>
@@ -961,6 +976,10 @@ const I18N = {
     kpiCloseLabel: 'Closing ≤30 days',
     kpiWeightedLabel: 'Weighted pipeline',
     kpiWeightedSub: 'Stage-weighted · USD equiv. @ EUR 1.08',
+    kpiWeightedHelp: 'Weighted pipeline = sum of open deals (partner filter): amountUsd × stage weight. EUR uses 1.08 USD. Weights include Demo Booked 0.85, Alignment 0.7–1.0, New Deals 0.2. Use with Open Pipeline for board-ready forecast proxy.',
+    scViewDeals: 'View deals →',
+    scCoaching: 'Needs coaching',
+    wowFromSnapshot: 'Calculated from data.previous.json vs current export.',
     dqTitle: 'Data quality',
     dqBody: (dq) => `Owner (Davyn) ${dq.pctSender}% · last activity ${dq.pctActivity}% · create date ${dq.pctCreate}% (${dq.n} deals in filter).`,
     dqWarn: 'Improve CRM export before board-level metrics.',
@@ -1055,6 +1074,10 @@ const I18N = {
     kpiCloseLabel: 'Fecho ≤30 dias',
     kpiWeightedLabel: 'Pipeline ponderado',
     kpiWeightedSub: 'Por estágio · equiv. USD @ EUR 1,08',
+    kpiWeightedHelp: 'Pipeline ponderado = soma dos deals abertos (filtro parceiro): amountUsd × peso do estágio. EUR usa 1,08 USD. Pesos: Demo Booked 0,85, Alignment 0,7–1,0, New Deals 0,2.',
+    scViewDeals: 'Ver deals →',
+    scCoaching: 'Precisa coaching',
+    wowFromSnapshot: 'Calculado a partir de data.previous.json vs export atual.',
     dqTitle: 'Qualidade dos dados',
     dqBody: (dq) => `Owner (Davyn) ${dq.pctSender}% · última atividade ${dq.pctActivity}% · data criação ${dq.pctCreate}% (${dq.n} deals no filtro).`,
     dqWarn: 'Melhore o export CRM antes de métricas para direção.',
@@ -1141,6 +1164,8 @@ function applyI18n() {
   const kwl = document.getElementById('kpi-weighted-label')
   if (kl) kl.textContent = t('kpiCloseLabel')
   if (kwl) kwl.textContent = t('kpiWeightedLabel')
+  const wh = document.getElementById('kpi-help-weighted')
+  if (wh && wh.classList.contains('open')) wh.textContent = t('kpiWeightedHelp')
   const ph = document.getElementById('partner-hint')
   if (ph) ph.innerHTML = '<strong>' + t('tabPartner') + '</strong> — ' + (LANG === 'pt' ? 'pipe aberto, higiene e taxa de vitória por Owner (Davyn).' : 'open pipeline, hygiene, and win rate by Owner (Davyn).')
   const scorecardTitleEl = document.getElementById('scorecard-title')
@@ -1205,6 +1230,7 @@ const STAGE_WEIGHTS = {
 // ── DATA ──────────────────────────────────────────────────────────────────
 let enrichedDeals = []
 let weeklyBrief = null
+let computedWeekOverWeek = null
 let sortKey  = 'name'
 let sortAsc  = true
 let expandedId = null
@@ -1215,13 +1241,26 @@ async function showDashboard() {
   document.getElementById('dashboard').style.display = 'block'
   await loadData()
   setupTabs()
+  applyViewFromUrl()
 }
 
 async function loadData() {
-  const res  = await fetch('data.json?v=' + Date.now())
+  const bust = Date.now()
+  const [res, prevRes] = await Promise.all([
+    fetch('data.json?v=' + bust),
+    fetch('data.previous.json?v=' + bust),
+  ])
   const json = await res.json()
   weeklyBrief = json.weeklyBrief || null
   enrichedDeals = json.deals.map(enrichDeal)
+  computedWeekOverWeek = null
+  if (prevRes.ok) {
+    try {
+      const prevJson = await prevRes.json()
+      const prevDeals = (prevJson.deals || []).map(enrichDeal)
+      computedWeekOverWeek = computeWeekOverWeekFromSnapshots(enrichedDeals, prevDeals)
+    } catch (e) { /* ignore */ }
+  }
   UPDATED_AT = json.updatedAt
   document.getElementById('updated-badge').textContent = (I18N[LANG] || I18N.en).updatedAsOf(UPDATED_AT)
 
@@ -1231,6 +1270,59 @@ async function loadData() {
   initColumnLayouts()
   applyI18n()
   onFiltersChanged()
+}
+
+function computeWeekOverWeekFromSnapshots(current, previous) {
+  const prevById = Object.fromEntries(previous.map(d => [String(d.id), d]))
+  let wonCount = 0
+  let lostCount = 0
+  let newStalled = 0
+  current.forEach(d => {
+    const p = prevById[String(d.id)]
+    if (!p) return
+    if (p.status === 'open' && d.status === 'won') wonCount++
+    if (p.status === 'open' && d.status === 'lost') lostCount++
+    if (d.status === 'open' && d.isStale && p.status === 'open' && !p.isStale) newStalled++
+  })
+  const partnerOpen = d => d.status === 'open' && d.isPartnerPipeline
+  const curPipe = current.filter(partnerOpen).reduce((s, d) => s + resolveAmountUsd(d), 0)
+  const prevPipe = previous.filter(partnerOpen).reduce((s, d) => s + resolveAmountUsd(d), 0)
+  return {
+    openPipelineUsdDelta: Math.round(curPipe - prevPipe),
+    newStalled,
+    wonCount,
+    lostCount,
+    _computed: true,
+  }
+}
+
+function getWeekOverWeek() {
+  if (computedWeekOverWeek) return computedWeekOverWeek
+  return weeklyBrief && weeklyBrief.weekOverWeek ? weeklyBrief.weekOverWeek : null
+}
+
+function applyViewFromUrl() {
+  const v = new URLSearchParams(window.location.search).get('view')
+  const allowed = ['overview', 'weekly', 'priority', 'stalled', 'actions', 'partner']
+  if (v && allowed.includes(v)) setView(v)
+}
+
+function filterBySenderFromScorecard(filterValue) {
+  const sel = document.getElementById('filter-sender')
+  if (!sel) return
+  sel.value = filterValue
+  setView('overview')
+  onFiltersChanged()
+  document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function toggleKpiHelp(id) {
+  const panel = document.getElementById('kpi-help-' + id)
+  if (!panel) return
+  const open = panel.classList.toggle('open')
+  if (open && id === 'weighted') {
+    panel.textContent = t('kpiWeightedHelp')
+  }
 }
 
 function populateOwnerFilter() {
@@ -1792,7 +1884,7 @@ function renderPartnerScorecard() {
   const senders = [...new Set(scoped.map(d => d.sender).filter(Boolean))].sort()
   const unassigned = scoped.filter(d => !d.sender)
 
-  function rowForSender(label, deals) {
+  function rowForSender(label, deals, filterValue) {
     const open = deals.filter(d => d.status === 'open')
     const won = deals.filter(d => d.status === 'won')
     const lost = deals.filter(d => d.status === 'lost')
@@ -1800,13 +1892,18 @@ function renderPartnerScorecard() {
     const pipeUsd = open.reduce((s, d) => s + resolveAmountUsd(d), 0)
     const stalled = open.filter(d => d.isStale).length
     const critical = open.filter(d => d.actionUrgency === 'critical').length
+    const stalledPct = open.length ? stalled / open.length * 100 : 0
+    const needsCoaching = open.length > 0 && (stalledPct > 40 || critical >= 2)
     const wr = closed ? Math.round((won.length / closed) * 100) : '—'
     const avg = open.length ? pipeUsd / open.length : (won.length ? won.reduce((s, d) => s + resolveAmountUsd(d), 0) / won.length : 0)
-    return `<tr>
-      <td><strong>${esc(label)}</strong></td>
+    const rowClass = ['scorecard-row-clickable', needsCoaching ? 'scorecard-row-warn' : ''].filter(Boolean).join(' ')
+    const fv = JSON.stringify(String(filterValue))
+    const coachBadge = needsCoaching ? `<div style="font-size:10px;color:#b91c1c;font-weight:700;margin-top:2px">${esc(t('scCoaching'))}</div>` : ''
+    return `<tr class="${rowClass}" onclick="filterBySenderFromScorecard(${fv})" title="${esc(t('scViewDeals'))}">
+      <td><strong>${esc(label)}</strong>${coachBadge}<span class="scorecard-action-link">${esc(t('scViewDeals'))}</span></td>
       <td class="num">${open.length}</td>
       <td class="num">${fmt(pipeUsd, 'USD')}</td>
-      <td class="num">${stalled}${open.length ? ' (' + Math.round(stalled / open.length * 100) + '%)' : ''}</td>
+      <td class="num">${stalled}${open.length ? ' (' + Math.round(stalledPct) + '%)' : ''}</td>
       <td class="num">${critical}</td>
       <td class="num">${wr}${wr !== '—' ? '%' : ''}</td>
       <td class="num">${open.length || won.length ? fmt(avg, 'USD') : '—'}</td>
@@ -1817,8 +1914,8 @@ function renderPartnerScorecard() {
     body.innerHTML = '<tr><td colspan="7" class="empty-state">' + esc(t('scNoSenders')) + '</td></tr>'
     return
   }
-  let html = senders.map(s => rowForSender(s, scoped.filter(d => d.sender === s))).join('')
-  if (unassigned.length) html += rowForSender(t('ownerDavynNone'), unassigned)
+  let html = senders.map(s => rowForSender(s, scoped.filter(d => d.sender === s), s)).join('')
+  if (unassigned.length) html += rowForSender(t('ownerDavynNone'), unassigned, '__none__')
   body.innerHTML = html
 }
 
@@ -2131,7 +2228,7 @@ function renderWeekly() {
   } else {
     briefHtml = '<p class="empty-state">No weekly brief in this export yet. It will appear after the next data refresh.</p>'
   }
-  const wow = weeklyBrief && weeklyBrief.weekOverWeek
+  const wow = getWeekOverWeek()
   if (wow) {
     const parts = []
     if (wow.openPipelineUsdDelta != null) parts.push('Open pipe Δ ' + fmt(wow.openPipelineUsdDelta, 'USD'))
@@ -2139,7 +2236,8 @@ function renderWeekly() {
     if (wow.wonCount != null) parts.push(wow.wonCount + ' won')
     if (wow.lostCount != null) parts.push(wow.lostCount + ' lost')
     if (parts.length) {
-      briefHtml += `<div class="action-card urgency-low" style="margin-top:12px"><div class="action-top"><span class="action-deal">${esc(t('weekOverWeekTitle'))}</span></div><div class="action-text">${esc(parts.join(' · '))}</div></div>`
+      const src = wow._computed ? `<div class="wow-source">${esc(t('wowFromSnapshot'))}</div>` : ''
+      briefHtml += `<div class="action-card urgency-low" style="margin-top:12px"><div class="action-top"><span class="action-deal">${esc(t('weekOverWeekTitle'))}</span></div><div class="action-text">${esc(parts.join(' · '))}</div>${src}</div>`
     }
   }
   briefEl.innerHTML = briefHtml

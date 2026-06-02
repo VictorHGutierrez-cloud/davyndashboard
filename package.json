@@ -1,0 +1,12 @@
+{
+  "name": "davyndashboard",
+  "private": true,
+  "description": "Davyn × Factorial partner dashboard (static)",
+  "scripts": {
+    "validate": "node scripts/validate-data.js",
+    "validate:strict": "node scripts/validate-data.js --strict",
+    "smoke": "node scripts/smoke-html.js",
+    "predeploy": "npm run smoke && npm run validate",
+    "rotate": "node scripts/rotate-data.js"
+  }
+}

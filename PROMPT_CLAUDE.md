@@ -1,5 +1,7 @@
 # Prompt para Claude (Introw → Davyn Dashboard)
 
+**Antes do push:** siga [`REVOPS_CHECKLIST.md`](REVOPS_CHECKLIST.md) (`node scripts/rotate-data.js` + `npm run validate`).
+
 Copie **tudo** o bloco abaixo e cole no Claude. Ele deve devolver um arquivo **`data.json`** pronto para colar em `public/data.json`.
 
 ---
@@ -154,8 +156,12 @@ Generate the complete data.json now.
 ## Depois que o Claude responder
 
 1. Salve como `data.json`.
-2. Substitua: `Davyn Pipe Control/public/data.json`
-3. Avise no Cursor: **"subi o data.json do Claude"** → push GitHub → Vercel atualiza.
+2. Instale com rotação do export anterior:
+   ```bash
+   node scripts/rotate-data.js ~/Downloads/data.json
+   npm run smoke && npm run validate
+   ```
+3. Push GitHub → Vercel atualiza (ver [`REVOPS_CHECKLIST.md`](REVOPS_CHECKLIST.md)).
 
 ## Campos que o dashboard usa
 
