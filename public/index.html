@@ -245,6 +245,9 @@
       <select class="filter-select" id="filter-owner" onchange="onFiltersChanged()">
         <option value="all">All owners</option>
       </select>
+      <select class="filter-select" id="filter-sender" onchange="onFiltersChanged()">
+        <option value="all">All Davyn senders</option>
+      </select>
       <select class="filter-select" id="filter-urgency" onchange="onFiltersChanged()">
         <option value="all">All urgencies</option>
         <option value="critical">Critical</option>
@@ -360,6 +363,7 @@
               <th onclick="sortBy('daysOpen')">Days in pipe ↕</th>
               <th onclick="sortBy('closeDate')">Close Date ↕</th>
               <th onclick="sortBy('owner')">Owner ↕</th>
+              <th onclick="sortBy('sender')">Davyn sender ↕</th>
               <th onclick="sortBy('status')">Status ↕</th>
               <th>Flags</th>
               <th>Notes</th>
@@ -405,6 +409,7 @@
                 <th>Last touch</th>
                 <th>Days idle</th>
                 <th>Owner</th>
+                <th>Davyn sender</th>
                 <th>Flags</th>
                 <th>Why</th>
                 <th>Suggested next step</th>
@@ -529,6 +534,9 @@ const I18N = {
     partnerOnly: 'Partner pipeline only',
     pipelinesAll: 'All pipelines',
     ownersAll: 'All owners',
+    sendersAll: 'All Davyn senders',
+    sendersNone: 'No Davyn sender',
+    colSender: 'Davyn sender',
     urgenciesAll: 'All urgencies',
     statusesAll: 'All statuses',
     statusWon: 'Won',
@@ -560,6 +568,9 @@ const I18N = {
     partnerOnly: 'Só pipeline de parceiro',
     pipelinesAll: 'Todos os pipelines',
     ownersAll: 'Todos os owners',
+    sendersAll: 'Todos executivos Davyn',
+    sendersNone: 'Sem executivo Davyn',
+    colSender: 'Executivo Davyn',
     urgenciesAll: 'Todas as urgências',
     statusesAll: 'Todos os status',
     statusWon: 'Won',
@@ -655,6 +666,7 @@ function toggleLang() {
   localStorage.setItem('davyn_lang', LANG)
   populatePipelineFilter()
   populateOwnerFilter()
+  populateSenderFilter()
   applyI18n()
   onFiltersChanged()
 }
@@ -695,6 +707,7 @@ async function loadData() {
 
   populatePipelineFilter()
   populateOwnerFilter()
+  populateSenderFilter()
   applyI18n()
   onFiltersChanged()
 }
@@ -709,6 +722,25 @@ function populateOwnerFilter() {
     opt.textContent = o
     sel.appendChild(opt)
   })
+}
+
+function populateSenderFilter() {
+  const sel = document.getElementById('filter-sender')
+  if (!sel) return
+  const prev = sel.value
+  const senders = [...new Set(enrichedDeals.map(d => d.sender).filter(Boolean))].sort()
+  sel.innerHTML = `<option value="all">${t('sendersAll')}</option>`
+  senders.forEach(s => {
+    const opt = document.createElement('option')
+    opt.value = s
+    opt.textContent = s
+    sel.appendChild(opt)
+  })
+  const optNone = document.createElement('option')
+  optNone.value = '__none__'
+  optNone.textContent = t('sendersNone')
+  sel.appendChild(optNone)
+  if ([...sel.options].some(o => o.value === prev)) sel.value = prev
 }
 
 function setupTabs() {
@@ -779,6 +811,16 @@ function getStageWeight(stage) {
   return 0.4
 }
 
+function resolveSender(d) {
+  if (d.sender) return d.sender
+  const o = d.dealOwnerDavyn
+  if (!o) return null
+  if (typeof o === 'string') return o
+  if (o.name) return o.name
+  if (o.email) return o.email.split('@')[0]
+  return null
+}
+
 function norm(values, v) {
   const nums = values.filter(x => x != null && !isNaN(x))
   if (!nums.length) return 0
@@ -822,8 +864,11 @@ function enrichDeal(d) {
   const queueUnblock = isOpen && (d.amount || 0) >= 5000 && isStale
   const queueActivate = isOpen && (d.stage || '').toLowerCase().includes('new') && !d.notes
 
+  const sender = resolveSender(d)
+
   const base = {
     ...d,
+    sender,
     lastNoteDate,
     daysSinceLastTouch,
     daysOpen,
@@ -946,10 +991,13 @@ function getScopedDeals() {
   const pipe = document.getElementById('filter-pipeline').value
   const partnerOnly = document.getElementById('filter-partner-only').checked
   const owner = document.getElementById('filter-owner').value
+  const sender = document.getElementById('filter-sender').value
   return enrichedDeals.filter(d => {
     if (partnerOnly && !d.isPartnerPipeline) return false
     if (pipe !== 'all' && d.pipeline !== pipe) return false
     if (owner !== 'all' && d.owner !== owner) return false
+    if (sender === '__none__' && d.sender) return false
+    if (sender !== 'all' && sender !== '__none__' && d.sender !== sender) return false
     return true
   })
 }
@@ -961,7 +1009,7 @@ function applySearchStatus(deals) {
   return deals
     .filter(d => st === 'all' || d.status === st)
     .filter(d => urgency === 'all' || (d.status === 'open' && d.actionUrgency === urgency))
-    .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner, d.suggestedStep, d.dealSummary].join(' ').toLowerCase().includes(q))
+    .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner, d.sender, d.suggestedStep, d.dealSummary].join(' ').toLowerCase().includes(q))
 }
 
 function getFiltered() {
@@ -991,15 +1039,15 @@ function downloadCsv(kind) {
   let filename = 'davyn-export.csv'
   if (kind === 'priority') {
     filename = 'davyn-priority-queue.csv'
-    rows = [['Score', 'Deal', 'Company', 'Stage', 'Amount', 'Currency', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Urgency', 'Suggested next step', 'Summary']]
+    rows = [['Score', 'Deal', 'Company', 'Stage', 'Amount', 'Currency', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Davyn sender', 'Urgency', 'Suggested next step', 'Summary']]
     getOpenPriorityDeals().forEach(d => {
-      rows.push([d.priorityScore, d.name, d.company, d.stage, d.amount, d.currency, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.actionUrgency, d.suggestedStep, d.dealSummary])
+      rows.push([d.priorityScore, d.name, d.company, d.stage, d.amount, d.currency, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.sender, d.actionUrgency, d.suggestedStep, d.dealSummary])
     })
   } else if (kind === 'stalled') {
     filename = 'davyn-stalled-deals.csv'
-    rows = [['Deal', 'Company', 'Amount', 'Stage', 'Last touch', 'Days idle', 'Close date', 'Owner', 'Reason', 'Suggested next step']]
+    rows = [['Deal', 'Company', 'Amount', 'Stage', 'Last touch', 'Days idle', 'Close date', 'Owner', 'Davyn sender', 'Reason', 'Suggested next step']]
     getStalledDeals().forEach(d => {
-      rows.push([d.name, d.company, d.amount, d.stage, d.lastNoteDate, d.daysSinceLastTouch, d.closeDate, d.owner, d.staleReason, d.suggestedStep])
+      rows.push([d.name, d.company, d.amount, d.stage, d.lastNoteDate, d.daysSinceLastTouch, d.closeDate, d.owner, d.sender, d.staleReason, d.suggestedStep])
     })
   } else if (kind === 'actions') {
     filename = 'davyn-next-steps.csv'
@@ -1014,9 +1062,9 @@ function downloadCsv(kind) {
     })
   } else {
     filename = 'davyn-opportunities.csv'
-    rows = [['Score', 'Deal', 'Company', 'Pipeline', 'Stage', 'Amount', 'Status', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Suggested next step']]
+    rows = [['Score', 'Deal', 'Company', 'Pipeline', 'Stage', 'Amount', 'Status', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Davyn sender', 'Suggested next step']]
     getFiltered().forEach(d => {
-      rows.push([d.priorityScore, d.name, d.company, d.pipeline, d.stage, d.amount, d.status, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.suggestedStep])
+      rows.push([d.priorityScore, d.name, d.company, d.pipeline, d.stage, d.amount, d.status, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.sender, d.suggestedStep])
     })
   }
   const csv = rows.map(r => r.map(csvEscape).join(',')).join('\n')
@@ -1040,7 +1088,8 @@ function openDealModal(id) {
     <div class="modal-section"><h4>Suggested next step</h4>${esc(d.suggestedStep || '—')}</div>
     <div class="modal-section"><h4>Details</h4>
       Company: ${esc(d.company)}<br/>
-      Owner: ${esc(d.owner)}<br/>
+      Owner (Factorial): ${esc(d.owner)}<br/>
+      Davyn sender: ${esc(d.sender || '—')}<br/>
       Stage: ${esc(d.stage)}<br/>
       Pipeline: ${esc(d.pipeline)}<br/>
       Amount: ${d.amount != null ? fmt(d.amount, d.currency) : '—'}<br/>
@@ -1481,6 +1530,7 @@ function dealCardHtml(d, variant) {
     rows.push(meta('Last touch', esc(last)))
     rows.push(meta('Idle days', esc(String(idle))))
     rows.push(meta('Owner', owner))
+    rows.push(meta('Davyn sender', esc(d.sender || '—')))
     rows.push(meta('Flags', flagsHtml(d)))
   } else if (variant === 'priority') {
     rows.push(meta('Stage', stage))
@@ -1488,6 +1538,7 @@ function dealCardHtml(d, variant) {
     rows.push(meta('Last touch', esc(last)))
     rows.push(meta('Idle days', esc(String(idle))))
     rows.push(meta('Owner', owner))
+    rows.push(meta('Davyn sender', esc(d.sender || '—')))
     rows.push(meta('Why', esc(d.priorityWhy || '—')))
   } else if (variant === 'stalled') {
     rows.push(meta('Stage', stage))
@@ -1495,6 +1546,7 @@ function dealCardHtml(d, variant) {
     rows.push(meta('Last touch', esc(last)))
     rows.push(meta('Idle days', esc(String(idle))))
     rows.push(meta('Owner', owner))
+    rows.push(meta('Davyn sender', esc(d.sender || '—')))
     rows.push(meta('Reason', esc(d.staleReason || '—')))
   }
 
@@ -1552,6 +1604,7 @@ function renderTable() {
       <td class="num">${d.daysOpen != null ? d.daysOpen : '—'}</td>
       <td>${d.closeDate || '—'}</td>
       <td title="${esc(d.owner)}">${esc(d.owner)}</td>
+      <td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '<span style="color:#cbd5e1">—</span>'}</td>
       <td>${statusBadge(d.status)}</td>
       <td>${flagsHtml(d)}</td>
       <td>${d.notes
@@ -1560,7 +1613,7 @@ function renderTable() {
       }</td>
     </tr>`
     const notesRow = isExp && d.notes
-      ? `<tr class="notes-row"><td colspan="14">${esc(d.notes)}</td></tr>`
+      ? `<tr class="notes-row"><td colspan="15">${esc(d.notes)}</td></tr>`
       : ''
     return mainRow + notesRow
   }).join('')
@@ -1595,6 +1648,7 @@ function renderPriorityQueue() {
       <td>${d.lastNoteDate || '—'}</td>
       <td class="num">${idleLabel(d)}</td>
       <td title="${esc(d.owner)}">${esc(d.owner)}</td>
+      <td title="${esc(d.sender || '')}">${d.sender ? esc(d.sender) : '—'}</td>
       <td>${flagsHtml(d)}</td>
       <td class="why-text">${esc(d.priorityWhy)}</td>
       <td class="why-text">${esc(d.suggestedStep || '—')}</td>

@@ -3,7 +3,7 @@
   "partner": "Davyn Limited",
   "weeklyBrief": {
     "generatedAt": "2026-06-02",
-    "summary": "Davyn's pipeline holds 51 open opportunities, with an estimated active Partners Distribution value of $116,409 USD. The partner has secured 10 closed-won deals (win rate 20% on closed deals) against 39 losses. There are 6 critical-urgency deals requiring action this week — notably Tucker Energy ($4,000, close June 29), Rhand Credit Union (vendor selection by end of June), Port Authority of Trinidad ($3,500, close June 29), Mother's Jamaica ($2,900, competing ODOO evaluation), and a Kennscott churn risk (€1,404 unpaid invoices). 10 additional high-priority deals are in advanced stages including Bermudez Group ($18,900), Beharry Holdings (€20,000), and ANSA McAL ($13,410). 25 open deals show no recent activity and should be reviewed for qualification or closure.",
+    "summary": "Davyn's pipeline holds 51 open opportunities with an active Partners Distribution value of $116,409 USD. The partner has 10 closed-won deals (20% win rate on closed deals) against 39 losses. There are 5 critical-urgency deals this week — Tucker Energy (June 29 close), Rhand Credit Union (vendor selection by end of June), Port Authority ($3,500 June 29 close), Mother's Jamaica (competing ODOO evaluation), and a Kennscott churn risk. 10 high-priority deals are in advanced stages including Bermudez Group ($18,900), Beharry Holdings (€20,000), and ANSA McAL ($13,410). 25 open deals show no recent activity and should be reviewed for qualification or closure. Umar leads with 35 deals, followed by Nicholas (7) and Sekou (6).",
     "topActions": [
       {
         "priority": 1,
@@ -31,18 +31,18 @@
       },
       {
         "priority": 4,
-        "dealName": "Northern Caribbean University - from Davyn",
-        "company": "Northern Caribbean University",
+        "dealName": "Tucker Energy - Davyn",
+        "company": "Tucker Energy",
         "owner": "Leon Ribeiro Alves",
-        "action": "Arrange a personal meeting in Jamaica with Carol and the wider NCU leadership team to advance the deal.",
-        "urgency": "high"
+        "action": "Escalate Tucker Energy to Umar and Leon today; confirm whether the deal can be revived before the June 29 close date.",
+        "urgency": "critical"
       },
       {
         "priority": 5,
-        "dealName": "Lasco Distributors (IT) - from Davyn",
-        "company": "Lasco Distributors",
-        "owner": "Victor Gutierrez",
-        "action": "Confirm demo for Factorial IT with Peter from Lasco and set a firm date this week.",
+        "dealName": "Ansa McAL - from Davyn",
+        "company": "ANSA McAL Limited",
+        "owner": "Leon Ribeiro Alves",
+        "action": "Schedule and confirm the demo session with the ANSA McAL team before end of June.",
         "urgency": "high"
       }
     ]
@@ -60,6 +60,7 @@
       "closeDate": "2025-06-26",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "",
       "createDate": null,
@@ -72,7 +73,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "39560654971",
@@ -86,6 +88,7 @@
       "closeDate": "2025-12-16",
       "owner": "Barbora Lancova",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -93,18 +96,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/39560654971",
       "nextStepDue": null,
-      "dealSummary": "UWI-ROYTEC is in Onboarding Completed - Converted stage with limited deal value; re-qualify to confirm viability.",
-      "suggestedNextStep": "Re-qualify the UWI-ROYTEC opportunity and confirm whether it should remain active in the pipeline.",
+      "dealSummary": "UWI-ROYTEC is in Onboarding Completed - Converted stage; re-qualify to confirm viability.",
+      "suggestedNextStep": "Re-qualify the UWI-ROYTEC opportunity and confirm it should remain active.",
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 5
+      "priorityScore": 5,
+      "sender": null
     },
     {
       "id": "43266910566",
       "name": "Kennscott - 8 sessions - Sales",
       "company": "Kennscott",
-      "amount": 1116.0,
+      "amount": 1116,
       "currency": "EUR",
       "stage": "Client pending to launch",
       "pipeline": "Onboarding Pipeline",
@@ -112,6 +116,7 @@
       "closeDate": null,
       "owner": "Barbora Lancova",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -124,7 +129,8 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 25
+      "priorityScore": 42,
+      "sender": null
     },
     {
       "id": "40317665887",
@@ -138,6 +144,7 @@
       "closeDate": "2025-08-27",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "[2025-08-04 – leon.ribeiro@factorial.co]: Aiming for final decision in early august - 1st 2 weeks.  Davyn client, raised interest after marketing action (webinar).  https://pitch.com/v/kennscott-limited--reviewed-features-and-pricing-kmr4au  - modules review.",
       "createDate": null,
@@ -150,13 +157,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "502204390623",
       "name": "Preventive Churn for Unpaid Invoices - Kennscott + 2 Unpaid Invoices",
       "company": "Kennscott",
-      "amount": 1404.0,
+      "amount": 1404,
       "currency": "EUR",
       "stage": "Preventive Churn Risk (New)",
       "pipeline": "Churn Pipeline",
@@ -164,6 +172,7 @@
       "closeDate": "2026-06-08",
       "owner": "Ciara Maguire",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -171,18 +180,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/502204390623",
       "nextStepDue": null,
-      "dealSummary": "Kennscott is at churn risk due to 2 unpaid invoices (€1,404); failure to resolve will result in losing an existing Won client.",
-      "suggestedNextStep": "Contact Kennscott finance team immediately to resolve unpaid invoices and prevent churn before the June 8 deadline.",
-      "actionUrgency": "critical",
+      "dealSummary": "Kennscott is an active opportunity in Preventive Churn Risk (New) stage.",
+      "suggestedNextStep": "Contact Kennscott to confirm deal status and advance toward close.",
+      "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 32
+      "priorityScore": 32,
+      "sender": null
     },
     {
       "id": "39561053314",
       "name": "Kenson Group - 20 sessions - Sales",
       "company": "Kenson Group",
-      "amount": 4650.0,
+      "amount": 4650,
       "currency": "EUR",
       "stage": "Onboarding On Hold",
       "pipeline": "Onboarding Pipeline",
@@ -190,6 +200,7 @@
       "closeDate": null,
       "owner": "Annachiara Pastorino",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -197,12 +208,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/39561053314",
       "nextStepDue": null,
-      "dealSummary": "Kenson Group onboarding on hold (20 sessions); implementation paused, reason unknown.",
-      "suggestedNextStep": "Contact Kenson Group to understand the onboarding pause and define a restart date.",
+      "dealSummary": "Kenson Group onboarding on hold (20 sessions); implementation paused.",
+      "suggestedNextStep": "Contact Kenson Group to identify the blocker and set a restart date for onboarding.",
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 26
+      "priorityScore": 40,
+      "sender": null
     },
     {
       "id": "494375221493",
@@ -216,6 +228,12 @@
       "closeDate": "2026-04-10",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "nicholasw@davyntt.com",
+        "name": "Nicholas (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-31"
+      },
       "status": "won",
       "notes": "[2026-03-31 – nicholasw@davyntt.com]: Scope of Work Submitted. Awaiting confirmation from customer to move forward with verbal confirmation and sign-off. due to lack of communication doubtful to sign off by 31st March and may close by April 30th",
       "createDate": null,
@@ -228,13 +246,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Nicholas (Davyn)"
     },
     {
       "id": "33177641051",
       "name": "Kenson Group - (Davyn)",
       "company": "Kenson Group",
-      "amount": 5000.0,
+      "amount": 5000,
       "currency": "USD",
       "stage": "Closed Won",
       "pipeline": "Partners Distribution",
@@ -242,6 +261,7 @@
       "closeDate": "2025-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "",
       "createDate": null,
@@ -254,7 +274,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "51040567814",
@@ -268,6 +289,7 @@
       "closeDate": null,
       "owner": "Barbora Lancova",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -280,13 +302,14 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 25
+      "priorityScore": 40,
+      "sender": null
     },
     {
       "id": "50563486474",
       "name": "Davyn Limited - New Deal",
       "company": "Davyn Limited",
-      "amount": 629.0,
+      "amount": 629,
       "currency": "USD",
       "stage": "Closed Won",
       "pipeline": "Partners Distribution",
@@ -294,6 +317,7 @@
       "closeDate": "2025-11-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "",
       "createDate": null,
@@ -306,13 +330,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "29930037126",
       "name": "Davyn - Microsoft VAR",
       "company": "Davyn Limited",
-      "amount": 0.0,
+      "amount": 0,
       "currency": "USD",
       "stage": "Closed Won",
       "pipeline": "Partner Acquisition ",
@@ -320,6 +345,7 @@
       "closeDate": "2025-01-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "",
       "createDate": null,
@@ -332,7 +358,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "502194159828",
@@ -346,6 +373,7 @@
       "closeDate": "2026-05-29",
       "owner": "Victor Gutierrez",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "",
       "createDate": null,
@@ -358,13 +386,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "501899885812",
       "name": "TTRideshare - HR",
       "company": "TTRideshare",
-      "amount": 250.0,
+      "amount": 250,
       "currency": "USD",
       "stage": "Closed Won",
       "pipeline": "Partners Distribution",
@@ -372,6 +401,12 @@
       "closeDate": "2026-05-27",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "nicholasw@davyntt.com",
+        "name": "Nicholas (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-05-18"
+      },
       "status": "won",
       "notes": "[2026-05-18 – nicholasw@davyntt.com]: TT Rideshare is interested in both FactorialHR and FactorialIT. They are currently going through the sales process to close on both. Technical meeting this week for FactorialIT Once completed. everything will be placed in one costing estimate for review and discussion.",
       "createDate": null,
@@ -384,13 +419,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Nicholas (Davyn)"
     },
     {
       "id": "495084174529",
       "name": "Servus Ltd. (Davyn)",
       "company": "Servus Ltd.",
-      "amount": 3000.0,
+      "amount": 3000,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -398,6 +434,7 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Andrew Lasso",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -410,13 +447,14 @@
       "actionUrgency": "high",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 36
+      "priorityScore": 60,
+      "sender": null
     },
     {
       "id": "491908567286",
       "name": "The Crane - (Davyn)",
       "company": "The Crane",
-      "amount": 3300.0,
+      "amount": 3300,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -424,6 +462,12 @@
       "closeDate": "2026-09-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 4,
+        "lastNoteDate": "2026-03-23"
+      },
       "status": "open",
       "notes": "[2026-03-09 – umar@davyntt.com]: TBD-  @Umar Mohammed  / Meeting with Shakira and HR Head\n\n[2026-03-16 – umar@davyntt.com]: Shakira indicated that she would confirm the next meeting this week  @Umar Mohammed\n\n[2026-03-16 – umar@davyntt.com]: Follow up meeting set for Monday 23rd March at 11:30am - TBD  @Umar Mohammed  create and send official pricing as discussed with Shakira\n\n[2026-03-23 – umar@davyntt.com]: Pricing Meeting Held Today - Sandbox requested  @Leon Ribeiro Alves",
       "createDate": null,
@@ -431,18 +475,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/491908567286",
       "nextStepDue": null,
-      "dealSummary": "The Crane ($3,300) in economic alignment with September 2026 close; pricing meeting held, official pricing needs to be sent.",
-      "suggestedNextStep": "Send official pricing to Shakira and confirm the follow-up meeting scheduled for March 23rd.",
+      "dealSummary": "The Crane ($3,300) in economic alignment with September 2026 close; official pricing needs to be sent.",
+      "suggestedNextStep": "Send official pricing to Shakira and confirm the follow-up meeting.",
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 44
+      "priorityScore": 52,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "502138555579",
       "name": "Association of Caribbean States - from Davyn",
       "company": "association of caribbean states",
-      "amount": 231.0,
+      "amount": 231,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -450,6 +495,12 @@
       "closeDate": "2026-10-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 5,
+        "lastNoteDate": "2026-06-01"
+      },
       "status": "open",
       "notes": "[2026-05-14 – umar@davyntt.com]: Discussed with Shivanand on his needs: - Current Employee Count - 55 Employees - Currently no HRIS - Manual Systems  - Payroll / Finance - Quickbooks - Procurement - Review with CEO - Can decide on proceeding forward based on Budget I- nterested in Recruitment and Performance Manage\n\n[2026-05-14 – umar@davyntt.com]: @Leon Ribeiro Alves  - Discussed a base pricing of $10 Pe/Pm and and onboarding of $1500 (To be reviewed before the meeting)\n\n[2026-05-22 – umar@davyntt.com]: Pricing was submitted based on the following PEPM: $4.1 FF (ats): $65.9 TKN(one; 1,000 credits): $101 TOTAL = 4.1X50 + FF + TKN = 374\n\n[2026-06-01 – umar@davyntt.com]: Email sent to Shivanand and awaiting their feedback\n\n[2026-06-01 – umar@davyntt.com]: Spoke to Shiva and he would give final update by EoW",
       "createDate": null,
@@ -462,13 +513,14 @@
       "actionUrgency": "low",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 51
+      "priorityScore": 22,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "42605777815",
       "name": "Rhand Credit Union - Davyn (Umar)",
       "company": "Rhand Credit Union",
-      "amount": 800.0,
+      "amount": 800,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -476,6 +528,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-05-14"
+      },
       "status": "open",
       "notes": "[2026-03-12 – sekou@davyntt.com]: 12/3/26-  Spoke with Ms Miller, The Board has to make a decision  and will contact Umar for next steps. Umar to check in near end of Q2. @Leon\n\n[2026-03-23 – umar@davyntt.com]: @Umar Mohammed   - Call Venus for Update before Board Meeting in April\n\n[2026-05-14 – umar@davyntt.com]: Spoke to Venus and she indicated that they are currently in the final phases of reviewing all vendors (Three inclusive of Factorial) - She indicated following the last meeting with Davyn/Factorial that we are positioned very well because of the AI component of Factorial. Timelines: Final Review & Vendor Selection by End of June\n\n[2026-06-02 – victor.gutierrez@factorial.co]: Hi Umar! Do you need help with the next steps?  Should we call them and try to properly set the alignment call by the end of June?",
       "createDate": null,
@@ -483,12 +541,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/42605777815",
       "nextStepDue": null,
-      "dealSummary": "Rhand Credit Union ($800) in economic alignment; Venus confirmed Factorial well-positioned in vendor review, final decision by end of June.",
-      "suggestedNextStep": "Book a final alignment call with Venus before the board meeting to reinforce Factorial's position.",
+      "dealSummary": "Venus confirmed Factorial is well-positioned in a three-vendor review; final vendor selection expected by end of June.",
+      "suggestedNextStep": "Book a final alignment call with Venus before the board meeting to reinforce Factorial's position and secure selection.",
       "actionUrgency": "critical",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 56
+      "priorityScore": 76,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "33778789508",
@@ -502,6 +561,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 5,
+        "lastNoteDate": "2026-05-25"
+      },
       "status": "open",
       "notes": "[2026-03-12 – umar@davyntt.com]: Spoke with Omaladee and she advise for us to do a revised SoW for 35 Users vs the original 50 Users - TBD -  @Umar Mohammed   Create new Pitch Deck/SoW\n\n[2026-03-23 – umar@davyntt.com]: @Umar Mohammed   Complete by EOD 24th March 2026\n\n[2026-05-22 – umar@davyntt.com]: Updated pricing submitted - awaiting final review and sign off\n\n[2026-05-25 – umar@davyntt.com]: Omaalade indicated that they are currently reviewing another solution named Lanteria from a local company named Inova Solutions She stated that once this review if complete and budgets are done she would advise on the next steps\n\n[2026-05-25 – umar@davyntt.com]: Email Sent to Omaalade -  Hi Omaalade, It’s always a pleasure speaking with you. I completely understand the need to evaluate options to ensure you find the perfect fit. While Lanteria offers broad functionality, it can often be heavy to manage and complex for teams to adopt. Factorial is built differently. We focus on a uniquely integrated, \"all-in-one\" experience specifically designed for SMBs. Where others can feel like a collection of disjointed tools, Factorial creates a seamless workflow across onboarding, time-tracking, and performance—which ultimately saves your team significant administrative time and reduces overhead. I will send over a subsequent email shortly with a detailed breakdown of how Factorial’s all-in-one approach compares to Lanteria regarding ease of use, implementation speed, and long-term cost-efficiency. In the meantime, I’d like to ensure your Chief of Staff sees exactly how these differences translate into time and cost savings for your specific team. Would they be available for a brief demo  next Monday at 11:00 AM ? Looking forward to your feedback.",
       "createDate": null,
@@ -514,7 +579,8 @@
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 43
+      "priorityScore": 45,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "48160891429",
@@ -528,6 +594,7 @@
       "closeDate": null,
       "owner": "",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -535,12 +602,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/48160891429",
       "nextStepDue": null,
-      "dealSummary": "KCL Capital onboarding initiated (9.5 sessions); new client stage, sessions to be scheduled.",
+      "dealSummary": "KCL Capital onboarding initiated (9.5 sessions); new client stage.",
       "suggestedNextStep": "Schedule the first onboarding session with KCL Capital and send the onboarding welcome kit.",
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 20
+      "priorityScore": 38,
+      "sender": null
     },
     {
       "id": "504377731261",
@@ -554,6 +622,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-06-01"
+      },
       "status": "open",
       "notes": "[2026-06-01 – umar@davyntt.com]: Pricing was submitted - Next Steps: TBD  @Umar Mohammed   - Follow up with Nicole for Final update (EOW)",
       "createDate": null,
@@ -561,12 +635,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/504377731261",
       "nextStepDue": null,
-      "dealSummary": "Resin Converters ($355) in economic alignment; pricing submitted, awaiting Nicole's final update by end of week.",
+      "dealSummary": "Resin Converters ($355) in economic alignment; pricing submitted, awaiting Nicole's final update.",
       "suggestedNextStep": "Follow up with Nicole at Resin Converters for a final pricing decision by end of this week.",
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 51
+      "priorityScore": 48,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "502964408512",
@@ -580,6 +655,7 @@
       "closeDate": null,
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -592,7 +668,8 @@
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 10
+      "priorityScore": 15,
+      "sender": null
     },
     {
       "id": "502133289188",
@@ -606,6 +683,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-05-22"
+      },
       "status": "open",
       "notes": "[2026-05-14 – umar@davyntt.com]: Notes from the Meeting/Demo : - Number of Employees - 18 (Discussed a bracket Subs of 25 Employees) - Interested in CORE, TA,TO - They currently do not have any HRIS nor TA Systems - All Manual - Timeframe - Discussed: - - Possible Signing SoW - June 2026  - - Onboarding - July 2026 - Pricing - - Average cost of $10 pe/pm was discussed and they are looking for the best rates - - Average onboarding cost of $500 was discussed\n\n[2026-05-22 – umar@davyntt.com]: Pricing was Submitted - Awaiting feedback which would be done within the first week of June",
       "createDate": null,
@@ -618,13 +701,14 @@
       "actionUrgency": "low",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 43
+      "priorityScore": 25,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "491919975649",
       "name": "CB Group - from Davyn",
       "company": "CB Group",
-      "amount": 7600.0,
+      "amount": 7600,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -632,6 +716,12 @@
       "closeDate": "2026-03-23",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-16"
+      },
       "status": "lost",
       "notes": "[2026-03-16 – umar@davyntt.com]: Discuss with Ansley = He said that HR may not be interested and would bet back to us by EoW on this - He is however in FactorialIT - TBD @umar",
       "createDate": null,
@@ -644,13 +734,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "44721954706",
       "name": "National Housing Corporation (St Kitts) - Davyn",
       "company": "National Housing Corporation - St Kitts",
-      "amount": 746.0,
+      "amount": 746,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -658,6 +749,12 @@
       "closeDate": "2026-03-01",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2025-10-24"
+      },
       "status": "lost",
       "notes": "[2025-10-24 – umar@davyntt.com]: @Leon Ribeiro Alves   - 2nd Demo held with Full HR Team - Estimate to be submitted for 53 Employees for - Pro Starter + Performance, Recruitment & Shifts (Budget disused is around $10 per license) and discussed an onboarding at $600 USD",
       "createDate": null,
@@ -670,13 +767,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "42754261142",
       "name": "ForenSys Ltd - Davyn",
       "company": "ForenSys Ltd",
-      "amount": 317.0,
+      "amount": 317,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -684,6 +782,12 @@
       "closeDate": "2026-03-16",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-03-16"
+      },
       "status": "lost",
       "notes": "[2025-10-24 – umar@davyntt.com]: Follow up with CEO today for next steps\n\n[2025-12-10 – umar@davyntt.com]: 10/12/2025 - No updates , awaiting CEO to confirm date for Demo , expected this to happen in Jan 2026\n\n[2026-03-12 – sekou@davyntt.com]: 12/3/26- Booking Request email sent to Rae Smith per our phone conversation. Will check in by 17/3/26 if no booking is made.\n\n[2026-03-16 – sekou@davyntt.com]: 15/3/26- Not associated with Davyn ot Factorial. Off contact sheet.  @Leon Ribeiro Alves",
       "createDate": null,
@@ -696,13 +800,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "494189342922",
       "name": "NLCB - from Davyn",
       "company": "National Lotteries Control Board",
-      "amount": 635.0,
+      "amount": 635,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -710,6 +815,12 @@
       "closeDate": "2026-03-23",
       "owner": "Victor Gutierrez",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-23"
+      },
       "status": "lost",
       "notes": "[2026-03-23 – umar@davyntt.com]: Might be an Opp next year - Reengage by Q4",
       "createDate": null,
@@ -722,13 +833,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "33146687835",
       "name": "Progressive Recruitment Ltd",
       "company": "Progressive Recruitment Ltd",
-      "amount": 1000.0,
+      "amount": 1000,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -736,6 +848,7 @@
       "closeDate": "2025-03-14",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -748,13 +861,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "495018261699",
       "name": "CB Group - Factorial IT - from Davyn Limited",
       "company": "CB Group",
-      "amount": 2395.0,
+      "amount": 2395,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -762,6 +876,7 @@
       "closeDate": "2026-04-22",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -774,13 +889,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "50513399080",
       "name": "Nagico Insurance- Davyn",
       "company": "Nagico Insurance",
-      "amount": 1100.0,
+      "amount": 1100,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -788,6 +904,12 @@
       "closeDate": "2026-02-06",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2025-12-10"
+      },
       "status": "lost",
       "notes": "[2025-12-01 – umar@davyntt.com]: 02/12/25 - To Submit Pitch Deck Pricing & SoW to Lowis for review  @Leon Ribeiro Alves\n\n[2025-12-10 – umar@davyntt.com]: HR manager indicated they are currently benchmarking shortlisted suppliers and they would get back to us if they require any additional information",
       "createDate": null,
@@ -800,13 +922,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "34083519362",
       "name": "WASA - (Davyn)",
       "company": "Wasa",
-      "amount": 917.0,
+      "amount": 917,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -814,6 +937,7 @@
       "closeDate": "2025-07-03",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -826,7 +950,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "495688584417",
@@ -840,6 +965,7 @@
       "closeDate": "2026-04-20",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -852,13 +978,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "470025840850",
       "name": "Rio hotel brasil  - from Davyn",
       "company": "Rio hotel brasil ",
-      "amount": 936.0,
+      "amount": 936,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -866,6 +993,12 @@
       "closeDate": "2026-03-11",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "sekou@davyntt.com",
+        "name": "Sekou (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-11"
+      },
       "status": "lost",
       "notes": "[2026-03-11 – sekou@davyntt.com]: 10/3/26- Spoke with Shelly Foster, Human Resources Manager, Courtyard by Marriott Bridgetown. Uses Marriott Int'l HRIS provider. Needs more in-depth insight from the US team for competitor analysis.",
       "createDate": null,
@@ -878,13 +1011,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Sekou (Davyn)"
     },
     {
       "id": "42756418742",
       "name": "TTT Limited from Introw",
       "company": "TTT Limited",
-      "amount": 1392.0,
+      "amount": 1392,
       "currency": "USD",
       "stage": "Closed Won",
       "pipeline": "Partners Distribution",
@@ -892,6 +1026,7 @@
       "closeDate": "2025-10-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "",
       "createDate": null,
@@ -904,7 +1039,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "35672454200",
@@ -918,6 +1054,12 @@
       "closeDate": "2025-10-02",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2025-09-19"
+      },
       "status": "lost",
       "notes": "[2025-08-05 – umar@davyntt.com]: @Leon Ribeiro Alves   - No Update - awaiting Suresh's feedback on next steps\n\n[2025-09-19 – umar@davyntt.com]: No Update - Client is non responsive - Update Deadline : Friday 26th Sep 2025",
       "createDate": null,
@@ -930,13 +1072,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "491920691425",
       "name": "Guardian Life Limited - from Davyn",
       "company": "Guardian Life Limited",
-      "amount": 3990.0,
+      "amount": 3990,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -944,6 +1087,12 @@
       "closeDate": "2026-04-10",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "sekou@davyntt.com",
+        "name": "Sekou (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-11"
+      },
       "status": "lost",
       "notes": "[2026-03-11 – sekou@davyntt.com]: 10/3/26—Pre-demo call booking email sent to Ms. Debby Livingstone, Vice President - Corporate Resources. She is a Decision Maker that will loop in Ms. Sherrie Davis-Cuthbert, Snr. Mgr. - Human Resource & Records Management to add consult for dept. needs.",
       "createDate": null,
@@ -956,13 +1105,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Sekou (Davyn)"
     },
     {
       "id": "36609579061",
       "name": "Banks DIH Guyana - (Davyn)",
       "company": "Banks DIH Guyana",
-      "amount": 2000.0,
+      "amount": 2000,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -970,6 +1120,7 @@
       "closeDate": "2025-07-02",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -982,13 +1133,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "50505432853",
       "name": "National Lotteries Control Board- Davyn",
       "company": "National Lotteries Control Board",
-      "amount": 860.0,
+      "amount": 860,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -996,6 +1148,12 @@
       "closeDate": "2026-03-12",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 4,
+        "lastNoteDate": "2026-03-11"
+      },
       "status": "lost",
       "notes": "[2025-12-10 – umar@davyntt.com]: 02/12/2025 - Demo Conducted with IT and HR - Next steps to have a demo with HR & IT Management - ETA for Demo 17th Dec 2025\n\n[2026-03-09 – sekou@davyntt.com]: 6/3/26 - Demo booked for 10/3/26 @ 10:30A. Follow-up is the Sandbox Trial and Quotation Meeting.\n\n[2026-03-09 – umar@davyntt.com]: TBD -  @Umar Mohammed  / Discuss with Eddie on Factorial IT (At the Meeting) & Set separate Demo for Factorial IT\n\n[2026-03-11 – umar@davyntt.com]: Had the Demo Meeting with Adana and Eddie: Adana informed that the Government has an HRIS system and they are going to proceed with that as they are a state agency - Opportunity to be closed/Lost\n\n[2026-03-11 – umar@davyntt.com]: In the meeting - Discussed Factorial IT and Edward informed that he is interested and to set a demo for next week Tuesday @10am - TBD  @Leon Ribeiro Alves  : Separate Opportunity to Open",
       "createDate": null,
@@ -1008,13 +1166,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "44895657830",
       "name": "Seprod Jamaica (Talent)",
       "company": "Seprod Group of Companies",
-      "amount": 7250.0,
+      "amount": 7250,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1022,6 +1181,12 @@
       "closeDate": "2026-03-09",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-09"
+      },
       "status": "lost",
       "notes": "[2026-03-09 – umar@davyntt.com]: Jamaica HQ decided to develop Talent Vertical internally, Group level open the opportunity for HR purchase in Q2/Q3 -  @Leon Ribeiro Alves",
       "createDate": null,
@@ -1034,13 +1199,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "38130880653",
       "name": "Tricon LTD - (Davyn) ",
       "company": "Tricon LTD - (Davyn)",
-      "amount": 240.0,
+      "amount": 240,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1048,6 +1214,12 @@
       "closeDate": "2026-04-15",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 4,
+        "lastNoteDate": "2026-03-12"
+      },
       "status": "lost",
       "notes": "[2025-08-05 – umar@davyntt.com]: Updated SoW was submitted to Tricon - Pricing meeting set for Aug 12th at 11am\n\n[2025-08-12 – umar@davyntt.com]: Updated the SoW and resubmitted\n\n[2025-12-01 – umar@davyntt.com]: TBD - 12/12/25 - Jason to inform of next steps and approval  @Leon Ribeiro Alves\n\n[2026-03-12 – umar@davyntt.com]: Jason Indicated that they still have this under review and no change on approve date as yet - TBD :  @Umar Mohammed  : Follow up in Q2",
       "createDate": null,
@@ -1060,13 +1232,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "39650121303",
       "name": "Kaleidoscope Paints Ltd - (Davyn)",
       "company": "Kaleidoscope Paints Ltd",
-      "amount": 500.0,
+      "amount": 500,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1074,6 +1247,7 @@
       "closeDate": "2025-07-10",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1086,13 +1260,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "50763597837",
       "name": "Ultra-Pharm Marketing from Introw",
       "company": "Ultra Pharm",
-      "amount": 853.0,
+      "amount": 853,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1100,6 +1275,12 @@
       "closeDate": "2026-03-10",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2025-12-10"
+      },
       "status": "lost",
       "notes": "[2025-12-10 – umar@davyntt.com]: 10/12/2025 - Awaiting Ashmead (IT manager) to coordinate the meeting with HR, Intro Email sent and expected to get feedback today",
       "createDate": null,
@@ -1112,13 +1293,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "495015444707",
       "name": "NLCB - Factorial IT - from Davyn",
       "company": "National Lotteries Control Board",
-      "amount": 633.0,
+      "amount": 633,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1126,6 +1308,7 @@
       "closeDate": "2026-03-27",
       "owner": "Victor Gutierrez",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1138,13 +1321,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "38111435053",
       "name": "West Shore Medical Ltd - (Davyn)",
       "company": "West Shore Private Hospital",
-      "amount": 1500.0,
+      "amount": 1500,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1152,6 +1336,7 @@
       "closeDate": "2025-07-03",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1164,13 +1349,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "469832767713",
       "name": "TechnipFMC - from Davyn",
       "company": "TechnipFMC",
-      "amount": 352.0,
+      "amount": 352,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1178,6 +1364,7 @@
       "closeDate": "2026-03-15",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1190,13 +1377,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "494212213985",
       "name": "Davyn - IT",
       "company": "Davyn Limited",
-      "amount": 800.0,
+      "amount": 800,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1204,6 +1392,7 @@
       "closeDate": "2026-04-10",
       "owner": "Victor Gutierrez",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1216,13 +1405,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "44666591020",
       "name": "National Water and Sewerage Authority  Grenada - Davyn",
       "company": "NAWASA Grenada",
-      "amount": 746.0,
+      "amount": 746,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1230,6 +1420,12 @@
       "closeDate": "2026-03-10",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2025-12-10"
+      },
       "status": "lost",
       "notes": "[2025-12-10 – umar@davyntt.com]: 09/12/2025 - No update from Dianne - Following up today",
       "createDate": null,
@@ -1242,13 +1438,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "45932822553",
       "name": "GEPetrol S.A - Davyn",
       "company": "GEPetrol S.A",
-      "amount": 2856.0,
+      "amount": 2856,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1256,6 +1453,7 @@
       "closeDate": "2026-01-15",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Andrew Lasso",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1268,13 +1466,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "470027642071",
       "name": "ENETWORKS S.R.L. - from Davyn",
       "company": "ENETWORKS S.R.L.",
-      "amount": 2315.0,
+      "amount": 2315,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1282,6 +1481,12 @@
       "closeDate": "2026-04-11",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "sekou@davyntt.com",
+        "name": "Sekou (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-12"
+      },
       "status": "lost",
       "notes": "[2026-03-12 – sekou@davyntt.com]: 12/3/26- Booking Request email sent to Anabelle Singh per our phone conversation. Will check in by 17/3/26 if no booking is made.",
       "createDate": null,
@@ -1294,13 +1499,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Sekou (Davyn)"
     },
     {
       "id": "495016559850",
       "name": "As Travel Service Limited - from Davyn Limited",
       "company": "As Travel Service Limited",
-      "amount": 100.0,
+      "amount": 100,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1308,6 +1514,7 @@
       "closeDate": "2026-05-13",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1320,13 +1527,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "432127093974",
       "name": "Medcorp Limited from Introw",
       "company": "Medcorp Limited",
-      "amount": 300.0,
+      "amount": 300,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1334,6 +1542,7 @@
       "closeDate": "2026-02-06",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1346,13 +1555,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "35438354790",
       "name": "Dylam Company Limited  - (Davyn)",
       "company": "Dylam Company Limited ",
-      "amount": 135.0,
+      "amount": 135,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1360,6 +1570,7 @@
       "closeDate": "2025-04-15",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1372,7 +1583,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "36965875244",
@@ -1386,6 +1598,7 @@
       "closeDate": "2025-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "won",
       "notes": "",
       "createDate": null,
@@ -1398,13 +1611,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "37235119407",
       "name": "Trinidad Eye Hospital - (Davyn)",
       "company": "trinidadeyehospital",
-      "amount": 847.0,
+      "amount": 847,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1412,6 +1626,7 @@
       "closeDate": "2025-05-15",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1424,13 +1639,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "34102295082",
       "name": "R.C. Archdiocese - (Davyn)",
       "company": "R.C. Archdiocese",
-      "amount": 400.0,
+      "amount": 400,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1438,6 +1654,12 @@
       "closeDate": "2025-10-13",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2025-09-19"
+      },
       "status": "lost",
       "notes": "[2025-09-19 – umar@davyntt.com]: Pending Contact confirmation on this - Follow-up Friday 26th Sep 2025",
       "createDate": null,
@@ -1450,13 +1672,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "491922135233",
       "name": "Barbados Water Authority - from Davyn Limited",
       "company": "Barbados Water Authority",
-      "amount": 6000.0,
+      "amount": 6000,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1464,6 +1687,12 @@
       "closeDate": "2026-06-01",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "nicholasw@davyntt.com",
+        "name": "Nicholas (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-16"
+      },
       "status": "lost",
       "notes": "[2026-03-09 – nicholasw@davyntt.com]: 9th March 2026 - Meeting completed. Pricing shown, customer has active sandbox. Next steps: to do follow up meeting on sandbox environment.\n\n[2026-03-16 – umar@davyntt.com]: Nicholas stated that Allison is no longer with BWA and that Pedro the IT manager wanted to have a comprehensive demo on Factorial HR and BC Payroll  @Nicholas Williams",
       "createDate": null,
@@ -1476,13 +1705,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Nicholas (Davyn)"
     },
     {
       "id": "491916458204",
       "name": "VSH holding Inc - from Davyn",
       "company": "vshguyana",
-      "amount": 352.0,
+      "amount": 352,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1490,6 +1720,12 @@
       "closeDate": "2026-03-11",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "sekou@davyntt.com",
+        "name": "Sekou (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-11"
+      },
       "status": "lost",
       "notes": "[2026-03-11 – sekou@davyntt.com]: 11/3/26- Spoke w/ Candacia Phillips, Managing Partner. Currently has ODOO, not looking to switch. Check for Factorial IT / MS ERP solution.",
       "createDate": null,
@@ -1502,13 +1738,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Sekou (Davyn)"
     },
     {
       "id": "35156936864",
       "name": "Capital Signal - (Davyn)",
       "company": "Capital Signal",
-      "amount": 450.0,
+      "amount": 450,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1516,6 +1753,7 @@
       "closeDate": "2025-09-19",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1528,7 +1766,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "50505432873",
@@ -1542,6 +1781,7 @@
       "closeDate": "2026-03-03",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1554,13 +1794,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "469286773999",
       "name": "Guyana Revenue Authority - from Davyn",
       "company": "Guyana Revenue Authority",
-      "amount": 7600.0,
+      "amount": 7600,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1568,6 +1809,12 @@
       "closeDate": "2026-04-10",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "sekou@davyntt.com",
+        "name": "Sekou (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-11"
+      },
       "status": "lost",
       "notes": "[2026-03-11 – sekou@davyntt.com]: 10/3/26—Pre-booking email sent to Ms. Jewel Nunes, Training and Development Officer. Can invite Snr C-Suite to Demo Call for final decision making.",
       "createDate": null,
@@ -1580,13 +1827,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Sekou (Davyn)"
     },
     {
       "id": "35143446071",
       "name": "Chickmont Foods - (Davyn)",
       "company": "Chickmont Foods",
-      "amount": 1000.0,
+      "amount": 1000,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1594,6 +1842,7 @@
       "closeDate": "2025-05-16",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1606,13 +1855,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "33169421324",
       "name": "SM Jaleel - (Davyn)",
       "company": "SM Jaleel",
-      "amount": 1500.0,
+      "amount": 1500,
       "currency": "EUR",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -1620,6 +1870,7 @@
       "closeDate": "2025-05-06",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -1632,7 +1883,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "499127123186",
@@ -1646,6 +1898,7 @@
       "closeDate": "2026-04-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1658,13 +1911,14 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 0
+      "priorityScore": 38,
+      "sender": null
     },
     {
       "id": "469998846189",
       "name": "Newrest Guyana Inc. - from Davyn",
       "company": "Newrest Guyana Inc.",
-      "amount": 1737.0,
+      "amount": 1737,
       "currency": "EUR",
       "stage": "On Hold",
       "pipeline": "Partners Distribution",
@@ -1672,6 +1926,12 @@
       "closeDate": null,
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "sekou@davyntt.com",
+        "name": "Sekou (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-03-11"
+      },
       "status": "open",
       "notes": "[2026-03-11 – sekou@davyntt.com]: 10/3/26- Spoke w/ Holly Persaud, HR Director.  Has HRIS; however, open to exploring options by late Q3-early Q4.",
       "createDate": null,
@@ -1679,12 +1939,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/469998846189",
       "nextStepDue": null,
-      "dealSummary": "Newrest Guyana (€1,737) is On Hold; stakeholders were unavailable, follow-up meeting due after June 4th.",
+      "dealSummary": "Newrest Guyana (€1,737) is On Hold; follow-up meeting due after June 4th when stakeholders return.",
       "suggestedNextStep": "Re-engage with Newrest Guyana after June 4th to restart commercial discussions.",
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 26
+      "priorityScore": 48,
+      "sender": "Sekou (Davyn)"
     },
     {
       "id": "503022766302",
@@ -1698,6 +1959,7 @@
       "closeDate": null,
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1705,12 +1967,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/503022766302",
       "nextStepDue": null,
-      "dealSummary": "Domain .ME pre-qualified in SDR pipeline; opportunity lost on one track, still open on SDR.",
-      "suggestedNextStep": "Reassess the .ME opportunity viability and either qualify further or formally close.",
+      "dealSummary": "domain .ME is in Pre-qualified stage; re-qualify to confirm viability.",
+      "suggestedNextStep": "Re-qualify the domain .ME opportunity and confirm it should remain active.",
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 10
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "48155166370",
@@ -1724,6 +1987,7 @@
       "closeDate": null,
       "owner": "",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1736,7 +2000,8 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 25
+      "priorityScore": 35,
+      "sender": null
     },
     {
       "id": "48140962486",
@@ -1750,6 +2015,7 @@
       "closeDate": null,
       "owner": "",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1762,7 +2028,8 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 20
+      "priorityScore": 35,
+      "sender": null
     },
     {
       "id": "39563119947",
@@ -1776,6 +2043,7 @@
       "closeDate": null,
       "owner": "",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1788,13 +2056,14 @@
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 20
+      "priorityScore": 28,
+      "sender": null
     },
     {
       "id": "469870543078",
       "name": "Jamaica Civil Aviation Authority - Davyn (Umar)",
       "company": "Jamaica Civil Aviation Authority",
-      "amount": 100.0,
+      "amount": 100,
       "currency": "EUR",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -1802,6 +2071,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-03-16"
+      },
       "status": "open",
       "notes": "[2026-03-09 – umar@davyntt.com]: TBD -  @Leon Ribeiro Alves  - Create Sandbox for JCAA\n\n[2026-03-16 – umar@davyntt.com]: TBD  @Leon Ribeiro Alves",
       "createDate": null,
@@ -1814,13 +2089,14 @@
       "actionUrgency": "low",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 38
+      "priorityScore": 15,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "491919971524",
       "name": "Johnfernades SLTD - from Davyn",
       "company": "johnfernandesltd.com",
-      "amount": 13000.0,
+      "amount": 13000,
       "currency": "USD",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -1828,6 +2104,12 @@
       "closeDate": "2026-07-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 6,
+        "lastNoteDate": "2026-06-01"
+      },
       "status": "open",
       "notes": "[2026-03-16 – umar@davyntt.com]: Had a meeting with Zach Gonzalves (Corporate Secretary/Director) and he indicated to forward info on the solution for him to set a meeting with the HR manager next week - TDB :  @Umar Mohammed\n\n[2026-03-16 – umar@davyntt.com]: TBD -  @Leon Ribeiro Alves   create a new loveable app for comparing OrangeHR and Factorial to email to Zach for review\n\n[2026-03-24 – umar@davyntt.com]: TBD  @Leon Ribeiro Alves  - To create an OrangeHR vs Factorial lovable app for JFL as well as set meeting of a meeting with  @Umar Mohammed   to strategize pricing and next steps\n\n[2026-05-14 – umar@davyntt.com]: Meeting Rescheduled to Thursday 21st @10am EST\n\n[2026-05-14 – umar@davyntt.com]: Notes: Meeting would be to discuss: POC Environment Review:  Discussing your team’s feedback and initial findings. Factorial Pricing & Scope:  A detailed breakdown based on your 2,200 employees, including modules, subscriptions, and onboarding costs. Implementation Timeline:  Aligning our onboarding schedule with your current HRIS renewal in August 2026 to ensure a seamless transition. Support & Logistics:  Reviewing support levels and addressing any technical or operational questions from your team.\n\n[2026-06-01 – umar@davyntt.com]: Meeting Held with Suzanne on the next steps - she suggested that we set up a meeting with Zach (Director) which is scheduled for 2nd June 2026 at 2PM local time",
       "createDate": null,
@@ -1840,13 +2122,14 @@
       "actionUrgency": "critical",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 88
+      "priorityScore": 88,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "505074594007",
       "name": "Northern Caribbean University - from Davyn",
       "company": "Northern Caribbean University",
-      "amount": 2590.0,
+      "amount": 2590,
       "currency": "USD",
       "stage": "Demo Booked",
       "pipeline": "Partners Distribution",
@@ -1854,6 +2137,12 @@
       "closeDate": "2026-12-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-06-01"
+      },
       "status": "open",
       "notes": "[2026-06-01 – umar@davyntt.com]: Carol indicated she cant attend the HR seminar however she is open to having a personal meeting with us in Jamaica as they are looking for a full HRIS for the Group  - Jamaica Union Conference (JAMU) - Seventh-day Adventists - Northern Caribbean University - Factorial - 500+ Users",
       "createDate": null,
@@ -1866,7 +2155,8 @@
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 66
+      "priorityScore": 65,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "46815889709",
@@ -1880,6 +2170,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 4,
+        "lastNoteDate": "2026-03-23"
+      },
       "status": "open",
       "notes": "[2025-12-01 – umar@davyntt.com]: 2/12/25 - HR team to meet with Project Management team & IT Team to review and determine next steps  @Leon Ribeiro Alves\n\n[2026-03-12 – umar@davyntt.com]: Spoke with Timothy Tambee (IT Manager) and he advise that HR still have this in review and would reach out next week on this - He is also interested in Factorial IT and scheduling a demo for next week on this - TBD  @Umar Mohammed  : Set Meeting with Tim for Factorial IT\n\n[2026-03-23 – umar@davyntt.com]: Spoke with Franka on the opp - she indicated that they are still interested in Factorial - Awaiting their new FY to start (April 2026) to re -open the opportunity\n\n[2026-03-23 – umar@davyntt.com]: TBD   @Umar Mohammed  - Send Email to Franka to get next steps - invite IT for full dicussion",
       "createDate": null,
@@ -1892,13 +2188,14 @@
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 44
+      "priorityScore": 60,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "505076432117",
       "name": "JMMB Group - from Davyn",
       "company": "JMMB Group Jamaica",
-      "amount": 2590.0,
+      "amount": 2590,
       "currency": "USD",
       "stage": "Demo Booked",
       "pipeline": "Partners Distribution",
@@ -1906,6 +2203,7 @@
       "closeDate": "2026-12-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1918,13 +2216,14 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 38
+      "priorityScore": 58,
+      "sender": null
     },
     {
       "id": "504475265235",
       "name": "Ansa McAL - from Davyn",
       "company": "ANSA McAL Limited",
-      "amount": 13410.0,
+      "amount": 13410,
       "currency": "USD",
       "stage": "Demo Booked",
       "pipeline": "Partners Distribution",
@@ -1932,6 +2231,7 @@
       "closeDate": "2026-09-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1944,13 +2244,14 @@
       "actionUrgency": "high",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 55
+      "priorityScore": 77,
+      "sender": null
     },
     {
       "id": "496773721286",
       "name": "ANSA McAL Limited - from Davyn Limited (Factorial IT)",
       "company": "ANSA McAL Limited",
-      "amount": 2500.0,
+      "amount": 2500,
       "currency": "USD",
       "stage": "On Hold",
       "pipeline": "Partners Distribution",
@@ -1958,6 +2259,7 @@
       "closeDate": "2026-06-30",
       "owner": "Victor Gutierrez",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -1965,18 +2267,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/496773721286",
       "nextStepDue": null,
-      "dealSummary": "ANSA McAL Factorial IT ($2,500) is On Hold; Victor Gutierrez managing, awaiting stakeholder confirmation to restart.",
-      "suggestedNextStep": "Coordinate with Victor to confirm On Hold status and define a re-engagement date with ANSA McAL.",
+      "dealSummary": "ANSA McAL Factorial IT ($2,500) is On Hold; Victor Gutierrez managing, awaiting stakeholder confirmation.",
+      "suggestedNextStep": "Coordinate with Victor to confirm On Hold status and define a re-engagement date.",
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 26
+      "priorityScore": 50,
+      "sender": null
     },
     {
       "id": "491767647422",
       "name": "Mother's Jamaica- from Davyn",
       "company": "Mother's Enterprises Limited",
-      "amount": 2900.0,
+      "amount": 2900,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -1984,6 +2287,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 5,
+        "lastNoteDate": "2026-05-14"
+      },
       "status": "open",
       "notes": "[2026-03-09 – umar@davyntt.com]: TBD -  @Umar Mohammed  / Create SoW for Mothers Group, Submit\n\n[2026-03-09 – umar@davyntt.com]: TBD - Set meeting this week (9th - 13th)  @Umar Mohammed\n\n[2026-03-16 – umar@davyntt.com]: TBD  @Leon Ribeiro Alves  - Umar sent email to team asking for a Sanbox review/pricing meeting\n\n[2026-03-23 – umar@davyntt.com]: Project Management Meeting Held today - TBD  @Leon Ribeiro Alves  /  @Umar Mohammed  - SoW to create for Mother's Group\n\n[2026-05-14 – umar@davyntt.com]: Janice stated that she is currently evaluating ODOO for their ERP/HR needs against Davyn/Factorial. She has the review that is happening this upcoming week and would advise on the next steps",
       "createDate": null,
@@ -1991,18 +2300,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/491767647422",
       "nextStepDue": null,
-      "dealSummary": "Mother's Jamaica ($2,900) in economic alignment; Janice is evaluating ODOO as a competing solution.",
-      "suggestedNextStep": "Submit SoW for Mother's Group and prepare a direct Factorial vs ODOO comparison to counter the competing solution.",
+      "dealSummary": "Deal ($2,900) in economic alignment; Janice is currently evaluating ODOO as a competing solution, creating risk of loss.",
+      "suggestedNextStep": "Submit SoW for Mother's Group this week and prepare a direct Factorial vs ODOO comparison to address Janice's concerns.",
       "actionUrgency": "critical",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 52
+      "priorityScore": 72,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "491768351977",
       "name": "Zoon Shop - (Davyn)",
       "company": "Zoon",
-      "amount": 485.0,
+      "amount": 485,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -2010,6 +2320,12 @@
       "closeDate": "2026-07-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "nicholasw@davyntt.com",
+        "name": "Nicholas (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-05-13"
+      },
       "status": "open",
       "notes": "[2026-03-09 – nicholasw@davyntt.com]: March 9th 2026 - TBD/ Leon has HR Manager cell contact. He will engage to follow through with sales process.   @Leon Ribeiro Alves\n\n[2026-05-13 – nicholasw@davyntt.com]: Zoon shop has delayed for a bit but with a recent communication we have locked in a meeting that was rescheduled to the week of the 18th.",
       "createDate": null,
@@ -2022,13 +2338,14 @@
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 39
+      "priorityScore": 38,
+      "sender": "Nicholas (Davyn)"
     },
     {
       "id": "491767646395",
       "name": "University of the Commonwealth Caribbean - from Davyn",
       "company": "University of the Commonwealth Caribbean",
-      "amount": 2315.0,
+      "amount": 2315,
       "currency": "USD",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -2036,6 +2353,12 @@
       "closeDate": "2026-09-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-04-09"
+      },
       "status": "open",
       "notes": "[2026-04-09 – umar@davyntt.com]: Meeting to be Rescheduled",
       "createDate": null,
@@ -2048,13 +2371,14 @@
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 55
+      "priorityScore": 63,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "491917177068",
       "name": "GAIA Inc - from Davyn",
       "company": "GAIA Inc",
-      "amount": 3990.0,
+      "amount": 3990,
       "currency": "EUR",
       "stage": "On Hold",
       "pipeline": "Partners Distribution",
@@ -2062,6 +2386,12 @@
       "closeDate": "2026-12-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 8,
+        "lastNoteDate": "2026-05-18"
+      },
       "status": "open",
       "notes": "[2026-03-09 – umar@davyntt.com]: TBD - Meeting Set for Friday 13th  @Umar Mohammed\n\n[2026-03-12 – umar@davyntt.com]: Muriel indicated we can have the Demo Next week - Awaiting her confirmation on the date - TBD  @Umar Mohammed   Set Demo Date\n\n[2026-03-16 – umar@davyntt.com]: Demo Date Scheduled for 24th @11am\n\n[2026-03-16 – umar@davyntt.com]: @Leon Ribeiro Alves  , reminder on this\n\n[2026-03-16 – umar@davyntt.com]: Demo Date - Tuesday 24th March @11:10am EST\n\n[2026-04-09 – umar@davyntt.com]: Sandbox Environment requested TBD  @Leon Ribeiro Alves   and to send High Level cost for Factorial\n\n[2026-05-14 – umar@davyntt.com]: Called No answer (Muriel)\n\n[2026-05-18 – umar@davyntt.com]: Muriel stated that we can have an update meeting by end of Next week (Friday 22nd) TBD  @Umar Mohammed  - Set Follow up Meeting",
       "createDate": null,
@@ -2069,12 +2399,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/491917177068",
       "nextStepDue": null,
-      "dealSummary": "GAIA Inc (€3,990) is On Hold with a December 2026 close; deal name was updated and opportunity may restart pending budget.",
+      "dealSummary": "GAIA Inc (€3,990) is On Hold with a December 2026 close; opportunity may restart pending budget approval.",
       "suggestedNextStep": "Reach out to the GAIA Inc contact to confirm whether the project is moving forward in H2 2026.",
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 42
+      "priorityScore": 52,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "50884009804",
@@ -2088,6 +2419,7 @@
       "closeDate": null,
       "owner": "",
       "createdBy": "",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2100,13 +2432,14 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 25
+      "priorityScore": 36,
+      "sender": null
     },
     {
       "id": "37098706307",
       "name": "St Andrews Golf Club Moka - Davyn (Umar)",
       "company": "St Andrews Golf Club - Moka",
-      "amount": 282.0,
+      "amount": 282,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -2114,6 +2447,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 4,
+        "lastNoteDate": "2026-05-18"
+      },
       "status": "open",
       "notes": "[2025-08-05 – umar@davyntt.com]: @Leon Ribeiro Alves  - Completed the Demo - creating the pitch deck for them today!\n\n[2026-03-23 – umar@davyntt.com]: TBD -  @Umar Mohammed  to send David/Sheldon the update pricing with new Expiration Date by EOM March 2026\n\n[2026-05-14 – umar@davyntt.com]: Currently evaluating a Golf Software named - Club Prophet to determine if this can be used as this was previously purchased for the business in 2025\n\n[2026-05-18 – umar@davyntt.com]: David stated that they are currently evaluating a Golf POS system that may have an HR component - this would be completed by end of May and he would advise on his next steps",
       "createDate": null,
@@ -2121,18 +2460,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/37098706307",
       "nextStepDue": null,
-      "dealSummary": "St Andrews Golf Club ($282) in economic alignment; David evaluating Club Prophet golf software, decision expected soon.",
-      "suggestedNextStep": "Follow up with David/Sheldon post-June to confirm the Club Prophet evaluation outcome and next steps.",
+      "dealSummary": "St Andrews Golf Club ($282) in economic alignment; David evaluating Club Prophet golf software.",
+      "suggestedNextStep": "Follow up with David/Sheldon post-June to confirm evaluation outcome and next steps.",
       "actionUrgency": "low",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 39
+      "priorityScore": 20,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "39898689812",
       "name": "Port Authority of Trinidad - (Davyn)",
       "company": "patnt",
-      "amount": 3500.0,
+      "amount": 3500,
       "currency": "USD",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -2140,6 +2480,12 @@
       "closeDate": "2026-06-29",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2025-12-10"
+      },
       "status": "open",
       "notes": "[2025-10-24 – umar@davyntt.com]: Currently discussing with them a Payroll option which would assist in moving this along the pipeline\n\n[2025-12-10 – umar@davyntt.com]: 10/12/2025  - Spoke with Leontyne and she indicated that she is awaiting the date for the next Demo/meeting",
       "createDate": null,
@@ -2152,7 +2498,8 @@
       "actionUrgency": "critical",
       "isStale": true,
       "staleReason": "Last activity 174 days ago",
-      "priorityScore": 51
+      "priorityScore": 71,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "44766879668",
@@ -2166,6 +2513,7 @@
       "closeDate": null,
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2178,7 +2526,8 @@
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 10
+      "priorityScore": 12,
+      "sender": null
     },
     {
       "id": "502989988078",
@@ -2192,6 +2541,7 @@
       "closeDate": null,
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2204,13 +2554,14 @@
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 10
+      "priorityScore": 10,
+      "sender": null
     },
     {
       "id": "469061228745",
       "name": "Lasco Distributors (IT) - from Davyn",
       "company": "Lasco Distributors",
-      "amount": 2315.0,
+      "amount": 2315,
       "currency": "EUR",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -2218,6 +2569,12 @@
       "closeDate": "2026-06-30",
       "owner": "Victor Gutierrez",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-05-18"
+      },
       "status": "open",
       "notes": "[2026-05-18 – umar@davyntt.com]: No update - Awaiting Peter's feedback to move forward",
       "createDate": null,
@@ -2225,12 +2582,13 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/469061228745",
       "nextStepDue": null,
-      "dealSummary": "Lasco IT deal (€2,315) in project alignment with June 30 close; client previously moved to another HR system but is interested in Factorial IT.",
+      "dealSummary": "Lasco IT deal (€2,315) in project alignment with June 30 close; client previously moved to another HR system but is now interested in Factorial IT.",
       "suggestedNextStep": "Confirm demo for Factorial IT with Peter from Lasco and set a firm date this week.",
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 59
+      "priorityScore": 62,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "494059342013",
@@ -2244,6 +2602,7 @@
       "closeDate": "2026-03-16",
       "owner": "Victor Gutierrez",
       "createdBy": "Victor Gutierrez",
+      "dealOwnerDavyn": null,
       "status": "lost",
       "notes": "",
       "createDate": null,
@@ -2256,7 +2615,8 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "504475337952",
@@ -2270,6 +2630,7 @@
       "closeDate": "2026-09-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2282,7 +2643,8 @@
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 25
+      "priorityScore": 18,
+      "sender": null
     },
     {
       "id": "504483373276",
@@ -2296,6 +2658,7 @@
       "closeDate": "2026-09-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2308,13 +2671,14 @@
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 25
+      "priorityScore": 22,
+      "sender": null
     },
     {
       "id": "494972759260",
       "name": "Lasco Distributors - Factorial IT - from Davyn Limited",
       "company": "Lasco Distributors",
-      "amount": 2395.0,
+      "amount": 2395,
       "currency": "USD",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -2322,6 +2686,7 @@
       "closeDate": "2026-09-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2334,13 +2699,14 @@
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 43
+      "priorityScore": 55,
+      "sender": null
     },
     {
       "id": "50780576945",
       "name": "Lasco Distributors from Introw",
       "company": "Lasco Distributors",
-      "amount": 4265.0,
+      "amount": 4265,
       "currency": "USD",
       "stage": "Closed Lost",
       "pipeline": "Partners Distribution",
@@ -2348,6 +2714,12 @@
       "closeDate": "2026-03-16",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 3,
+        "lastNoteDate": "2026-03-16"
+      },
       "status": "lost",
       "notes": "[2025-12-01 – umar@davyntt.com]: 12/12/25 - Peter to indicate when we can have the Demo   @Leon Ribeiro Alves\n\n[2025-12-10 – umar@davyntt.com]: 10/12/2025 - Currently awaiting Peter to set the date for the Demo with the HR Department\n\n[2026-03-16 – umar@davyntt.com]: Client Group stated that they moved with another HR system through the Finance sub company - however Peter from Lasco is interested in Factorial IT - Demo set for Tuesday 17th @11am",
       "createDate": null,
@@ -2360,13 +2732,14 @@
       "actionUrgency": null,
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 0
+      "priorityScore": 0,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "470095213755",
       "name": "Automotive Art Barbados - from Davyn",
       "company": "Automotive Art Barbados",
-      "amount": 936.0,
+      "amount": 936,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -2374,6 +2747,12 @@
       "closeDate": "2026-07-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-05-22"
+      },
       "status": "open",
       "notes": "[2026-05-18 – umar@davyntt.com]: Follow up Meeting Set for Wednesday 20th AT 12:30 EST\n\n[2026-05-22 – umar@davyntt.com]: Timmi indicated that the current ICT director is on pre-retirement leave and would not be undertaking any new projects as he is leaving by the end of June - The new ICT director would be in office from July 2026 and Timmi indicated that we can re start conversations then to have a review and sign off",
       "createDate": null,
@@ -2386,7 +2765,8 @@
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 48
+      "priorityScore": 42,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "501899886782",
@@ -2400,6 +2780,12 @@
       "closeDate": "2026-07-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "nicholasw@davyntt.com",
+        "name": "Nicholas (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-05-18"
+      },
       "status": "open",
       "notes": "[2026-05-18 – nicholasw@davyntt.com]: Met with Elgawa Guyana and they loved the solution after it was demoed. Pricing was sent and submitted. Upon submission the customer indicated that they may continue with the solution that is currently being developed. As such we are going to contact their main office located in Suriname.",
       "createDate": null,
@@ -2407,18 +2793,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/501899886782",
       "nextStepDue": null,
-      "dealSummary": "Elgawa Guyana ($230) On Hold; customer may continue with internally developed solution, Suriname office being contacted.",
-      "suggestedNextStep": "Contact Elgawa's main Suriname office to explore interest in Factorial as an alternative.",
+      "dealSummary": "Elgawa Guyana ($230) On Hold; customer may continue with internally developed solution.",
+      "suggestedNextStep": "Contact Elgawa's main Suriname office to explore continued interest in Factorial.",
       "actionUrgency": "low",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 29
+      "priorityScore": 18,
+      "sender": "Nicholas (Davyn)"
     },
     {
       "id": "491916456137",
       "name": "Konnexx Services Limited - from Davyn",
       "company": "Konnexx Services Limited",
-      "amount": 2315.0,
+      "amount": 2315,
       "currency": "EUR",
       "stage": "Demo Booked",
       "pipeline": "Partners Distribution",
@@ -2426,6 +2813,12 @@
       "closeDate": "2026-12-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-04-08"
+      },
       "status": "open",
       "notes": "[2026-04-08 – umar@davyntt.com]: Called Kay-Dian Knight - No Answer - sent Email as a follow up to confirm the Demo Meeting",
       "createDate": null,
@@ -2438,13 +2831,14 @@
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 50
+      "priorityScore": 54,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "497781212346",
       "name": "Bermudez Group Limited - from Davyn",
       "company": "Bermudez Group Limited - Factorial HR",
-      "amount": 18900.0,
+      "amount": 18900,
       "currency": "USD",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -2452,6 +2846,12 @@
       "closeDate": "2026-12-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-05-18"
+      },
       "status": "open",
       "notes": "[2026-04-09 – umar@davyntt.com]: Meeting to be conducted in MAY with the HR and full IT Team - TBD  @Umar Mohammed\n\n[2026-05-18 – umar@davyntt.com]: Awaiting Ashley from Bermudez to confirm the next available date for the meeting",
       "createDate": null,
@@ -2464,13 +2864,14 @@
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 81
+      "priorityScore": 85,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "491917180097",
       "name": "Beharry Holdings Inc. - from Davyn",
       "company": "Beharry Holdings Inc.",
-      "amount": 20000.0,
+      "amount": 20000,
       "currency": "EUR",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -2478,6 +2879,12 @@
       "closeDate": "2026-09-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 3,
+        "lastNoteDate": "2026-05-18"
+      },
       "status": "open",
       "notes": "[2026-03-09 – umar@davyntt.com]: Currently Awaiting revised meeting Date from the HR Lead\n\n[2026-03-16 – umar@davyntt.com]: TBD -  @Umar Mohammed  Confirm meeting with Rafeal for next week\n\n[2026-05-18 – umar@davyntt.com]: Spoke to Gillian and she stated that we can have a follow up meeting after the 4th of June as they are unavailable as well as a few holidays in Guyana",
       "createDate": null,
@@ -2490,13 +2897,14 @@
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 81
+      "priorityScore": 84,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "495833481458",
       "name": "Angostura - from Davyn Limited",
       "company": "Angostura",
-      "amount": 2205.0,
+      "amount": 2205,
       "currency": "USD",
       "stage": "Economical Allignment Started",
       "pipeline": "Partners Distribution",
@@ -2504,6 +2912,12 @@
       "closeDate": "2026-12-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 3,
+        "lastNoteDate": "2026-05-14"
+      },
       "status": "open",
       "notes": "[2026-05-14 – umar@davyntt.com]: Meeting conducted Tuesday 12th\n\n[2026-05-14 – umar@davyntt.com]: Notes from the Meeting/Demo : - interested in CORE, TA,TO and Training  - with the eventuality to upsell more modules (Performance Mgt and Recruitment)  - They currently use SAP for their Payroll so  there is the need to integrate here as well as they have a key card TA system that they would also like to discuss integration  - timeframe - onboarding Jan 2026  - Review costing for Budget for possible sign off in Q4  - they are price sensitive as the average cost of $10 pe/pm was discussed and they are looking for the best rates - Average onboarding cost of $3K was discussed\n\n[2026-05-14 – umar@davyntt.com]: @Leon Ribeiro Alves  - TBD - POC/Demo link to share with Angostura Team",
       "createDate": null,
@@ -2516,7 +2930,8 @@
       "actionUrgency": "high",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 52
+      "priorityScore": 61,
+      "sender": "Umar (Davyn)"
     },
     {
       "id": "495842183402",
@@ -2530,6 +2945,7 @@
       "closeDate": "2026-12-31",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2538,11 +2954,12 @@
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/495842183402",
       "nextStepDue": null,
       "dealSummary": "Grenada Airports Authority ($1,960) is in 'To Reschedule' stage; December 2026 close, meeting needs to be rebooked.",
-      "suggestedNextStep": "Reschedule the meeting with Grenada Airports Authority and confirm new date with the relevant contact.",
+      "suggestedNextStep": "Reschedule the meeting with Grenada Airports Authority and confirm new date.",
       "actionUrgency": "medium",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 22
+      "priorityScore": 50,
+      "sender": null
     },
     {
       "id": "502991947968",
@@ -2556,6 +2973,7 @@
       "closeDate": null,
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": null,
       "status": "open",
       "notes": "",
       "createDate": null,
@@ -2563,18 +2981,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/502991947968",
       "nextStepDue": null,
-      "dealSummary": "Barbados Water Authority pre-qualified in SDR pipeline; parallel to the main Partners Distribution deal.",
-      "suggestedNextStep": "Coordinate the BWA SDR and Partners Distribution tracks; Nicholas to lead the follow-up.",
+      "dealSummary": "Barbados Water Authority is in Pre-qualified stage; re-qualify to confirm viability.",
+      "suggestedNextStep": "Re-qualify the Barbados Water Authority opportunity and confirm it should remain active.",
       "actionUrgency": "low",
       "isStale": true,
       "staleReason": "No activity or notes recorded",
-      "priorityScore": 10
+      "priorityScore": 0,
+      "sender": null
     },
     {
       "id": "50557574467",
       "name": "Carpenter's Edge Ltd - Davyn (Nick)",
       "company": "Carpenter's Edge Ltd",
-      "amount": 250.0,
+      "amount": 250,
       "currency": "USD",
       "stage": "On Hold",
       "pipeline": "Partners Distribution",
@@ -2582,6 +3001,12 @@
       "closeDate": "2026-06-29",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "",
+      "dealOwnerDavyn": {
+        "email": "nicholasw@davyntt.com",
+        "name": "Nicholas (Davyn)",
+        "noteCount": 4,
+        "lastNoteDate": "2026-04-09"
+      },
       "status": "open",
       "notes": "[2026-01-16 – nicholasw@davyntt.com]: Meeting moved from Wednesday 14th to Tuesday 20th of January. This will be a joint opportunity meeting where the customer is interested in Dynamics BC but also HR and payroll\n\n[2026-02-23 – nicholasw@davyntt.com]: Carpenter's Edge to have follow up introductory meeting and demo Friday 27th February\n\n[2026-03-09 – sekou@davyntt.com]: 9/3/26 - Demo booked for 12/3/26 @ 10A. Follow-up is the Sandbox Trial and Quotation Meeting.\n\n[2026-03-09 – nicholasw@davyntt.com]: 9th March 2026: Introductory Meeting completed. Discovery and Demonstration to be held Wednesday 11th 2026.\n\n[2026-04-09 – nicholasw@davyntt.com]: Akima to meet with board of directors for financial approval this week between 9th and 10th april.",
       "createDate": null,
@@ -2589,18 +3014,19 @@
       "employees": null,
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/50557574467",
       "nextStepDue": null,
-      "dealSummary": "Carpenter's Edge ($250) On Hold; Akima meeting board for financial approval between April 9-10.",
-      "suggestedNextStep": "Follow up with Akima after the board meeting to confirm financial approval status and next steps.",
+      "dealSummary": "Carpenter's Edge ($250) On Hold; Akima meeting board for financial approval.",
+      "suggestedNextStep": "Follow up with Akima after the board meeting to confirm financial approval status.",
       "actionUrgency": "low",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 25
+      "priorityScore": 20,
+      "sender": "Nicholas (Davyn)"
     },
     {
       "id": "502378062065",
       "name": "TriStar Port Guyana - from Davyn",
       "company": "TriStar Port Guyana",
-      "amount": 360.0,
+      "amount": 360,
       "currency": "USD",
       "stage": "Factorial Project Alignment started",
       "pipeline": "Partners Distribution",
@@ -2608,6 +3034,12 @@
       "closeDate": "2026-06-30",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "nicholasw@davyntt.com",
+        "name": "Nicholas (Davyn)",
+        "noteCount": 1,
+        "lastNoteDate": "2026-05-13"
+      },
       "status": "open",
       "notes": "[2026-05-13 – nicholasw@davyntt.com]: demo completed, Tristar is a bit hesitant and considering another solution but will present pricing and push for discussions to negotiate",
       "createDate": null,
@@ -2616,17 +3048,18 @@
       "hubspotUrl": "https://app.hubspot.com/contacts/4960096/deal/502378062065",
       "nextStepDue": null,
       "dealSummary": "TriStar Port Guyana ($360) in project alignment; demo completed but customer is hesitant about a competing solution.",
-      "suggestedNextStep": "Present final pricing to TriStar and proactively negotiate to address hesitation about the competing solution.",
+      "suggestedNextStep": "Present final pricing to TriStar and negotiate to overcome hesitation about the competing solution.",
       "actionUrgency": "medium",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 46
+      "priorityScore": 35,
+      "sender": "Nicholas (Davyn)"
     },
     {
       "id": "47985588303",
       "name": "Tucker Energy - Davyn",
       "company": "Tucker Energy",
-      "amount": 4000.0,
+      "amount": 4000,
       "currency": "USD",
       "stage": "On Hold",
       "pipeline": "Partners Distribution",
@@ -2634,6 +3067,12 @@
       "closeDate": "2026-06-29",
       "owner": "Leon Ribeiro Alves",
       "createdBy": "Leon Ribeiro Alves",
+      "dealOwnerDavyn": {
+        "email": "umar@davyntt.com",
+        "name": "Umar (Davyn)",
+        "noteCount": 2,
+        "lastNoteDate": "2026-03-16"
+      },
       "status": "open",
       "notes": "[2025-12-10 – umar@davyntt.com]: 09/12/2025 - Spoke with Lisa and she indicated that her IT manager reached out to their current HR Software Supplier (Lanteria) and they are in discussions for upgrading the solution that would possibly alleviate HR concerns with the system. I have a scheduled call with the IT manager today and would update the opportunity accordingly\n\n[2026-03-16 – umar@davyntt.com]: Lisa indicated that she would call me on Wednesday this week  @Umar Mohammed",
       "createDate": null,
@@ -2646,7 +3085,8 @@
       "actionUrgency": "critical",
       "isStale": false,
       "staleReason": null,
-      "priorityScore": 34
+      "priorityScore": 80,
+      "sender": "Umar (Davyn)"
     }
   ]
 }
