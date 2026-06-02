@@ -93,6 +93,23 @@
   .stage-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:24px}
   .stage-card h3{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:16px}
   .stage-wrap{position:relative;height:160px}
+
+  .info-banner{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:11px;padding:10px 14px;border-radius:10px;margin-bottom:16px;line-height:1.5}
+  .view-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .view-tab{padding:8px 14px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-size:12px;font-weight:600;color:#64748b;cursor:pointer;transition:.15s}
+  .view-tab.active{background:#2563eb;border-color:#2563eb;color:#fff}
+  .view-tab:hover:not(.active){background:#f8fafc}
+  .view-panel{display:none}
+  .view-panel.active{display:block}
+  .score-pill{display:inline-block;min-width:36px;text-align:center;padding:3px 8px;border-radius:8px;font-size:11px;font-weight:800;background:#dbeafe;color:#1d4ed8}
+  .score-pill.high{background:#dcfce7;color:#15803d}
+  .score-pill.mid{background:#fef3c7;color:#b45309}
+  .score-pill.low{background:#f1f5f9;color:#64748b}
+  .badge-stale{background:#fef3c7;color:#b45309}
+  .badge-cold{background:#fee2e2;color:#b91c1c}
+  .badge-hot{background:#dcfce7;color:#15803d}
+  .why-text{font-size:10px;color:#94a3b8;max-width:220px;white-space:normal;line-height:1.4}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -135,6 +152,18 @@
   </header>
 
   <main>
+    <div class="info-banner" id="data-hint">
+      Default view: <strong>Partners Distribution</strong> pipeline. Priority score ranks open deals by value, stage, and recency.
+      <strong>Last touch</strong> is parsed from note dates (no create date in export). Stalled = no touch in 90+ days or no notes on open deals.
+    </div>
+
+    <div class="view-tabs">
+      <button type="button" class="view-tab active" data-view="overview">Overview</button>
+      <button type="button" class="view-tab" data-view="priority">Priority queue</button>
+      <button type="button" class="view-tab" data-view="stalled">Stalled deals</button>
+    </div>
+
+    <div id="view-overview" class="view-panel active">
     <!-- KPIs -->
     <div class="kpi-grid">
       <div class="kpi">
@@ -154,11 +183,11 @@
         </div>
       </div>
       <div class="kpi">
-        <div class="kpi-icon kpi-red">❌</div>
+        <div class="kpi-icon kpi-red">⏸</div>
         <div>
-          <div class="kpi-label">Closed Lost</div>
-          <div class="kpi-value" id="kpi-lost">—</div>
-          <div class="kpi-sub" id="kpi-lost-sub"></div>
+          <div class="kpi-label">Stalled (open)</div>
+          <div class="kpi-value" id="kpi-stale">—</div>
+          <div class="kpi-sub" id="kpi-stale-sub"></div>
         </div>
       </div>
       <div class="kpi">
@@ -195,15 +224,15 @@
         <div class="table-title">Opportunities <span class="table-count" id="table-count"></span></div>
         <div class="search-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="search" placeholder="Search deals, companies, notes…" oninput="renderTable()"/>
+          <input type="text" id="search" placeholder="Search deals, companies, notes…" oninput="onFiltersChanged()"/>
         </div>
-        <select class="filter-select" id="filter-status" onchange="renderTable()">
+        <select class="filter-select" id="filter-status" onchange="onFiltersChanged()">
           <option value="all">All statuses</option>
           <option value="won">Won</option>
           <option value="lost">Lost</option>
           <option value="open">Open</option>
         </select>
-        <select class="filter-select" id="filter-pipeline" onchange="renderTable()">
+        <select class="filter-select" id="filter-pipeline" onchange="onFiltersChanged()">
           <option value="all">All pipelines</option>
         </select>
       </div>
@@ -211,14 +240,18 @@
         <table>
           <thead>
             <tr>
+              <th onclick="sortBy('priorityScore')">Score ↕</th>
               <th onclick="sortBy('name')">Deal ↕</th>
               <th onclick="sortBy('company')">Company ↕</th>
               <th onclick="sortBy('pipeline')">Pipeline ↕</th>
               <th onclick="sortBy('stage')">Stage ↕</th>
               <th onclick="sortBy('amount')">Amount ↕</th>
+              <th onclick="sortBy('lastNoteDate')">Last touch ↕</th>
+              <th onclick="sortBy('daysSinceLastTouch')">Days idle ↕</th>
               <th onclick="sortBy('closeDate')">Close Date ↕</th>
               <th onclick="sortBy('owner')">Owner ↕</th>
               <th onclick="sortBy('status')">Status ↕</th>
+              <th>Flags</th>
               <th>Notes</th>
             </tr>
           </thead>
@@ -227,6 +260,65 @@
         <div class="empty-state" id="empty-state" style="display:none">No deals found.</div>
       </div>
     </div>
+    </div><!-- /view-overview -->
+
+    <div id="view-priority" class="view-panel">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">Priority queue <span class="table-count" id="priority-count"></span></div>
+          <span class="table-count">Open deals ranked by score (highest first)</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Score</th>
+                <th>Deal</th>
+                <th>Company</th>
+                <th>Stage</th>
+                <th>Amount</th>
+                <th>Last touch</th>
+                <th>Days idle</th>
+                <th>Owner</th>
+                <th>Flags</th>
+                <th>Why</th>
+              </tr>
+            </thead>
+            <tbody id="priority-body"></tbody>
+          </table>
+          <div class="empty-state" id="priority-empty" style="display:none">No open deals in this pipeline filter.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-stalled" class="view-panel">
+      <div class="table-card">
+        <div class="table-header">
+          <div class="table-title">Stalled deals <span class="table-count" id="stalled-count"></span></div>
+          <span class="table-count">90+ days since last note, or open with no notes</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Deal</th>
+                <th>Amount</th>
+                <th>Stage</th>
+                <th>Last touch</th>
+                <th>Days idle</th>
+                <th>Close date</th>
+                <th>Owner</th>
+                <th>Reason</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="stalled-body"></tbody>
+          </table>
+          <div class="empty-state" id="stalled-empty" style="display:none">No stalled deals for this filter.</div>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -263,38 +355,223 @@ document.getElementById('inp-pass').addEventListener('keydown', e => {
 // Check session on load
 if (sessionStorage.getItem('davyn_auth')) showDashboard()
 
+// ── CONFIG ───────────────────────────────────────────────────────────────
+const DEFAULT_PIPELINE = 'Partners Distribution'
+const STALE_DAYS = 90
+const NOTE_DATE_RE = /\[(\d{4}-\d{2}-\d{2})/g
+const STAGE_WEIGHTS = {
+  'Economical Allignment Started': 1.0,
+  'Economical Alignment Started': 1.0,
+  'Demo Booked': 0.85,
+  'Factorial Project Alignment started': 0.7,
+  'To reschedule': 0.5,
+  'On Hold': 0.35,
+  'New Deals': 0.2,
+  'Closed Won': 0.1,
+  'Closed Lost': 0.05,
+}
+
 // ── DATA ──────────────────────────────────────────────────────────────────
-let allDeals = []
+let enrichedDeals = []
 let sortKey  = 'name'
 let sortAsc  = true
 let expandedId = null
+let activeView = 'overview'
 
 async function showDashboard() {
   document.getElementById('login-screen').style.display = 'none'
   document.getElementById('dashboard').style.display = 'block'
   await loadData()
+  setupTabs()
 }
 
 async function loadData() {
   const res  = await fetch('data.json?v=' + Date.now())
   const json = await res.json()
-  allDeals   = json.deals
+  enrichedDeals = json.deals.map(enrichDeal)
   document.getElementById('updated-badge').textContent = 'Data as of ' + json.updatedAt
 
   populatePipelineFilter()
+  onFiltersChanged()
+}
+
+function setupTabs() {
+  document.querySelectorAll('.view-tab').forEach(btn => {
+    btn.addEventListener('click', () => setView(btn.dataset.view))
+  })
+}
+
+function setView(name) {
+  activeView = name
+  document.querySelectorAll('.view-tab').forEach(b => b.classList.toggle('active', b.dataset.view === name))
+  document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.id === 'view-' + name))
+}
+
+function onFiltersChanged() {
   renderKPIs()
   renderCharts()
   renderTable()
+  renderPriorityQueue()
+  renderStalled()
 }
 
 function populatePipelineFilter() {
   const sel = document.getElementById('filter-pipeline')
-  const pipes = [...new Set(allDeals.map(d => d.pipeline))].sort()
+  const pipes = [...new Set(enrichedDeals.map(d => d.pipeline))].sort()
+  sel.innerHTML = '<option value="all">All pipelines</option>'
   pipes.forEach(p => {
     const o = document.createElement('option')
-    o.value = p; o.textContent = p
+    o.value = p
+    o.textContent = p
     sel.appendChild(o)
   })
+  if (pipes.includes(DEFAULT_PIPELINE)) sel.value = DEFAULT_PIPELINE
+}
+
+function parseNoteDates(notes) {
+  if (!notes) return []
+  const out = []
+  let m
+  const re = new RegExp(NOTE_DATE_RE.source, 'g')
+  while ((m = re.exec(notes)) !== null) out.push(m[1])
+  return out
+}
+
+function daysBetween(fromStr, toDate) {
+  const a = new Date(fromStr + 'T00:00:00')
+  const b = new Date(toDate)
+  b.setHours(0, 0, 0, 0)
+  return Math.floor((b - a) / 86400000)
+}
+
+function getStageWeight(stage) {
+  if (!stage) return 0.25
+  if (STAGE_WEIGHTS[stage] != null) return STAGE_WEIGHTS[stage]
+  const s = stage.toLowerCase()
+  if (s.includes('demo')) return 0.85
+  if (s.includes('alignment') || s.includes('allignment')) return 0.7
+  if (s.includes('hold')) return 0.35
+  if (s.includes('new')) return 0.2
+  if (s.includes('won')) return 0.1
+  if (s.includes('lost')) return 0.05
+  return 0.4
+}
+
+function norm(values, v) {
+  const nums = values.filter(x => x != null && !isNaN(x))
+  if (!nums.length) return 0
+  const mx = Math.max(...nums)
+  const mn = Math.min(...nums)
+  if (mx === mn) return v > 0 ? 1 : 0
+  return (v - mn) / (mx - mn)
+}
+
+function enrichDeal(d) {
+  const today = new Date()
+  const noteDates = parseNoteDates(d.notes)
+  const lastNoteDate = noteDates.length ? noteDates.sort().pop() : null
+  const daysSinceLastTouch = lastNoteDate != null ? daysBetween(lastNoteDate, today) : null
+  const daysOpen = d.createDate ? daysBetween(String(d.createDate).slice(0, 10), today) : null
+
+  const notesLower = (d.notes || '').toLowerCase()
+  const atRisk = /\b(tbd|cold|unclear)\b/i.test(d.notes || '')
+  const nearClose = /\b(signature|signed|approved budget|cfo|expecting signature)\b/i.test(d.notes || '')
+
+  const isOpen = d.status === 'open'
+  let isStale = false
+  let staleReason = ''
+  if (isOpen) {
+    if (daysSinceLastTouch != null && daysSinceLastTouch >= STALE_DAYS) {
+      isStale = true
+      staleReason = `No note activity in ${daysSinceLastTouch} days`
+    } else if (!d.notes || !String(d.notes).trim()) {
+      isStale = true
+      staleReason = 'Open deal with no notes logged'
+    } else if (daysSinceLastTouch == null && noteDates.length === 0 && (d.amount || 0) >= 2000) {
+      isStale = true
+      staleReason = 'Notes without dates — high value, review manually'
+    }
+  }
+
+  const queueClose = isOpen && (
+    (d.stage || '').toLowerCase().includes('demo booked') || nearClose
+  )
+  const queueUnblock = isOpen && (d.amount || 0) >= 5000 && isStale
+  const queueActivate = isOpen && (d.stage || '').toLowerCase().includes('new') && !d.notes
+
+  return {
+    ...d,
+    lastNoteDate,
+    daysSinceLastTouch,
+    daysOpen,
+    atRisk,
+    isStale,
+    staleReason,
+    queueClose,
+    queueUnblock,
+    queueActivate,
+    stageWeight: getStageWeight(d.stage),
+    priorityScore: 0,
+    priorityWhy: '',
+  }
+}
+
+function computeScores(deals) {
+  const openDeals = deals.filter(d => d.status === 'open')
+  const amounts = openDeals.map(d => d.amount || 0)
+  openDeals.forEach(d => {
+    const amountN = norm(amounts, d.amount || 0)
+    const stageN = d.stageWeight
+    let recencyN = 0.35
+    if (d.daysSinceLastTouch != null) {
+      recencyN = Math.max(0, 1 - Math.min(d.daysSinceLastTouch, 180) / 180)
+    } else if (!d.notes) {
+      recencyN = 0.1
+    }
+    const closeBoost = d.queueClose ? 0.08 : 0
+    const riskPenalty = d.atRisk ? 0.06 : 0
+    const stalePenalty = d.isStale ? 0.05 : 0
+    const score01 = 0.38 * amountN + 0.32 * stageN + 0.22 * recencyN + closeBoost - riskPenalty - stalePenalty
+    d.priorityScore = Math.round(Math.max(0, Math.min(1, score01)) * 100)
+    const why = []
+    if ((d.amount || 0) >= 5000) why.push('High value')
+    if (d.stageWeight >= 0.7) why.push('Late stage')
+    if (d.queueClose) why.push('Near close')
+    if (d.daysSinceLastTouch != null && d.daysSinceLastTouch <= 14) why.push('Recent activity')
+    if (d.isStale) why.push('Stalled')
+    if (d.atRisk) why.push('At risk (TBD/cold)')
+    if (!why.length) why.push('Standard open deal')
+    d.priorityWhy = why.join(' · ')
+  })
+  deals.forEach(d => {
+    if (d.status !== 'open') d.priorityScore = 0
+  })
+}
+
+function getScopedDeals() {
+  const pipe = document.getElementById('filter-pipeline').value
+  return enrichedDeals.filter(d => pipe === 'all' || d.pipeline === pipe)
+}
+
+function getFiltered() {
+  const q  = document.getElementById('search').value.toLowerCase()
+  const st = document.getElementById('filter-status').value
+  return getScopedDeals()
+    .filter(d => st === 'all' || d.status === st)
+    .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner].join(' ').toLowerCase().includes(q))
+    .sort((a, b) => compareSort(a, b))
+}
+
+function compareSort(a, b) {
+  const numKeys = ['priorityScore', 'daysSinceLastTouch', 'daysOpen', 'amount']
+  if (numKeys.includes(sortKey)) {
+    const av = a[sortKey] ?? -1
+    const bv = b[sortKey] ?? -1
+    return sortAsc ? av - bv : bv - av
+  }
+  const av = String(a[sortKey] ?? '')
+  const bv = String(b[sortKey] ?? '')
+  return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av)
 }
 
 // ── KPIs ─────────────────────────────────────────────────────────────────
@@ -304,21 +581,23 @@ function fmt(n, cur) {
 }
 
 function renderKPIs() {
-  const won  = allDeals.filter(d => d.status === 'won')
-  const lost = allDeals.filter(d => d.status === 'lost')
-  const open = allDeals.filter(d => d.status === 'open')
-  const wonVal  = won.reduce((s,d) => s+(d.amount||0), 0)
-  const openVal = open.reduce((s,d) => s+(d.amount||0), 0)
-  const wr = allDeals.length ? Math.round(won.length/allDeals.length*100) : 0
+  const scoped = getScopedDeals()
+  computeScores(scoped)
+  const won  = scoped.filter(d => d.status === 'won')
+  const open = scoped.filter(d => d.status === 'open')
+  const stale = open.filter(d => d.isStale)
+  const wonVal  = won.reduce((s, d) => s + (d.amount || 0), 0)
+  const openVal = open.reduce((s, d) => s + (d.amount || 0), 0)
+  const wr = scoped.length ? Math.round(won.length / scoped.length * 100) : 0
 
-  document.getElementById('kpi-total').textContent     = allDeals.length
+  document.getElementById('kpi-total').textContent = scoped.length
   document.getElementById('kpi-total-sub').textContent = open.length + ' open'
-  document.getElementById('kpi-won').textContent       = won.length
-  document.getElementById('kpi-won-sub').textContent   = wr + '% win rate'
-  document.getElementById('kpi-lost').textContent      = lost.length
-  document.getElementById('kpi-lost-sub').textContent  = lost.length + ' deals lost'
-  document.getElementById('kpi-value').textContent     = fmt(wonVal, 'USD')
-  document.getElementById('kpi-value-sub').textContent = 'Pipeline: ' + fmt(openVal,'USD')
+  document.getElementById('kpi-won').textContent = won.length
+  document.getElementById('kpi-won-sub').textContent = wr + '% win rate'
+  document.getElementById('kpi-stale').textContent = stale.length
+  document.getElementById('kpi-stale-sub').textContent = open.length ? Math.round(stale.length / open.length * 100) + '% of open' : '—'
+  document.getElementById('kpi-value').textContent = fmt(wonVal, 'USD')
+  document.getElementById('kpi-value-sub').textContent = 'Open pipeline: ' + fmt(openVal, 'USD')
 }
 
 // ── CHARTS ────────────────────────────────────────────────────────────────
@@ -326,9 +605,9 @@ let charts = {}
 function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id] } }
 
 function renderCharts() {
-  // Pipeline
+  const scoped = getScopedDeals()
   const pm = {}
-  allDeals.forEach(d => pm[d.pipeline] = (pm[d.pipeline]||0)+1)
+  scoped.forEach(d => pm[d.pipeline] = (pm[d.pipeline] || 0) + 1)
   const pLabels = Object.keys(pm).sort((a,b)=>pm[b]-pm[a])
   const pData   = pLabels.map(k=>pm[k])
   destroyChart('pipeline')
@@ -343,9 +622,9 @@ function renderCharts() {
   })
 
   // Status pie
-  const won=allDeals.filter(d=>d.status==='won').length
-  const lost=allDeals.filter(d=>d.status==='lost').length
-  const open=allDeals.filter(d=>d.status==='open').length
+  const won = scoped.filter(d => d.status === 'won').length
+  const lost = scoped.filter(d => d.status === 'lost').length
+  const open = scoped.filter(d => d.status === 'open').length
   destroyChart('status')
   charts['status'] = new Chart(document.getElementById('chart-status'), {
     type:'doughnut',
@@ -361,7 +640,7 @@ function renderCharts() {
 
   // Stage bar
   const sm = {}
-  allDeals.forEach(d => sm[d.stage] = (sm[d.stage]||0)+1)
+  scoped.forEach(d => sm[d.stage] = (sm[d.stage] || 0) + 1)
   const sLabels = Object.keys(sm).sort((a,b)=>sm[b]-sm[a]).slice(0,10)
   const sData   = sLabels.map(k=>sm[k])
   destroyChart('stage')
@@ -383,28 +662,40 @@ function renderCharts() {
 function sortBy(key) {
   if (sortKey === key) sortAsc = !sortAsc
   else { sortKey = key; sortAsc = true }
-  renderTable()
+  onFiltersChanged()
 }
 
-function getFiltered() {
-  const q    = document.getElementById('search').value.toLowerCase()
-  const st   = document.getElementById('filter-status').value
-  const pipe = document.getElementById('filter-pipeline').value
-  return allDeals
-    .filter(d => st === 'all' || d.status === st)
-    .filter(d => pipe === 'all' || d.pipeline === pipe)
-    .filter(d => !q || [d.name,d.company,d.stage,d.pipeline,d.notes].join(' ').toLowerCase().includes(q))
-    .sort((a,b) => {
-      const av = String(a[sortKey]||''), bv = String(b[sortKey]||'')
-      return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av)
-    })
+function esc(s) {
+  return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
+}
+
+function scoreClass(n) {
+  if (n >= 70) return 'high'
+  if (n >= 45) return 'mid'
+  return 'low'
+}
+
+function idleLabel(d) {
+  if (d.daysSinceLastTouch != null) return String(d.daysSinceLastTouch)
+  if (!d.notes) return '—'
+  return '?'
+}
+
+function flagsHtml(d) {
+  const f = []
+  if (d.isStale) f.push('<span class="badge badge-stale">Stalled</span>')
+  if (d.atRisk) f.push('<span class="badge badge-cold">At risk</span>')
+  if (d.queueClose) f.push('<span class="badge badge-hot">Hot</span>')
+  return f.length ? f.join(' ') : '<span style="color:#cbd5e1">—</span>'
 }
 
 function renderTable() {
+  const scoped = getScopedDeals()
+  computeScores(scoped)
   const filtered = getFiltered()
   const tbody = document.getElementById('table-body')
   const empty = document.getElementById('empty-state')
-  document.getElementById('table-count').textContent = `(${filtered.length} of ${allDeals.length})`
+  document.getElementById('table-count').textContent = `(${filtered.length} of ${scoped.length})`
 
   if (!filtered.length) {
     tbody.innerHTML = ''
@@ -421,27 +712,111 @@ function renderTable() {
 
   tbody.innerHTML = filtered.map(d => {
     const isExp = expandedId === d.id
-    const rowClass = d.status==='won'?'style="background:#f0fdf4"':d.status==='lost'?'style="background:#fef2f2"':''
-    const amt = d.amount!=null ? new Intl.NumberFormat('en-US',{style:'currency',currency:d.currency||'USD',maximumFractionDigits:0}).format(d.amount) : '—'
+    const rowClass = d.status === 'won' ? 'style="background:#f0fdf4"' : d.status === 'lost' ? 'style="background:#fef2f2"' : ''
+    const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
+    const sc = d.status === 'open' ? d.priorityScore : '—'
     const mainRow = `<tr ${rowClass}>
-      <td class="deal-name" title="${d.name}">${d.name}</td>
-      <td title="${d.company}">${d.company}</td>
-      <td title="${d.pipeline}">${d.pipeline}</td>
-      <td title="${d.stage}">${d.stage}</td>
+      <td>${d.status === 'open' ? `<span class="score-pill ${scoreClass(d.priorityScore)}">${sc}</span>` : '—'}</td>
+      <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
+      <td title="${esc(d.company)}">${esc(d.company)}</td>
+      <td title="${esc(d.pipeline)}">${esc(d.pipeline)}</td>
+      <td title="${esc(d.stage)}">${esc(d.stage)}</td>
       <td class="amount">${amt}</td>
-      <td>${d.closeDate||'—'}</td>
-      <td title="${d.owner}">${d.owner}</td>
+      <td>${d.lastNoteDate || '—'}</td>
+      <td class="num">${idleLabel(d)}</td>
+      <td>${d.closeDate || '—'}</td>
+      <td title="${esc(d.owner)}">${esc(d.owner)}</td>
       <td>${statusBadge(d.status)}</td>
+      <td>${flagsHtml(d)}</td>
       <td>${d.notes
-        ? `<button class="notes-btn" onclick="toggleNotes('${d.id}')">💬 ${isExp?'Close':'View notes'}</button>`
+        ? `<button class="notes-btn" onclick="toggleNotes(${JSON.stringify(String(d.id))})">💬 ${isExp ? 'Close' : 'View'}</button>`
         : '<span style="color:#cbd5e1">—</span>'
       }</td>
     </tr>`
     const notesRow = isExp && d.notes
-      ? `<tr class="notes-row"><td colspan="9">${d.notes.replace(/</g,'&lt;')}</td></tr>`
+      ? `<tr class="notes-row"><td colspan="13">${esc(d.notes)}</td></tr>`
       : ''
     return mainRow + notesRow
   }).join('')
+}
+
+function renderPriorityQueue() {
+  const scoped = getScopedDeals()
+  computeScores(scoped)
+  const st = document.getElementById('filter-status').value
+  const q = document.getElementById('search').value.toLowerCase()
+  let deals = scoped.filter(d => d.status === 'open')
+  if (st !== 'all' && st !== 'open') deals = []
+  if (q) deals = deals.filter(d => [d.name, d.company, d.stage, d.notes].join(' ').toLowerCase().includes(q))
+  deals = deals.sort((a, b) => b.priorityScore - a.priorityScore)
+
+  const tbody = document.getElementById('priority-body')
+  const empty = document.getElementById('priority-empty')
+  document.getElementById('priority-count').textContent = `(${deals.length})`
+
+  if (!deals.length) {
+    tbody.innerHTML = ''
+    empty.style.display = 'block'
+    return
+  }
+  empty.style.display = 'none'
+  tbody.innerHTML = deals.map(d => {
+    const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
+    return `<tr>
+      <td><span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span></td>
+      <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
+      <td title="${esc(d.company)}">${esc(d.company)}</td>
+      <td title="${esc(d.stage)}">${esc(d.stage)}</td>
+      <td class="amount">${amt}</td>
+      <td>${d.lastNoteDate || '—'}</td>
+      <td class="num">${idleLabel(d)}</td>
+      <td title="${esc(d.owner)}">${esc(d.owner)}</td>
+      <td>${flagsHtml(d)}</td>
+      <td class="why-text">${esc(d.priorityWhy)}</td>
+    </tr>`
+  }).join('')
+}
+
+function renderStalled() {
+  const scoped = getScopedDeals()
+  const st = document.getElementById('filter-status').value
+  const q = document.getElementById('search').value.toLowerCase()
+  let deals = scoped.filter(d => d.isStale)
+  if (st !== 'all') deals = deals.filter(d => d.status === st)
+  if (q) deals = deals.filter(d => [d.name, d.company, d.stage, d.notes].join(' ').toLowerCase().includes(q))
+  deals = deals.sort((a, b) => (b.amount || 0) - (a.amount || 0) || (b.daysSinceLastTouch ?? 999) - (a.daysSinceLastTouch ?? 999))
+
+  const tbody = document.getElementById('stalled-body')
+  const empty = document.getElementById('stalled-empty')
+  document.getElementById('stalled-count').textContent = `(${deals.length})`
+
+  if (!deals.length) {
+    tbody.innerHTML = ''
+    empty.style.display = 'block'
+    return
+  }
+  empty.style.display = 'none'
+  tbody.innerHTML = deals.map(d => {
+    const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
+    return `<tr>
+      <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
+      <td class="amount">${amt}</td>
+      <td title="${esc(d.stage)}">${esc(d.stage)}</td>
+      <td>${d.lastNoteDate || '—'}</td>
+      <td class="num">${idleLabel(d)}</td>
+      <td>${d.closeDate || '—'}</td>
+      <td title="${esc(d.owner)}">${esc(d.owner)}</td>
+      <td class="why-text">${esc(d.staleReason)}</td>
+      <td>${d.notes ? `<button class="notes-btn" onclick="toggleNotesStalled(${JSON.stringify(String(d.id))})">View</button>` : '—'}</td>
+    </tr>`
+  }).join('')
+}
+
+let stalledNotesId = null
+function toggleNotesStalled(id) {
+  stalledNotesId = stalledNotesId === id ? null : id
+  const d = enrichedDeals.find(x => x.id === id)
+  if (d && d.notes) alert(d.notes)
 }
 
 function toggleNotes(id) {
