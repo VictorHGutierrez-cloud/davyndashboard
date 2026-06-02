@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Davyn Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
+
+  /* LOGIN */
+  #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1e3a5f,#2563eb)}
+  .login-box{background:#fff;border-radius:20px;padding:40px;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .login-logo{width:56px;height:56px;background:rgba(37,99,235,.1);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px}
+  .login-box h1{text-align:center;font-size:20px;font-weight:700;color:#1e293b;margin-bottom:4px}
+  .login-box p{text-align:center;font-size:12px;color:#94a3b8;margin-bottom:28px}
+  .form-group{margin-bottom:16px}
+  .form-group label{display:block;font-size:12px;font-weight:600;color:#475569;margin-bottom:6px}
+  .form-group input{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:13px;outline:none;transition:.2s}
+  .form-group input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .btn-login{width:100%;background:#2563eb;color:#fff;border:none;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;margin-top:4px}
+  .btn-login:hover{background:#1d4ed8}
+  .login-error{color:#ef4444;font-size:12px;background:#fef2f2;border-radius:8px;padding:8px 12px;margin-top:12px;display:none}
+
+  /* DASHBOARD */
+  #dashboard{display:none}
+  header{background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:100;padding:0 24px}
+  .header-inner{max-width:1400px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between}
+  .header-brand{display:flex;align-items:center;gap:10px}
+  .header-icon{width:32px;height:32px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+  .header-title{font-size:14px;font-weight:700;color:#1e293b}
+  .header-sub{font-size:11px;color:#94a3b8}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .updated-badge{font-size:11px;color:#94a3b8}
+  .btn-sm{font-size:11px;padding:6px 12px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:500;transition:.2s}
+  .btn-refresh{background:#f1f5f9;color:#475569}.btn-refresh:hover{background:#e2e8f0}
+  .btn-logout{background:transparent;color:#ef4444}.btn-logout:hover{background:#fef2f2}
+
+  main{max-width:1400px;margin:0 auto;padding:24px}
+
+  /* KPIs */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:#fff;border-radius:16px;padding:20px;display:flex;gap:14px;align-items:flex-start;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .kpi-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .kpi-blue{background:#eff6ff}.kpi-green{background:#f0fdf4}.kpi-red{background:#fef2f2}.kpi-amber{background:#fffbeb}
+  .kpi-label{font-size:11px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px}
+  .kpi-value{font-size:26px;font-weight:800;color:#1e293b;line-height:1.1;margin:2px 0}
+  .kpi-sub{font-size:11px;color:#94a3b8}
+
+  /* CHARTS */
+  .charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px}
+  @media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
+  .chart-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .chart-card h3{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:16px}
+  .chart-wrap{position:relative;height:220px}
+
+  /* TABLE */
+  .table-card{background:#fff;border-radius:16px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04);overflow:hidden}
+  .table-header{padding:16px 20px;border-bottom:1px solid #f1f5f9;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .table-title{font-size:13px;font-weight:700;color:#1e293b;margin-right:auto}
+  .table-count{font-size:11px;color:#94a3b8;font-weight:400}
+  .search-wrap{position:relative}
+  .search-wrap input{padding:7px 12px 7px 30px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;outline:none;width:220px;transition:.2s}
+  .search-wrap input:focus{border-color:#2563eb}
+  .search-icon{position:absolute;left:9px;top:8px;color:#94a3b8;font-size:13px}
+  .filter-select{padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:12px;outline:none;color:#475569;cursor:pointer}
+  .filter-select:focus{border-color:#2563eb}
+
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:#64748b;background:#f8fafc;white-space:nowrap;cursor:pointer;user-select:none}
+  thead th:hover{color:#1e293b}
+  tbody tr{border-top:1px solid #f8fafc;transition:.1s}
+  tbody tr:hover{background:#f8fafc}
+  tbody td{padding:10px 14px;color:#475569;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  td.deal-name{font-weight:600;color:#1e293b;max-width:240px}
+  td.amount{font-family:monospace;font-size:11px;color:#1e293b;white-space:nowrap}
+
+  .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700}
+  .badge-won{background:#dcfce7;color:#15803d}
+  .badge-lost{background:#fee2e2;color:#b91c1c}
+  .badge-open{background:#dbeafe;color:#1d4ed8}
+
+  .notes-btn{background:none;border:none;color:#2563eb;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;padding:2px 0;white-space:nowrap}
+  .notes-btn:hover{text-decoration:underline}
+  .notes-row td{background:#fffbeb;padding:12px 20px;font-size:11px;color:#475569;white-space:pre-wrap;line-height:1.6;max-width:none}
+
+  .empty-state{text-align:center;padding:40px;color:#94a3b8;font-size:13px}
+
+  /* stage chart full width */
+  .stage-card{background:#fff;border-radius:16px;padding:20px;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:24px}
+  .stage-card h3{font-size:13px;font-weight:700;color:#1e293b;margin-bottom:16px}
+  .stage-wrap{position:relative;height:160px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">📊</div>
+    <h1>Davyn Dashboard</h1>
+    <p>Factorial · Partner Opportunities</p>
+    <div class="form-group">
+      <label>E-mail</label>
+      <input type="email" id="inp-email" placeholder="you@factorial.co" autocomplete="email"/>
+    </div>
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <div class="login-error" id="login-error">E-mail ou senha incorretos.</div>
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header>
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="header-icon">📊</div>
+        <div>
+          <div class="header-title">Davyn Dashboard</div>
+          <div class="header-sub">Factorial · Partner Opportunities</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="updated-badge" id="updated-badge"></span>
+        <button class="btn-sm btn-logout" onclick="doLogout()">⎋ Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-icon kpi-blue">📁</div>
+        <div>
+          <div class="kpi-label">Total de Deals</div>
+          <div class="kpi-value" id="kpi-total">—</div>
+          <div class="kpi-sub" id="kpi-total-sub"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon kpi-green">✅</div>
+        <div>
+          <div class="kpi-label">Closed Won</div>
+          <div class="kpi-value" id="kpi-won">—</div>
+          <div class="kpi-sub" id="kpi-won-sub"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon kpi-red">❌</div>
+        <div>
+          <div class="kpi-label">Closed Lost</div>
+          <div class="kpi-value" id="kpi-lost">—</div>
+          <div class="kpi-sub" id="kpi-lost-sub"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon kpi-amber">💰</div>
+        <div>
+          <div class="kpi-label">Valor Won (USD)</div>
+          <div class="kpi-value" id="kpi-value">—</div>
+          <div class="kpi-sub" id="kpi-value-sub"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Deals por Pipeline</h3>
+        <div class="chart-wrap"><canvas id="chart-pipeline"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Status Geral</h3>
+        <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
+      </div>
+    </div>
+
+    <!-- STAGE CHART -->
+    <div class="stage-card">
+      <h3>Top Stages</h3>
+      <div class="stage-wrap"><canvas id="chart-stage"></canvas></div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-card">
+      <div class="table-header">
+        <div class="table-title">Oportunidades <span class="table-count" id="table-count"></span></div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search" placeholder="Buscar deal, empresa, notas…" oninput="renderTable()"/>
+        </div>
+        <select class="filter-select" id="filter-status" onchange="renderTable()">
+          <option value="all">Todos os status</option>
+          <option value="won">Won</option>
+          <option value="lost">Lost</option>
+          <option value="open">Em Aberto</option>
+        </select>
+        <select class="filter-select" id="filter-pipeline" onchange="renderTable()">
+          <option value="all">Todos os pipelines</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th onclick="sortBy('name')">Deal ↕</th>
+              <th onclick="sortBy('company')">Empresa ↕</th>
+              <th onclick="sortBy('pipeline')">Pipeline ↕</th>
+              <th onclick="sortBy('stage')">Stage ↕</th>
+              <th onclick="sortBy('amount')">Valor ↕</th>
+              <th onclick="sortBy('closeDate')">Close Date ↕</th>
+              <th onclick="sortBy('owner')">Owner ↕</th>
+              <th onclick="sortBy('status')">Status ↕</th>
+              <th>Notas</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+        <div class="empty-state" id="empty-state" style="display:none">Nenhum deal encontrado.</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── AUTH ──────────────────────────────────────────────────────────────────
+const USERS = {
+  'victor.gutierrez@factorial.co': 'Davyn2026',
+  'leon.ribeiro@factorial.co': 'Davyn2026'
+}
+
+function doLogin() {
+  const email = document.getElementById('inp-email').value.trim().toLowerCase()
+  const pass  = document.getElementById('inp-pass').value
+  const err   = document.getElementById('login-error')
+  if (USERS[email] && USERS[email] === pass) {
+    sessionStorage.setItem('davyn_auth', email)
+    err.style.display = 'none'
+    showDashboard()
+  } else {
+    err.style.display = 'block'
+  }
+}
+
+function doLogout() {
+  sessionStorage.removeItem('davyn_auth')
+  document.getElementById('dashboard').style.display = 'none'
+  document.getElementById('login-screen').style.display = 'flex'
+}
+
+document.getElementById('inp-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin()
+})
+
+// Check session on load
+if (sessionStorage.getItem('davyn_auth')) showDashboard()
+
+// ── DATA ──────────────────────────────────────────────────────────────────
+let allDeals = []
+let sortKey  = 'name'
+let sortAsc  = true
+let expandedId = null
+
+async function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('dashboard').style.display = 'block'
+  await loadData()
+}
+
+async function loadData() {
+  const res  = await fetch('data.json?v=' + Date.now())
+  const json = await res.json()
+  allDeals   = json.deals
+  document.getElementById('updated-badge').textContent = 'Dados de ' + json.updatedAt
+
+  populatePipelineFilter()
+  renderKPIs()
+  renderCharts()
+  renderTable()
+}
+
+function populatePipelineFilter() {
+  const sel = document.getElementById('filter-pipeline')
+  const pipes = [...new Set(allDeals.map(d => d.pipeline))].sort()
+  pipes.forEach(p => {
+    const o = document.createElement('option')
+    o.value = p; o.textContent = p
+    sel.appendChild(o)
+  })
+}
+
+// ── KPIs ─────────────────────────────────────────────────────────────────
+function fmt(n, cur) {
+  if (!n && n !== 0) return '—'
+  return new Intl.NumberFormat('en-US',{style:'currency',currency:cur||'USD',maximumFractionDigits:0}).format(n)
+}
+
+function renderKPIs() {
+  const won  = allDeals.filter(d => d.status === 'won')
+  const lost = allDeals.filter(d => d.status === 'lost')
+  const open = allDeals.filter(d => d.status === 'open')
+  const wonVal  = won.reduce((s,d) => s+(d.amount||0), 0)
+  const openVal = open.reduce((s,d) => s+(d.amount||0), 0)
+  const wr = allDeals.length ? Math.round(won.length/allDeals.length*100) : 0
+
+  document.getElementById('kpi-total').textContent     = allDeals.length
+  document.getElementById('kpi-total-sub').textContent = open.length + ' em aberto'
+  document.getElementById('kpi-won').textContent       = won.length
+  document.getElementById('kpi-won-sub').textContent   = wr + '% win rate'
+  document.getElementById('kpi-lost').textContent      = lost.length
+  document.getElementById('kpi-lost-sub').textContent  = lost.length + ' deals perdidos'
+  document.getElementById('kpi-value').textContent     = fmt(wonVal, 'USD')
+  document.getElementById('kpi-value-sub').textContent = 'Pipeline: ' + fmt(openVal,'USD')
+}
+
+// ── CHARTS ────────────────────────────────────────────────────────────────
+let charts = {}
+function destroyChart(id) { if(charts[id]) { charts[id].destroy(); delete charts[id] } }
+
+function renderCharts() {
+  // Pipeline
+  const pm = {}
+  allDeals.forEach(d => pm[d.pipeline] = (pm[d.pipeline]||0)+1)
+  const pLabels = Object.keys(pm).sort((a,b)=>pm[b]-pm[a])
+  const pData   = pLabels.map(k=>pm[k])
+  destroyChart('pipeline')
+  charts['pipeline'] = new Chart(document.getElementById('chart-pipeline'), {
+    type:'bar',
+    data:{ labels:pLabels, datasets:[{data:pData, backgroundColor:'#3b82f6', borderRadius:6}]},
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false}}, y:{ticks:{font:{size:10}}}}
+    }
+  })
+
+  // Status pie
+  const won=allDeals.filter(d=>d.status==='won').length
+  const lost=allDeals.filter(d=>d.status==='lost').length
+  const open=allDeals.filter(d=>d.status==='open').length
+  destroyChart('status')
+  charts['status'] = new Chart(document.getElementById('chart-status'), {
+    type:'doughnut',
+    data:{
+      labels:['Won','Lost','Em Aberto'],
+      datasets:[{data:[won,lost,open], backgroundColor:['#10b981','#ef4444','#3b82f6'], borderWidth:2}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom', labels:{font:{size:11}}}}
+    }
+  })
+
+  // Stage bar
+  const sm = {}
+  allDeals.forEach(d => sm[d.stage] = (sm[d.stage]||0)+1)
+  const sLabels = Object.keys(sm).sort((a,b)=>sm[b]-sm[a]).slice(0,10)
+  const sData   = sLabels.map(k=>sm[k])
+  destroyChart('stage')
+  charts['stage'] = new Chart(document.getElementById('chart-stage'), {
+    type:'bar',
+    data:{ labels:sLabels, datasets:[{data:sData, backgroundColor:'#8b5cf6', borderRadius:6}]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{font:{size:9}, maxRotation:25}},
+        y:{grid:{display:false}}
+      }
+    }
+  })
+}
+
+// ── TABLE ─────────────────────────────────────────────────────────────────
+function sortBy(key) {
+  if (sortKey === key) sortAsc = !sortAsc
+  else { sortKey = key; sortAsc = true }
+  renderTable()
+}
+
+function getFiltered() {
+  const q    = document.getElementById('search').value.toLowerCase()
+  const st   = document.getElementById('filter-status').value
+  const pipe = document.getElementById('filter-pipeline').value
+  return allDeals
+    .filter(d => st === 'all' || d.status === st)
+    .filter(d => pipe === 'all' || d.pipeline === pipe)
+    .filter(d => !q || [d.name,d.company,d.stage,d.pipeline,d.notes].join(' ').toLowerCase().includes(q))
+    .sort((a,b) => {
+      const av = String(a[sortKey]||''), bv = String(b[sortKey]||'')
+      return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av)
+    })
+}
+
+function renderTable() {
+  const filtered = getFiltered()
+  const tbody = document.getElementById('table-body')
+  const empty = document.getElementById('empty-state')
+  document.getElementById('table-count').textContent = `(${filtered.length} de ${allDeals.length})`
+
+  if (!filtered.length) {
+    tbody.innerHTML = ''
+    empty.style.display = 'block'
+    return
+  }
+  empty.style.display = 'none'
+
+  const statusBadge = s => ({
+    won:  '<span class="badge badge-won">Won</span>',
+    lost: '<span class="badge badge-lost">Lost</span>',
+    open: '<span class="badge badge-open">Em Aberto</span>',
+  }[s] || s)
+
+  tbody.innerHTML = filtered.map(d => {
+    const isExp = expandedId === d.id
+    const rowClass = d.status==='won'?'style="background:#f0fdf4"':d.status==='lost'?'style="background:#fef2f2"':''
+    const amt = d.amount!=null ? new Intl.NumberFormat('en-US',{style:'currency',currency:d.currency||'USD',maximumFractionDigits:0}).format(d.amount) : '—'
+    const mainRow = `<tr ${rowClass}>
+      <td class="deal-name" title="${d.name}">${d.name}</td>
+      <td title="${d.company}">${d.company}</td>
+      <td title="${d.pipeline}">${d.pipeline}</td>
+      <td title="${d.stage}">${d.stage}</td>
+      <td class="amount">${amt}</td>
+      <td>${d.closeDate||'—'}</td>
+      <td title="${d.owner}">${d.owner}</td>
+      <td>${statusBadge(d.status)}</td>
+      <td>${d.notes
+        ? `<button class="notes-btn" onclick="toggleNotes('${d.id}')">💬 ${isExp?'Fechar':'Ver notas'}</button>`
+        : '<span style="color:#cbd5e1">—</span>'
+      }</td>
+    </tr>`
+    const notesRow = isExp && d.notes
+      ? `<tr class="notes-row"><td colspan="9">${d.notes.replace(/</g,'&lt;')}</td></tr>`
+      : ''
+    return mainRow + notesRow
+  }).join('')
+}
+
+function toggleNotes(id) {
+  expandedId = expandedId === id ? null : id
+  renderTable()
+}
+</script>
+</body>
+</html>
