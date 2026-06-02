@@ -79,8 +79,22 @@
   main{max-width:1400px;margin:0 auto;padding:24px}
 
   /* KPIs */
-  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+  .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
   @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+  .dq-banner{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#92400e;line-height:1.5}
+  .dq-banner.ok{background:#f0fdf4;border-color:#bbf7d0;color:#166534}
+  .dq-banner strong{color:inherit}
+  .hs-link{display:inline-block;margin-top:8px;font-size:11px;font-weight:600;color:#2563eb;text-decoration:none}
+  .hs-link:hover{text-decoration:underline}
+  .scorecard-wrap{margin-bottom:20px}
+  .scorecard-table{width:100%;border-collapse:collapse;font-size:12px}
+  .scorecard-table th,.scorecard-table td{padding:10px 12px;text-align:left;border-bottom:1px solid #f1f5f9}
+  .scorecard-table th{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#94a3b8;font-weight:700}
+  .scorecard-table td.num{text-align:right}
+  .velocity-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+  .velocity-table th,.velocity-table td{padding:8px 12px;border-bottom:1px solid #f1f5f9;text-align:left}
+  .velocity-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .kpi-violet{background:#f5f3ff}
   .kpi{background:#fff;border-radius:16px;padding:20px;display:flex;gap:14px;align-items:flex-start;border:1px solid #f1f5f9;box-shadow:0 1px 3px rgba(0,0,0,.04)}
   .kpi-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
   .kpi-blue{background:#eff6ff}.kpi-green{background:#f0fdf4}.kpi-red{background:#fef2f2}.kpi-amber{background:#fffbeb}
@@ -385,9 +399,11 @@
       <button type="button" class="view-tab" data-view="priority">Priority queue</button>
       <button type="button" class="view-tab" data-view="stalled">Stalled deals</button>
       <button type="button" class="view-tab" data-view="actions">Next steps</button>
+      <button type="button" class="view-tab" data-view="partner">Davyn team</button>
     </div>
 
     <div id="view-overview" class="view-panel active">
+    <div class="dq-banner" id="dq-banner" style="display:none" role="status"></div>
     <!-- KPIs -->
     <div class="kpi-grid">
       <div class="kpi">
@@ -417,9 +433,25 @@
       <div class="kpi">
         <div class="kpi-icon kpi-amber" aria-hidden="true">$</div>
         <div>
-          <div class="kpi-label">Open Pipeline</div>
+          <div class="kpi-label" id="kpi-value-label">Open Pipeline</div>
           <div class="kpi-value" id="kpi-value">—</div>
           <div class="kpi-sub" id="kpi-value-sub"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon kpi-blue" aria-hidden="true">30</div>
+        <div>
+          <div class="kpi-label" id="kpi-close-label">Closing ≤30 days</div>
+          <div class="kpi-value" id="kpi-close">—</div>
+          <div class="kpi-sub" id="kpi-close-sub"></div>
+        </div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-icon kpi-violet" aria-hidden="true">W</div>
+        <div>
+          <div class="kpi-label" id="kpi-weighted-label">Weighted pipeline</div>
+          <div class="kpi-value" id="kpi-weighted">—</div>
+          <div class="kpi-sub" id="kpi-weighted-sub"></div>
         </div>
       </div>
     </div>
@@ -508,6 +540,31 @@
           </table>
           <div class="empty-state" id="priority-empty" style="display:none">No open deals in this pipeline filter.</div>
         </div>
+      </div>
+    </div>
+
+    <div id="view-partner" class="view-panel">
+      <div class="info-banner" id="partner-hint" style="margin-bottom:16px">
+        <strong>Davyn executive scorecard</strong> — open pipeline, hygiene, and win rate by Owner (Davyn). Use before your weekly partner call.
+      </div>
+      <div class="scorecard-wrap table-card" style="padding:0;overflow:hidden">
+        <div class="table-header">
+          <div class="table-title" id="scorecard-title">By Owner (Davyn)</div>
+        </div>
+        <div class="table-wrap" style="padding:0 8px 12px">
+          <table class="scorecard-table" id="sender-scorecard">
+            <thead><tr id="scorecard-head"></tr></thead>
+            <tbody id="scorecard-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3 id="velocity-title">Velocity — median days idle by stage</h3>
+        <p class="chart-sub" id="velocity-sub">Open deals only · lower is healthier</p>
+        <table class="velocity-table" id="velocity-table">
+          <thead><tr id="velocity-head"></tr></thead>
+          <tbody id="velocity-body"></tbody>
+        </table>
       </div>
     </div>
 
@@ -819,6 +876,8 @@ else showLoginScreen()
 // ── CONFIG ───────────────────────────────────────────────────────────────
 const DEFAULT_PIPELINE = 'Partners Distribution'
 const STALE_DAYS = 90
+const EUR_TO_USD = 1.08
+const CLOSE_HORIZON_DAYS = 30
 const NOTE_DATE_RE = /\[(\d{4}-\d{2}-\d{2})/g
 let LANG = (localStorage.getItem('davyn_lang') || 'en')
 let UPDATED_AT = null
@@ -889,9 +948,34 @@ const I18N = {
     tabPriority: 'Priority queue',
     tabStalled: 'Stalled deals',
     tabActions: 'Next steps',
+    tabPartner: 'Davyn team',
     emptyNoDeals: 'No deals found.',
     emptyNoPriority: 'No open deals in this pipeline filter.',
     emptyNoStalled: 'No stalled deals for this filter.',
+    kpiOpenSub: 'open',
+    kpiWinRateSub: 'win rate (closed only)',
+    kpiClosedDeals: 'closed',
+    kpiStalePct: 'of open stalled',
+    kpiUsdEquiv: 'USD equiv.',
+    kpiDealsLabel: 'deals',
+    kpiCloseLabel: 'Closing ≤30 days',
+    kpiWeightedLabel: 'Weighted pipeline',
+    kpiWeightedSub: 'Stage-weighted · USD equiv. @ EUR 1.08',
+    dqTitle: 'Data quality',
+    dqBody: (dq) => `Owner (Davyn) ${dq.pctSender}% · last activity ${dq.pctActivity}% · create date ${dq.pctCreate}% (${dq.n} deals in filter).`,
+    dqWarn: 'Improve CRM export before board-level metrics.',
+    dqOk: 'Data quality OK for executive review.',
+    openHubSpot: 'Open in HubSpot',
+    scOpenDeals: 'Open',
+    scOpenPipe: 'Open pipe (USD eq.)',
+    scStalled: 'Stalled',
+    scCritical: 'Critical',
+    scWinRate: 'Win rate',
+    scAvgDeal: 'Avg open (USD eq.)',
+    scNoSenders: 'No Owner (Davyn) on deals in this filter.',
+    velDeals: 'Deals',
+    velMedianIdle: 'Median idle',
+    weekOverWeekTitle: 'Week over week',
   },
   pt: {
     loginTitle: 'Davyn Dashboard',
@@ -958,9 +1042,34 @@ const I18N = {
     tabPriority: 'Fila de prioridade',
     tabStalled: 'Deals parados',
     tabActions: 'Próximos passos',
+    tabPartner: 'Equipa Davyn',
     emptyNoDeals: 'Nenhum deal encontrado.',
     emptyNoPriority: 'Sem deals abertos neste filtro de pipeline.',
     emptyNoStalled: 'Sem deals parados para este filtro.',
+    kpiOpenSub: 'abertos',
+    kpiWinRateSub: 'taxa vitória (só fechados)',
+    kpiClosedDeals: 'fechados',
+    kpiStalePct: 'dos abertos parados',
+    kpiUsdEquiv: 'equiv. USD',
+    kpiDealsLabel: 'deals',
+    kpiCloseLabel: 'Fecho ≤30 dias',
+    kpiWeightedLabel: 'Pipeline ponderado',
+    kpiWeightedSub: 'Por estágio · equiv. USD @ EUR 1,08',
+    dqTitle: 'Qualidade dos dados',
+    dqBody: (dq) => `Owner (Davyn) ${dq.pctSender}% · última atividade ${dq.pctActivity}% · data criação ${dq.pctCreate}% (${dq.n} deals no filtro).`,
+    dqWarn: 'Melhore o export CRM antes de métricas para direção.',
+    dqOk: 'Qualidade OK para revisão executiva.',
+    openHubSpot: 'Abrir no HubSpot',
+    scOpenDeals: 'Abertos',
+    scOpenPipe: 'Pipe aberto (USD eq.)',
+    scStalled: 'Parados',
+    scCritical: 'Críticos',
+    scWinRate: 'Taxa vitória',
+    scAvgDeal: 'Média aberto (USD eq.)',
+    scNoSenders: 'Sem Owner (Davyn) nos deals deste filtro.',
+    velDeals: 'Deals',
+    velMedianIdle: 'Mediana idle',
+    weekOverWeekTitle: 'Semana vs semana',
   },
 }
 
@@ -1012,6 +1121,7 @@ function applyI18n() {
     priority: t('tabPriority'),
     stalled: t('tabStalled'),
     actions: t('tabActions'),
+    partner: t('tabPartner'),
   }
   document.querySelectorAll('.view-tab').forEach(b => {
     if (tabText[b.dataset.view]) b.textContent = tabText[b.dataset.view]
@@ -1026,6 +1136,19 @@ function applyI18n() {
   updatePassToggleLabel()
   const le = document.getElementById('login-error')
   if (le && le.style.display !== 'block') le.textContent = t('loginError')
+
+  const kl = document.getElementById('kpi-close-label')
+  const kwl = document.getElementById('kpi-weighted-label')
+  if (kl) kl.textContent = t('kpiCloseLabel')
+  if (kwl) kwl.textContent = t('kpiWeightedLabel')
+  const ph = document.getElementById('partner-hint')
+  if (ph) ph.innerHTML = '<strong>' + t('tabPartner') + '</strong> — ' + (LANG === 'pt' ? 'pipe aberto, higiene e taxa de vitória por Owner (Davyn).' : 'open pipeline, hygiene, and win rate by Owner (Davyn).')
+  const st = document.getElementById('scorecard-title')
+  if (st) st.textContent = t('colOwnerDavyn')
+  const vt = document.getElementById('velocity-title')
+  const vs = document.getElementById('velocity-sub')
+  if (vt) vt.textContent = (LANG === 'pt' ? 'Velocidade — mediana dias idle por estágio' : 'Velocity — median days idle by stage')
+  if (vs) vs.textContent = LANG === 'pt' ? 'Só deals abertos · menor é melhor' : 'Open deals only · lower is healthier'
 
   const ht = document.getElementById('i18n-header-title')
   const hs = document.getElementById('i18n-header-sub')
@@ -1155,16 +1278,19 @@ function setView(name) {
   if (name === 'priority') renderTableHead('priority')
   if (name === 'stalled') renderTableHead('stalled')
   if (name === 'weekly') renderWeekly()
+  if (name === 'partner') { renderPartnerScorecard(); renderVelocityByStage() }
 }
 
 function onFiltersChanged() {
   renderKPIs()
+  renderDataQuality()
   if (activeView === 'overview') renderCharts()
   renderTable()
   renderPriorityQueue()
   renderStalled()
   renderNextSteps()
   renderWeekly()
+  if (activeView === 'partner') { renderPartnerScorecard(); renderVelocityByStage() }
 }
 
 function populatePipelineFilter() {
@@ -1301,7 +1427,77 @@ function enrichDeal(d) {
   }
   if (typeof d.priorityScore === 'number' && d.status === 'open') base.priorityScore = d.priorityScore
   if (d.dealSummary) base.dealSummary = d.dealSummary
+  base.amountUsd = resolveAmountUsd(base)
   return base
+}
+
+function resolveAmountUsd(d) {
+  if (typeof d.amountUsd === 'number' && !isNaN(d.amountUsd)) return d.amountUsd
+  const amt = d.amount || 0
+  const cur = String(d.currency || 'USD').toUpperCase()
+  if (cur === 'EUR') return Math.round(amt * EUR_TO_USD * 100) / 100
+  return amt
+}
+
+function sumOpenByCurrency(open) {
+  let usd = 0
+  let eur = 0
+  open.forEach(d => {
+    const cur = String(d.currency || 'USD').toUpperCase()
+    const amt = d.amount || 0
+    if (cur === 'EUR') eur += amt
+    else usd += amt
+  })
+  return { usd, eur }
+}
+
+function dealsClosingWithinDays(open, days) {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const limit = new Date(today)
+  limit.setDate(limit.getDate() + days)
+  return open.filter(d => {
+    if (!d.closeDate) return false
+    const cd = new Date(String(d.closeDate).slice(0, 10) + 'T00:00:00')
+    if (isNaN(cd.getTime())) return false
+    return cd >= today && cd <= limit
+  })
+}
+
+function weightedPipelineValue(open) {
+  return open.reduce((s, d) => s + resolveAmountUsd(d) * (d.stageWeight || 0.25), 0)
+}
+
+function computeDataQualityStats(deals) {
+  const n = deals.length || 1
+  return {
+    pctSender: Math.round((deals.filter(d => d.sender).length / n) * 100),
+    pctActivity: Math.round((deals.filter(d => d.lastActivityDate).length / n) * 100),
+    pctCreate: Math.round((deals.filter(d => d.createDate).length / n) * 100),
+    n,
+  }
+}
+
+function findDealForAction(action) {
+  if (!action || !action.dealName) return null
+  const needle = action.dealName.toLowerCase().trim()
+  return enrichedDeals.find(d => {
+    const n = (d.name || '').toLowerCase()
+    return n === needle || n.includes(needle) || needle.includes(n)
+  }) || null
+}
+
+function hubspotLinkHtml(url, label) {
+  if (!url) return ''
+  const lbl = label || t('openHubSpot')
+  return `<a class="hs-link" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${lbl} →</a>`
+}
+
+function median(nums) {
+  const a = nums.filter(x => x != null && !isNaN(x)).sort((x, y) => x - y)
+  if (!a.length) return null
+  const m = Math.floor(a.length / 2)
+  return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2
 }
 
 const URGENCY_ORDER = { critical: 0, high: 1, medium: 2, low: 3 }
@@ -1537,22 +1733,132 @@ function fmt(n, cur) {
 function renderKPIs() {
   const scoped = getScopedDeals()
   computeScores(scoped)
-  const won  = scoped.filter(d => d.status === 'won')
+  const won = scoped.filter(d => d.status === 'won')
+  const lost = scoped.filter(d => d.status === 'lost')
   const open = scoped.filter(d => d.status === 'open')
   const stale = open.filter(d => d.isStale)
-  const wonVal  = won.reduce((s, d) => s + (d.amount || 0), 0)
-  const openVal = open.reduce((s, d) => s + (d.amount || 0), 0)
-  const wr = scoped.length ? Math.round(won.length / scoped.length * 100) : 0
+  const closed = won.length + lost.length
+  const winRate = closed ? Math.round((won.length / closed) * 100) : 0
+  const { usd, eur } = sumOpenByCurrency(open)
+  const closing = dealsClosingWithinDays(open, CLOSE_HORIZON_DAYS)
+  const closeUsd = closing.reduce((s, d) => s + resolveAmountUsd(d), 0)
+  const weighted = weightedPipelineValue(open)
 
   document.getElementById('kpi-total').textContent = scoped.length
-  document.getElementById('kpi-total-sub').textContent = open.length + ' open'
+  document.getElementById('kpi-total-sub').textContent = open.length + ' ' + t('kpiOpenSub')
   document.getElementById('kpi-won').textContent = won.length
-  document.getElementById('kpi-won-sub').textContent = wr + '% win rate'
+  document.getElementById('kpi-won-sub').textContent = winRate + '% ' + t('kpiWinRateSub') + ' (' + closed + ' ' + t('kpiClosedDeals') + ')'
   document.getElementById('kpi-stale').textContent = stale.length
-  document.getElementById('kpi-stale-sub').textContent = open.length ? Math.round(stale.length / open.length * 100) + '% of open' : '—'
-  document.getElementById('kpi-value').textContent = fmt(openVal, 'USD')
+  document.getElementById('kpi-stale-sub').textContent = open.length ? Math.round(stale.length / open.length * 100) + '% ' + t('kpiStalePct') : '—'
+
+  const pipeParts = []
+  if (usd > 0) pipeParts.push(fmt(usd, 'USD'))
+  if (eur > 0) pipeParts.push(fmt(eur, 'EUR'))
+  document.getElementById('kpi-value').textContent = pipeParts.length ? pipeParts.join(' + ') : '—'
   const stalePct = open.length ? Math.round(stale.length / open.length * 100) : 0
-  document.getElementById('kpi-value-sub').textContent = stalePct + '% of open are stalled · Won: ' + fmt(wonVal, 'USD')
+  document.getElementById('kpi-value-sub').textContent = stalePct + '% ' + t('kpiStalePct') + ' · ~' + fmt(open.reduce((s, d) => s + resolveAmountUsd(d), 0), 'USD') + ' ' + t('kpiUsdEquiv')
+
+  document.getElementById('kpi-close').textContent = closing.length
+  document.getElementById('kpi-close-sub').textContent = fmt(closeUsd, 'USD') + ' ' + t('kpiUsdEquiv') + ' · ' + closing.length + ' ' + t('kpiDealsLabel')
+
+  document.getElementById('kpi-weighted').textContent = fmt(weighted, 'USD')
+  document.getElementById('kpi-weighted-sub').textContent = t('kpiWeightedSub')
+}
+
+function renderDataQuality() {
+  const el = document.getElementById('dq-banner')
+  if (!el) return
+  const scoped = getScopedDeals()
+  const dq = computeDataQualityStats(scoped)
+  const warn = dq.pctSender < 90 || dq.pctActivity < 90 || dq.pctCreate < 90
+  el.className = 'dq-banner' + (warn ? '' : ' ok')
+  el.style.display = 'block'
+  el.innerHTML = '<strong>' + t('dqTitle') + '</strong> ' + (I18N[LANG] || I18N.en).dqBody(dq) +
+    (warn ? ' ' + t('dqWarn') : ' ' + t('dqOk'))
+}
+
+function renderPartnerScorecard() {
+  const head = document.getElementById('scorecard-head')
+  const body = document.getElementById('scorecard-body')
+  if (!head || !body) return
+  const scoped = getScopedDeals()
+  computeScores(scoped)
+  const cols = [
+    t('colOwnerDavyn'), t('scOpenDeals'), t('scOpenPipe'), t('scStalled'), t('scCritical'),
+    t('scWinRate'), t('scAvgDeal'),
+  ]
+  head.innerHTML = cols.map((c, i) => `<th${i > 0 ? ' class="num"' : ''}>${esc(c)}</th>`).join('')
+
+  const senders = [...new Set(scoped.map(d => d.sender).filter(Boolean))].sort()
+  const unassigned = scoped.filter(d => !d.sender)
+
+  function rowForSender(label, deals) {
+    const open = deals.filter(d => d.status === 'open')
+    const won = deals.filter(d => d.status === 'won')
+    const lost = deals.filter(d => d.status === 'lost')
+    const closed = won.length + lost.length
+    const pipeUsd = open.reduce((s, d) => s + resolveAmountUsd(d), 0)
+    const stalled = open.filter(d => d.isStale).length
+    const critical = open.filter(d => d.actionUrgency === 'critical').length
+    const wr = closed ? Math.round((won.length / closed) * 100) : '—'
+    const avg = open.length ? pipeUsd / open.length : (won.length ? won.reduce((s, d) => s + resolveAmountUsd(d), 0) / won.length : 0)
+    return `<tr>
+      <td><strong>${esc(label)}</strong></td>
+      <td class="num">${open.length}</td>
+      <td class="num">${fmt(pipeUsd, 'USD')}</td>
+      <td class="num">${stalled}${open.length ? ' (' + Math.round(stalled / open.length * 100) + '%)' : ''}</td>
+      <td class="num">${critical}</td>
+      <td class="num">${wr}${wr !== '—' ? '%' : ''}</td>
+      <td class="num">${open.length || won.length ? fmt(avg, 'USD') : '—'}</td>
+    </tr>`
+  }
+
+  if (!senders.length && !unassigned.length) {
+    body.innerHTML = '<tr><td colspan="7" class="empty-state">' + esc(t('scNoSenders')) + '</td></tr>'
+    return
+  }
+  let html = senders.map(s => rowForSender(s, scoped.filter(d => d.sender === s))).join('')
+  if (unassigned.length) html += rowForSender(t('ownerDavynNone'), unassigned)
+  body.innerHTML = html
+}
+
+function renderVelocityByStage() {
+  const head = document.getElementById('velocity-head')
+  const body = document.getElementById('velocity-body')
+  if (!head || !body) return
+  head.innerHTML = `<th>${esc(t('colStage'))}</th><th class="num">${esc(t('velDeals'))}</th><th class="num">${esc(t('velMedianIdle'))}</th>`
+  const open = getScopedDeals().filter(d => d.status === 'open')
+  const byStage = {}
+  open.forEach(d => {
+    const st = d.stage || 'Unknown'
+    if (!byStage[st]) byStage[st] = []
+    if (d.daysSinceLastTouch != null) byStage[st].push(d.daysSinceLastTouch)
+  })
+  const stages = Object.keys(byStage).sort((a, b) => {
+    const ma = median(byStage[a]) ?? 999
+    const mb = median(byStage[b]) ?? 999
+    return mb - ma
+  })
+  if (!stages.length) {
+    body.innerHTML = '<tr><td colspan="3">' + esc(t('emptyNoDeals')) + '</td></tr>'
+    return
+  }
+  body.innerHTML = stages.map(st => {
+    const med = median(byStage[st])
+    return `<tr><td>${esc(st)}</td><td class="num">${byStage[st].length}</td><td class="num">${med != null ? Math.round(med) + 'd' : '—'}</td></tr>`
+  }).join('')
+}
+
+function sortNextStepDeals(deals) {
+  return [...deals].sort((a, b) => {
+    const ua = URGENCY_ORDER[a.actionUrgency] ?? 9
+    const ub = URGENCY_ORDER[b.actionUrgency] ?? 9
+    if (ua !== ub) return ua - ub
+    const da = a.closeDate || '9999-12-31'
+    const db = b.closeDate || '9999-12-31'
+    if (da !== db) return da.localeCompare(db)
+    return (b.priorityScore || 0) - (a.priorityScore || 0)
+  })
 }
 
 // ── CHARTS ────────────────────────────────────────────────────────────────
@@ -1610,7 +1916,7 @@ function renderCharts() {
   const open = scoped.filter(d => d.status === 'open')
 
   // 1) Open pipeline $ by stage
-  const byStageVal = sumByStage(open, d => d.amount || 0)
+  const byStageVal = sumByStage(open, d => resolveAmountUsd(d))
   const valLabels = Object.keys(byStageVal).sort((a, b) => byStageVal[b] - byStageVal[a]).slice(0, 12)
   const valData = valLabels.map(k => byStageVal[k])
   const ctx1 = document.getElementById('chart-pipeline-value').getContext('2d')
@@ -1723,7 +2029,7 @@ function renderCharts() {
   }
 
   // 4) Top deals by value
-  const top = [...open].sort((a, b) => (b.amount || 0) - (a.amount || 0)).slice(0, 8)
+  const top = [...open].sort((a, b) => resolveAmountUsd(b) - resolveAmountUsd(a)).slice(0, 8)
   const ctx4 = document.getElementById('chart-top-deals').getContext('2d')
   const g4 = ctx4.createLinearGradient(0, 0, 0, 260)
   g4.addColorStop(0, '#059669')
@@ -1733,7 +2039,7 @@ function renderCharts() {
       type: 'bar',
       data: {
         labels: top.map(d => (d.company || d.name).slice(0, 20)),
-        datasets: [{ label: 'Amount', data: top.map(d => d.amount || 0), backgroundColor: g4, borderRadius: 8 }],
+        datasets: [{ label: 'Amount (USD eq.)', data: top.map(d => resolveAmountUsd(d)), backgroundColor: g4, borderRadius: 8 }],
       },
       options: chartBaseOptions({
         indexAxis: 'y',
@@ -1744,7 +2050,7 @@ function renderCharts() {
   } else {
     const ch = charts['top-deals']
     ch.data.labels = top.map(d => (d.company || d.name).slice(0, 20))
-    ch.data.datasets[0].data = top.map(d => d.amount || 0)
+    ch.data.datasets[0].data = top.map(d => resolveAmountUsd(d))
     ch.data.datasets[0].backgroundColor = g4
     ch.update()
   }
@@ -1752,7 +2058,7 @@ function renderCharts() {
   // 5) Scatter: idle vs amount
   const bubbleData = open.map(d => ({
     x: d.daysSinceLastTouch != null ? d.daysSinceLastTouch : 120,
-    y: d.amount || 0,
+    y: resolveAmountUsd(d),
     r: Math.max(6, Math.min(22, (d.priorityScore || 10) / 4)),
     _name: d.name,
     _idle: d.daysSinceLastTouch,
@@ -1808,20 +2114,35 @@ function renderWeekly() {
   const open = scoped.filter(d => d.status === 'open')
   const stale = open.filter(d => d.isStale)
   const critical = open.filter(d => d.actionUrgency === 'critical')
-  const openVal = open.reduce((s, d) => s + (d.amount || 0), 0)
+  const openUsd = open.reduce((s, d) => s + resolveAmountUsd(d), 0)
+  const closing = dealsClosingWithinDays(open, CLOSE_HORIZON_DAYS)
 
   document.getElementById('week-kpis').innerHTML = `
-    <div class="week-kpi"><div class="val">${fmt(openVal, 'USD')}</div><div class="lbl">Open pipeline</div></div>
-    <div class="week-kpi"><div class="val">${stale.length}</div><div class="lbl">Stalled deals</div></div>
-    <div class="week-kpi"><div class="val">${critical.length}</div><div class="lbl">Critical urgency</div></div>
+    <div class="week-kpi"><div class="val">${fmt(openUsd, 'USD')}</div><div class="lbl">${t('kpiUsdEquiv')} pipeline</div></div>
+    <div class="week-kpi"><div class="val">${closing.length}</div><div class="lbl">${t('kpiCloseLabel')}</div></div>
+    <div class="week-kpi"><div class="val">${stale.length}</div><div class="lbl">Stalled</div></div>
+    <div class="week-kpi"><div class="val">${critical.length}</div><div class="lbl">Critical</div></div>
   `
 
   const briefEl = document.getElementById('week-brief-content')
+  let briefHtml = ''
   if (weeklyBrief && weeklyBrief.summary) {
-    briefEl.innerHTML = `<div class="action-card urgency-medium"><div class="action-text">${esc(weeklyBrief.summary)}</div><div class="action-meta" style="margin-top:8px">Generated ${esc(weeklyBrief.generatedAt || '')}</div></div>`
+    briefHtml = `<div class="action-card urgency-medium"><div class="action-text">${esc(weeklyBrief.summary)}</div><div class="action-meta" style="margin-top:8px">Generated ${esc(weeklyBrief.generatedAt || '')}</div></div>`
   } else {
-    briefEl.innerHTML = '<p class="empty-state">No weekly brief in this export yet. It will appear after the next data refresh.</p>'
+    briefHtml = '<p class="empty-state">No weekly brief in this export yet. It will appear after the next data refresh.</p>'
   }
+  const wow = weeklyBrief && weeklyBrief.weekOverWeek
+  if (wow) {
+    const parts = []
+    if (wow.openPipelineUsdDelta != null) parts.push('Open pipe Δ ' + fmt(wow.openPipelineUsdDelta, 'USD'))
+    if (wow.newStalled != null) parts.push('+' + wow.newStalled + ' stalled')
+    if (wow.wonCount != null) parts.push(wow.wonCount + ' won')
+    if (wow.lostCount != null) parts.push(wow.lostCount + ' lost')
+    if (parts.length) {
+      briefHtml += `<div class="action-card urgency-low" style="margin-top:12px"><div class="action-top"><span class="action-deal">${esc(t('weekOverWeekTitle'))}</span></div><div class="action-text">${esc(parts.join(' · '))}</div></div>`
+    }
+  }
+  briefEl.innerHTML = briefHtml
 
   const actionsEl = document.getElementById('week-actions')
   const actions = (weeklyBrief && weeklyBrief.topActions) ? weeklyBrief.topActions : []
@@ -1829,13 +2150,18 @@ function renderWeekly() {
     actionsEl.innerHTML = '<p class="empty-state">No top actions listed.</p>'
     return
   }
-  actionsEl.innerHTML = actions.map(a => `
+  actionsEl.innerHTML = actions.map(a => {
+    const deal = findDealForAction(a)
+    const hs = a.hubspotUrl || (deal && deal.hubspotUrl)
+    const sender = a.sender || (deal && deal.sender)
+    return `
     <div class="action-card urgency-${a.urgency || 'medium'}">
       <div class="action-top"><span class="action-deal">#${a.priority} ${esc(a.dealName)}</span><span class="badge badge-open">${esc(a.urgency)}</span></div>
-      <div class="action-meta">${esc(a.company)} · ${esc(a.owner)}</div>
+      <div class="action-meta">${esc(a.company)} · ${esc(a.owner)}${sender ? ' · ' + esc(sender) : ''}</div>
       <div class="action-text">${esc(a.action)}</div>
-    </div>
-  `).join('')
+      ${hubspotLinkHtml(hs)}
+    </div>`
+  }).join('')
 }
 
 // ── NEXT STEPS ────────────────────────────────────────────────────────────
@@ -1844,7 +2170,7 @@ function renderNextSteps() {
   const empty = document.getElementById('actions-empty')
   const urgency = document.getElementById('filter-urgency').value
 
-  let deals = getOpenPriorityDeals().filter(d => d.suggestedStep)
+  let deals = sortNextStepDeals(getOpenPriorityDeals().filter(d => d.suggestedStep))
   if (urgency !== 'all') deals = deals.filter(d => d.actionUrgency === urgency)
   deals = deals.slice(0, 15)
 
@@ -1877,7 +2203,8 @@ function renderNextSteps() {
       <div class="action-meta">${amt} · ${d.daysSinceLastTouch != null ? d.daysSinceLastTouch + 'd idle' : 'idle unknown'} · ${esc(d.owner || '—')}</div>
       ${d.dealSummary ? `<div class="action-meta" style="margin-bottom:6px">${esc(d.dealSummary)}</div>` : ''}
       <div class="action-text">${esc(d.suggestedStep)}</div>
-      <div class="action-owner">Owner: ${esc(d.owner || 'Assign in HubSpot')}</div>
+      <div class="action-owner">${esc(d.owner || 'Assign in HubSpot')}${d.sender ? ' · ' + esc(d.sender) : ''}</div>
+      ${hubspotLinkHtml(d.hubspotUrl)}
     </div>`
   }).join('')
 }
@@ -1988,6 +2315,9 @@ function saveColumnLayout(tableId) {
 
 function initColumnLayouts() {
   columnLayouts.overview = loadColumnLayout('overview')
+  if (!localStorage.getItem('davyn_cols_priority')) {
+    applyColumnPreset('priority', 'call')
+  }
   columnLayouts.priority = loadColumnLayout('priority')
 }
 

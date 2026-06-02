@@ -23,16 +23,30 @@ You are preparing a data export for the Davyn × Factorial partner dashboard (st
 - Keep original note text in `notes` — do not delete history.
 - Amounts as numbers (not strings). Use null if unknown.
 
-## Fields to pull from Introw (REQUIRED best effort)
+## FX for executive totals
+- For every deal with `amount` and `currency`, set **amountUsd**:
+  - USD: amountUsd = amount
+  - EUR: amountUsd = round(amount × 1.08, 2)
+  - Other currencies: best-effort USD equivalent or amountUsd = amount with a note in dealSummary if uncertain.
+
+## Fields to pull from Introw (REQUIRED — data quality gate)
 For EVERY deal include:
 - id (HubSpot record ID — used for links)
 - name, company, amount, currency, stage, pipeline, closeDate, owner, createdBy, status, notes
-- createDate (deal created in HubSpot) — REQUIRED; use null only if truly unavailable after search
-- lastActivityDate (last logged activity or note) — REQUIRED; use null only if unavailable
+- **createDate** — REQUIRED; use null only if truly unavailable after search
+- **lastActivityDate** — REQUIRED; use null only if unavailable
 - employees (employee count / company size) — number or null
-- hubspotUrl (full URL to deal in HubSpot if available), else null
+- **hubspotUrl** (full URL to deal in HubSpot if available), else null
 - nextStepDue (date of committed next step from CRM if exists), else null
-- **sender** (string): **Owner (Davyn)** — Davyn executive on the deal (e.g. `"Umar (Davyn)"`, `"Nicholas (Davyn)"`, `"Sekou (Davyn)"`). Derive from the most active @davyntt.com note author, or `dealOwnerDavyn.name`. Use `null` if unknown.
+- **sender** (string): **Owner (Davyn)** — Davyn executive on the deal (e.g. `"Umar (Davyn)"`, `"Nicholas (Davyn)"`, `"Sekou (Davyn)"`). Derive from the most active @davyntt.com note author, or `dealOwnerDavyn.name`. Use `null` only after exhaustive search.
+
+### Data quality gate (MANDATORY before you finish)
+Compute fill rates across all deals:
+- % with non-null sender
+- % with non-null lastActivityDate
+- % with non-null createDate
+
+If **any** of these is below **90%**, add to `weeklyBrief.summary` an explicit warning sentence listing the gap and which deals are missing fields. Do not hide the problem.
 
 ## AI enrichment (you generate)
 For deals with status "open":
@@ -51,19 +65,29 @@ For won/lost:
 ## Root weeklyBrief (you generate)
 "weeklyBrief": {
   "generatedAt": "YYYY-MM-DD",
-  "summary": "3-5 sentences: pipeline health, wins, risks, partner performance",
+  "summary": "3-5 sentences: pipeline health, wins, risks, partner performance. Include data-quality warning if fill rates < 90%.",
+  "weekOverWeek": {
+    "openPipelineUsdDelta": 0,
+    "newStalled": 0,
+    "wonCount": 0,
+    "lostCount": 0
+  },
   "topActions": [
     {
       "priority": 1,
       "dealName": "...",
       "company": "...",
       "owner": "...",
+      "sender": "Umar (Davyn) or null",
+      "hubspotUrl": "https://... or null",
       "action": "Specific action",
       "urgency": "critical|high|medium|low"
     }
   ]
 }
-Include exactly 5 items in topActions (highest impact open deals).
+- **weekOverWeek**: compare to the previous export if the user provides it; otherwise estimate from deal status/activity in the current pull (document assumptions in summary).
+- Include exactly 5 items in topActions (highest impact open deals).
+- Each topAction MUST include hubspotUrl and sender when available on the matching deal.
 
 ## Pipeline focus
 - Include ALL pipelines in `deals[]` (do not drop onboarding/other pipelines).
@@ -87,6 +111,7 @@ Include exactly 5 items in topActions (highest impact open deals).
       "company": "string",
       "amount": 0,
       "currency": "USD",
+      "amountUsd": 0,
       "stage": "string",
       "pipeline": "string",
       "isPartnerPipeline": true,
@@ -117,7 +142,9 @@ Include exactly 5 items in topActions (highest impact open deals).
 - NO won/lost deal has isStale: true.
 - Every open Partners Distribution deal with amount > 3000 has suggestedNextStep and dealSummary.
 - weeklyBrief.topActions references real deal names from the export.
+- Every deal has amountUsd when amount is non-null.
 - Notes preserve dates in format [YYYY-MM-DD – email]: when present in source.
+- sender / lastActivityDate / createDate fill rates ≥ 90% OR warning in weeklyBrief.summary.
 
 Generate the complete data.json now.
 ```
@@ -135,18 +162,28 @@ Generate the complete data.json now.
 | Campo | Uso |
 |--------|-----|
 | deals[] | Tabelas, gráficos, filtros |
+| amountUsd | KPIs executivos, pipeline ponderado, gráficos (equiv. USD; EUR × 1.08 se ausente) |
 | isPartnerPipeline | Filtro "Partner pipeline only" |
 | weeklyBrief | Aba **This week** + Next steps + CSV |
+| weeklyBrief.weekOverWeek | Delta semanal na aba This week |
 | suggestedNextStep | Next steps (prioridade sobre regras automáticas) |
 | dealSummary | Modal ao clicar no deal |
 | createDate | Coluna "Days in pipe" |
 | lastActivityDate | Last touch / idle days |
-| hubspotUrl | Link no modal |
-| sender | Filtro **Owner (Davyn)** (executivo Davyn nas notas) |
+| hubspotUrl | Link no modal, This week, Next steps |
+| sender | Filtro **Owner (Davyn)** + aba **Davyn team** scorecard |
 | priorityScore, isStale | Score e aba Stalled (stale só para open no app) |
 
 ## Prompt curto (atualização rápida)
 
 ```
-Refresh Davyn Limited deals from Introw. Output full data.json only (schema: updatedAt, weeklyBrief, deals with createDate, lastActivityDate, employees, hubspotUrl, sender, suggestedNextStep, dealSummary, actionUrgency, priorityScore, isStale false for won/lost). English. Valid JSON, no markdown.
+Refresh Davyn Limited deals from Introw. Output full data.json only (schema: updatedAt, weeklyBrief with weekOverWeek and topActions including hubspotUrl+sender, deals with amountUsd, createDate, lastActivityDate, hubspotUrl, sender, suggestedNextStep, dealSummary, actionUrgency, priorityScore, isStale false for won/lost). Fill rates ≥90% for sender/lastActivityDate/createDate or warn in summary. English. Valid JSON, no markdown.
 ```
+
+## Escala futura (Fase 4 — fora do site estático)
+
+- API HubSpot/Introw em vez de JSON manual
+- Auth SSO / Vercel password protection
+- Replicação do template para outros parceiros
+
+O dashboard já expõe **weighted pipeline** (soma de `amountUsd × stage weight`) no Overview.
