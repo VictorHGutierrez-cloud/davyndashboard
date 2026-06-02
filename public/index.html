@@ -405,6 +405,7 @@ const STAGE_WEIGHTS = {
 
 // ── DATA ──────────────────────────────────────────────────────────────────
 let enrichedDeals = []
+let weeklyBrief = null
 let sortKey  = 'name'
 let sortAsc  = true
 let expandedId = null
@@ -420,6 +421,7 @@ async function showDashboard() {
 async function loadData() {
   const res  = await fetch('data.json?v=' + Date.now())
   const json = await res.json()
+  weeklyBrief = json.weeklyBrief || null
   enrichedDeals = json.deals.map(enrichDeal)
   document.getElementById('updated-badge').textContent = 'Data as of ' + json.updatedAt
 
@@ -502,7 +504,8 @@ function norm(values, v) {
 function enrichDeal(d) {
   const today = new Date()
   const noteDates = parseNoteDates(d.notes)
-  const lastNoteDate = noteDates.length ? noteDates.sort().pop() : null
+  let lastNoteDate = noteDates.length ? noteDates.sort().pop() : null
+  if (d.lastActivityDate) lastNoteDate = String(d.lastActivityDate).slice(0, 10)
   const daysSinceLastTouch = lastNoteDate != null ? daysBetween(lastNoteDate, today) : null
   const daysOpen = d.createDate ? daysBetween(String(d.createDate).slice(0, 10), today) : null
 
@@ -549,11 +552,23 @@ function enrichDeal(d) {
     suggestedStep: null,
     actionUrgency: 'low',
   }
-  const suggestion = suggestNextStep(base)
-  if (suggestion) {
-    base.suggestedStep = suggestion.text
-    base.actionUrgency = suggestion.urgency
+  if (d.suggestedNextStep) {
+    base.suggestedStep = d.suggestedNextStep
+    base.actionUrgency = d.actionUrgency || 'medium'
+    base.dealSummary = d.dealSummary || null
+  } else {
+    const suggestion = suggestNextStep(base)
+    if (suggestion) {
+      base.suggestedStep = suggestion.text
+      base.actionUrgency = suggestion.urgency
+    }
   }
+  if (typeof d.isStale === 'boolean') {
+    base.isStale = d.isStale
+    if (d.staleReason) base.staleReason = d.staleReason
+  }
+  if (typeof d.priorityScore === 'number') base.priorityScore = d.priorityScore
+  if (d.dealSummary) base.dealSummary = d.dealSummary
   return base
 }
 
@@ -608,6 +623,10 @@ function computeScores(deals) {
   const openDeals = deals.filter(d => d.status === 'open')
   const amounts = openDeals.map(d => d.amount || 0)
   openDeals.forEach(d => {
+    if (typeof d.priorityScore === 'number' && d.priorityScore > 0) {
+      if (!d.priorityWhy) d.priorityWhy = 'Claude priority score'
+      return
+    }
     const amountN = norm(amounts, d.amount || 0)
     const stageN = d.stageWeight
     let recencyN = 0.35
@@ -938,7 +957,18 @@ function renderNextSteps() {
     return
   }
   empty.style.display = 'none'
-  list.innerHTML = deals.map((d, i) => {
+  let briefHtml = ''
+  if (weeklyBrief && weeklyBrief.summary) {
+    const actions = (weeklyBrief.topActions || []).map(a =>
+      `<li><strong>${esc(a.dealName)}</strong> (${esc(a.urgency || '')}) — ${esc(a.action)} <span style="color:#64748b">· ${esc(a.owner || '')}</span></li>`
+    ).join('')
+    briefHtml = `<div class="action-card urgency-medium" style="margin-bottom:16px">
+      <div class="action-top"><span class="action-deal">Weekly brief</span><span class="action-meta">${esc(weeklyBrief.generatedAt || '')}</span></div>
+      <div class="action-text">${esc(weeklyBrief.summary)}</div>
+      ${actions ? `<ul style="margin-top:12px;padding-left:18px;font-size:12px;color:#475569;line-height:1.6">${actions}</ul>` : ''}
+    </div>`
+  }
+  list.innerHTML = briefHtml + deals.map((d, i) => {
     const amt = d.amount != null ? fmt(d.amount, d.currency || 'USD') : '—'
     return `<div class="action-card urgency-${d.actionUrgency}">
       <div class="action-top">
@@ -948,6 +978,7 @@ function renderNextSteps() {
         <span class="badge badge-open">${esc(d.stage)}</span>
       </div>
       <div class="action-meta">${amt} · ${d.daysSinceLastTouch != null ? d.daysSinceLastTouch + 'd idle' : 'idle unknown'} · ${esc(d.owner || '—')}</div>
+      ${d.dealSummary ? `<div class="action-meta" style="margin-bottom:6px">${esc(d.dealSummary)}</div>` : ''}
       <div class="action-text">${esc(d.suggestedStep)}</div>
       <div class="action-owner">Owner: ${esc(d.owner || 'Assign in HubSpot')}</div>
     </div>`
