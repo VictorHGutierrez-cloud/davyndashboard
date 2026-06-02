@@ -23,13 +23,15 @@ You are preparing a data export for the Davyn × Factorial partner dashboard (st
 - Keep original note text in `notes` — do not delete history.
 - Amounts as numbers (not strings). Use null if unknown.
 
-## Fields to pull from Introw (best effort)
-For EVERY deal try to include:
-- id (record ID)
+## Fields to pull from Introw (REQUIRED best effort)
+For EVERY deal include:
+- id (HubSpot record ID — used for links)
 - name, company, amount, currency, stage, pipeline, closeDate, owner, createdBy, status, notes
-- createDate (deal creation date) — REQUIRED attempt; use null only if truly unavailable
-- lastActivityDate (last logged activity or note date) — REQUIRED attempt
-- employees (revised employee count or company size) — number or null
+- createDate (deal created in HubSpot) — REQUIRED; use null only if truly unavailable after search
+- lastActivityDate (last logged activity or note) — REQUIRED; use null only if unavailable
+- employees (employee count / company size) — number or null
+- hubspotUrl (full URL to deal in HubSpot if available), else null
+- nextStepDue (date of committed next step from CRM if exists), else null
 
 ## AI enrichment (you generate)
 For deals with status "open":
@@ -41,9 +43,11 @@ For won/lost:
 - dealSummary: 1 sentence outcome.
 - suggestedNextStep: null
 - actionUrgency: null
+- isStale: false (ALWAYS — never mark closed deals as stale)
+- staleReason: null
+- priorityScore: 0
 
 ## Root weeklyBrief (you generate)
-```json
 "weeklyBrief": {
   "generatedAt": "YYYY-MM-DD",
   "summary": "3-5 sentences: pipeline health, wins, risks, partner performance",
@@ -58,17 +62,16 @@ For won/lost:
     }
   ]
 }
-```
 Include exactly 5 items in topActions (highest impact open deals).
 
 ## Pipeline focus
 - Include ALL pipelines in `deals[]` (do not drop onboarding/other pipelines).
-- Add boolean `isPartnerPipeline`: true when pipeline equals "Partners Distribution", else false.
+- isPartnerPipeline: true when pipeline equals "Partners Distribution", else false.
 
-## Stale / priority hints (you generate for open deals)
-- isStale: true if lastActivityDate is 90+ days ago OR no notes/activity (explain in staleReason).
+## Stale / priority (OPEN deals only)
+- isStale: true ONLY for status "open" when lastActivityDate is 90+ days ago OR no notes/activity
 - staleReason: short English phrase or null
-- priorityScore: integer 0-100 (your judgment: amount, stage, recency, close likelihood)
+- priorityScore: integer 0-100 (amount, stage, recency, close likelihood)
 
 ## JSON schema
 
@@ -94,6 +97,8 @@ Include exactly 5 items in topActions (highest impact open deals).
       "createDate": "YYYY-MM-DD or null",
       "lastActivityDate": "YYYY-MM-DD or null",
       "employees": null,
+      "hubspotUrl": "https://... or null",
+      "nextStepDue": "YYYY-MM-DD or null",
       "dealSummary": "string or null",
       "suggestedNextStep": "string or null",
       "actionUrgency": "critical|high|medium|low or null",
@@ -107,7 +112,8 @@ Include exactly 5 items in topActions (highest impact open deals).
 ## Quality checks before you finish
 - updatedAt = today's date.
 - No duplicate ids.
-- Every open deal in Partners Distribution with amount > 3000 has suggestedNextStep and dealSummary.
+- NO won/lost deal has isStale: true.
+- Every open Partners Distribution deal with amount > 3000 has suggestedNextStep and dealSummary.
 - weeklyBrief.topActions references real deal names from the export.
 - Notes preserve dates in format [YYYY-MM-DD – email]: when present in source.
 
@@ -120,24 +126,24 @@ Generate the complete data.json now.
 
 1. Salve como `data.json`.
 2. Substitua: `Davyn Pipe Control/public/data.json`
-3. Avise no Cursor: **“subi o data.json do Claude”** → push GitHub → Vercel atualiza.
+3. Avise no Cursor: **"subi o data.json do Claude"** → push GitHub → Vercel atualiza.
 
-## Campos que o dashboard usa hoje
+## Campos que o dashboard usa
 
 | Campo | Uso |
 |--------|-----|
 | deals[] | Tabelas, gráficos, filtros |
-| status, stage, pipeline, amount | KPIs e charts |
-| notes | Last touch (datas nas notas) |
-| createDate | Days open (quando existir) |
-| suggestedNextStep | Aba Next steps (se presente, prioriza sobre regras) |
-| priorityScore, isStale | Prioridade e stalled |
-| weeklyBrief | Pode ser exibido na aba Next steps (implementar quando vier no JSON) |
+| isPartnerPipeline | Filtro "Partner pipeline only" |
+| weeklyBrief | Aba **This week** + Next steps + CSV |
+| suggestedNextStep | Next steps (prioridade sobre regras automáticas) |
+| dealSummary | Modal ao clicar no deal |
+| createDate | Coluna "Days in pipe" |
+| lastActivityDate | Last touch / idle days |
+| hubspotUrl | Link no modal |
+| priorityScore, isStale | Score e aba Stalled (stale só para open no app) |
 
 ## Prompt curto (atualização rápida)
 
-Se já tem um export anterior e só mudou o Introw:
-
 ```
-Refresh Davyn Limited deals from Introw. Output full data.json only (same schema as before: updatedAt, weeklyBrief, deals with createDate, lastActivityDate, suggestedNextStep, dealSummary, actionUrgency, priorityScore, isStale). English. Valid JSON, no markdown.
+Refresh Davyn Limited deals from Introw. Output full data.json only (schema: updatedAt, weeklyBrief, deals with createDate, lastActivityDate, employees, hubspotUrl, suggestedNextStep, dealSummary, actionUrgency, priorityScore, isStale false for won/lost). English. Valid JSON, no markdown.
 ```

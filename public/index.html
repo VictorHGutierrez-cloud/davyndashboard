@@ -120,6 +120,40 @@
   .badge-hot{background:#dcfce7;color:#15803d}
   .why-text{font-size:10px;color:#94a3b8;max-width:220px;white-space:normal;line-height:1.4}
   td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+  .global-filters{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .global-filters label{font-size:11px;font-weight:600;color:#64748b;display:flex;align-items:center;gap:6px;cursor:pointer}
+  .filter-check{width:16px;height:16px;accent-color:#2563eb}
+  .btn-download{background:#2563eb;color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+  .btn-download:hover{background:#1d4ed8}
+  .btn-print{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+  .btn-print:hover{background:#e2e8f0}
+  tr.clickable-row{cursor:pointer}
+  tr.clickable-row:hover td{background:#eff6ff!important}
+
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:200;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.open{display:flex}
+  .modal-box{background:#fff;border-radius:16px;max-width:560px;width:100%;max-height:85vh;overflow:auto;box-shadow:0 24px 48px rgba(0,0,0,.2)}
+  .modal-head{padding:18px 20px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .modal-head h2{font-size:16px;font-weight:700;color:#1e293b;line-height:1.3}
+  .modal-close{background:none;border:none;font-size:22px;color:#94a3b8;cursor:pointer;line-height:1}
+  .modal-body{padding:18px 20px;font-size:13px;color:#475569;line-height:1.6}
+  .modal-section{margin-bottom:16px}
+  .modal-section h4{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;margin-bottom:6px}
+  .modal-notes{white-space:pre-wrap;background:#f8fafc;padding:12px;border-radius:8px;font-size:12px;max-height:200px;overflow:auto}
+  .week-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+  @media(max-width:768px){.week-kpis{grid-template-columns:1fr}}
+  .week-kpi{background:#f8fafc;border-radius:12px;padding:16px;text-align:center}
+  .week-kpi .val{font-size:22px;font-weight:800;color:#1e293b}
+  .week-kpi .lbl{font-size:11px;color:#64748b;margin-top:4px}
+
+  @media print{
+    #login-screen, .view-tabs, .global-filters, .btn-sm, .btn-download, .btn-print, .info-banner, .charts-grid, .table-card, #view-overview, #view-priority, #view-stalled, #view-actions{display:none!important}
+    #dashboard, #view-weekly, main{display:block!important}
+    #view-weekly{display:block!important}
+    header{position:static;border:none}
+    body{background:#fff}
+  }
 </style>
 </head>
 <body>
@@ -163,12 +197,40 @@
 
   <main>
     <div class="info-banner" id="data-hint">
-      Default view: <strong>Partners Distribution</strong> pipeline. Priority score ranks open deals by value, stage, and recency.
-      <strong>Last touch</strong> is parsed from note dates (no create date in export). Stalled = no touch in 90+ days or no notes on open deals.
+      Data enriched by Claude (<strong>weeklyBrief</strong>, summaries, next steps). <strong>Last touch</strong> uses <code>lastActivityDate</code> when available, else note dates.
+      Stalled = open deals with 90+ days idle or no activity. Click any deal row for full detail.
+    </div>
+
+    <div class="global-filters">
+      <label><input type="checkbox" id="filter-partner-only" class="filter-check" checked onchange="onFiltersChanged()"/> Partner pipeline only</label>
+      <select class="filter-select" id="filter-pipeline" onchange="onFiltersChanged()">
+        <option value="all">All pipelines</option>
+      </select>
+      <select class="filter-select" id="filter-owner" onchange="onFiltersChanged()">
+        <option value="all">All owners</option>
+      </select>
+      <select class="filter-select" id="filter-urgency" onchange="onFiltersChanged()">
+        <option value="all">All urgencies</option>
+        <option value="critical">Critical</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search" placeholder="Search deals…" oninput="onFiltersChanged()"/>
+      </div>
+      <select class="filter-select" id="filter-status" onchange="onFiltersChanged()">
+        <option value="all">All statuses</option>
+        <option value="won">Won</option>
+        <option value="lost">Lost</option>
+        <option value="open">Open</option>
+      </select>
     </div>
 
     <div class="view-tabs">
       <button type="button" class="view-tab active" data-view="overview">Overview</button>
+      <button type="button" class="view-tab" data-view="weekly">This week</button>
       <button type="button" class="view-tab" data-view="priority">Priority queue</button>
       <button type="button" class="view-tab" data-view="stalled">Stalled deals</button>
       <button type="button" class="view-tab" data-view="actions">Next steps</button>
@@ -204,7 +266,7 @@
       <div class="kpi">
         <div class="kpi-icon kpi-amber">💰</div>
         <div>
-          <div class="kpi-label">Won Value (USD)</div>
+          <div class="kpi-label">Open Pipeline</div>
           <div class="kpi-value" id="kpi-value">—</div>
           <div class="kpi-sub" id="kpi-value-sub"></div>
         </div>
@@ -220,7 +282,7 @@
       </div>
       <div class="chart-card">
         <h3>Pipeline health</h3>
-        <p class="chart-sub">Open deals by last activity (from notes)</p>
+        <p class="chart-sub">Open deals by last activity (Claude lastActivityDate or notes)</p>
         <div class="chart-wrap tall"><canvas id="chart-health"></canvas></div>
       </div>
       <div class="chart-card">
@@ -244,19 +306,7 @@
     <div class="table-card">
       <div class="table-header">
         <div class="table-title">Opportunities <span class="table-count" id="table-count"></span></div>
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="search" placeholder="Search deals, companies, notes…" oninput="onFiltersChanged()"/>
-        </div>
-        <select class="filter-select" id="filter-status" onchange="onFiltersChanged()">
-          <option value="all">All statuses</option>
-          <option value="won">Won</option>
-          <option value="lost">Lost</option>
-          <option value="open">Open</option>
-        </select>
-        <select class="filter-select" id="filter-pipeline" onchange="onFiltersChanged()">
-          <option value="all">All pipelines</option>
-        </select>
+        <button type="button" class="btn-download" onclick="downloadCsv('overview')">Download CSV</button>
       </div>
       <div class="table-wrap">
         <table>
@@ -270,6 +320,7 @@
               <th onclick="sortBy('amount')">Amount ↕</th>
               <th onclick="sortBy('lastNoteDate')">Last touch ↕</th>
               <th onclick="sortBy('daysSinceLastTouch')">Days idle ↕</th>
+              <th onclick="sortBy('daysOpen')">Days in pipe ↕</th>
               <th onclick="sortBy('closeDate')">Close Date ↕</th>
               <th onclick="sortBy('owner')">Owner ↕</th>
               <th onclick="sortBy('status')">Status ↕</th>
@@ -284,11 +335,25 @@
     </div>
     </div><!-- /view-overview -->
 
+    <div id="view-weekly" class="view-panel">
+      <div class="table-card" style="padding:20px">
+        <div class="table-header" style="border:none;padding:0 0 16px">
+          <div class="table-title">Executive summary — This week</div>
+          <button type="button" class="btn-print" onclick="window.print()">Print / PDF</button>
+        </div>
+        <div class="week-kpis" id="week-kpis"></div>
+        <div id="week-brief-content"></div>
+        <h3 style="font-size:13px;font-weight:700;margin:20px 0 12px">Top 5 actions</h3>
+        <div class="action-list" id="week-actions"></div>
+      </div>
+    </div>
+
     <div id="view-priority" class="view-panel">
       <div class="table-card">
         <div class="table-header">
           <div class="table-title">Priority queue <span class="table-count" id="priority-count"></span></div>
           <span class="table-count">Open deals ranked by score (highest first)</span>
+          <button type="button" class="btn-download" onclick="downloadCsv('priority')">Download CSV</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -316,8 +381,11 @@
 
     <div id="view-actions" class="view-panel">
       <div class="info-banner" style="margin-bottom:16px">
-        <strong>Smart suggestions (no AI)</strong> — rules based on stage, value, stale days, and note keywords.
+        <strong>Claude suggestions</strong> from the latest export, with rule-based fallback when missing.
         Use this list in your weekly Davyn call. Assign each line to an owner.
+      </div>
+      <div style="margin-bottom:12px">
+        <button type="button" class="btn-download" onclick="downloadCsv('actions')">Download CSV</button>
       </div>
       <div class="action-list" id="action-list"></div>
       <div class="empty-state" id="actions-empty" style="display:none">No open deals for this pipeline filter.</div>
@@ -328,6 +396,7 @@
         <div class="table-header">
           <div class="table-title">Stalled deals <span class="table-count" id="stalled-count"></span></div>
           <span class="table-count">90+ days since last note, or open with no notes</span>
+          <button type="button" class="btn-download" onclick="downloadCsv('stalled')">Download CSV</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -352,6 +421,16 @@
     </div>
 
   </main>
+</div>
+
+<div class="modal-overlay" id="deal-modal" onclick="if(event.target===this)closeDealModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modal-title">Deal</h2>
+      <button type="button" class="modal-close" onclick="closeDealModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
 </div>
 
 <script>
@@ -426,7 +505,20 @@ async function loadData() {
   document.getElementById('updated-badge').textContent = 'Data as of ' + json.updatedAt
 
   populatePipelineFilter()
+  populateOwnerFilter()
   onFiltersChanged()
+}
+
+function populateOwnerFilter() {
+  const sel = document.getElementById('filter-owner')
+  const owners = [...new Set(enrichedDeals.map(d => d.owner).filter(Boolean))].sort()
+  sel.innerHTML = '<option value="all">All owners</option>'
+  owners.forEach(o => {
+    const opt = document.createElement('option')
+    opt.value = o
+    opt.textContent = o
+    sel.appendChild(opt)
+  })
 }
 
 function setupTabs() {
@@ -439,15 +531,18 @@ function setView(name) {
   activeView = name
   document.querySelectorAll('.view-tab').forEach(b => b.classList.toggle('active', b.dataset.view === name))
   document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.id === 'view-' + name))
+  if (name === 'overview') renderCharts()
+  if (name === 'weekly') renderWeekly()
 }
 
 function onFiltersChanged() {
   renderKPIs()
-  renderCharts()
+  if (activeView === 'overview') renderCharts()
   renderTable()
   renderPriorityQueue()
   renderStalled()
   renderNextSteps()
+  renderWeekly()
 }
 
 function populatePipelineFilter() {
@@ -461,6 +556,8 @@ function populatePipelineFilter() {
     sel.appendChild(o)
   })
   if (pipes.includes(DEFAULT_PIPELINE)) sel.value = DEFAULT_PIPELINE
+  const partnerOnly = document.getElementById('filter-partner-only')
+  if (partnerOnly) partnerOnly.checked = true
 }
 
 function parseNoteDates(notes) {
@@ -563,11 +660,11 @@ function enrichDeal(d) {
       base.actionUrgency = suggestion.urgency
     }
   }
-  if (typeof d.isStale === 'boolean') {
-    base.isStale = d.isStale
-    if (d.staleReason) base.staleReason = d.staleReason
+  if (!isOpen) {
+    base.isStale = false
+    base.staleReason = null
   }
-  if (typeof d.priorityScore === 'number') base.priorityScore = d.priorityScore
+  if (typeof d.priorityScore === 'number' && d.status === 'open') base.priorityScore = d.priorityScore
   if (d.dealSummary) base.dealSummary = d.dealSummary
   return base
 }
@@ -657,16 +754,122 @@ function computeScores(deals) {
 
 function getScopedDeals() {
   const pipe = document.getElementById('filter-pipeline').value
-  return enrichedDeals.filter(d => pipe === 'all' || d.pipeline === pipe)
+  const partnerOnly = document.getElementById('filter-partner-only').checked
+  const owner = document.getElementById('filter-owner').value
+  return enrichedDeals.filter(d => {
+    if (partnerOnly && !d.isPartnerPipeline) return false
+    if (pipe !== 'all' && d.pipeline !== pipe) return false
+    if (owner !== 'all' && d.owner !== owner) return false
+    return true
+  })
+}
+
+function applySearchStatus(deals) {
+  const q = document.getElementById('search').value.toLowerCase()
+  const st = document.getElementById('filter-status').value
+  const urgency = document.getElementById('filter-urgency').value
+  return deals
+    .filter(d => st === 'all' || d.status === st)
+    .filter(d => urgency === 'all' || (d.status === 'open' && d.actionUrgency === urgency))
+    .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner, d.suggestedStep, d.dealSummary].join(' ').toLowerCase().includes(q))
 }
 
 function getFiltered() {
-  const q  = document.getElementById('search').value.toLowerCase()
+  return applySearchStatus(getScopedDeals()).sort((a, b) => compareSort(a, b))
+}
+
+function getOpenPriorityDeals() {
   const st = document.getElementById('filter-status').value
-  return getScopedDeals()
-    .filter(d => st === 'all' || d.status === st)
-    .filter(d => !q || [d.name, d.company, d.stage, d.pipeline, d.notes, d.owner].join(' ').toLowerCase().includes(q))
-    .sort((a, b) => compareSort(a, b))
+  let deals = applySearchStatus(getScopedDeals()).filter(d => d.status === 'open')
+  if (st !== 'all' && st !== 'open') deals = []
+  computeScores(getScopedDeals())
+  return deals.sort((a, b) => b.priorityScore - a.priorityScore)
+}
+
+function getStalledDeals() {
+  return applySearchStatus(getScopedDeals()).filter(d => d.isStale).sort((a, b) => (b.amount || 0) - (a.amount || 0))
+}
+
+function csvEscape(v) {
+  const s = String(v ?? '')
+  if (/[",\n]/.test(s)) return '"' + s.replace(/"/g, '""') + '"'
+  return s
+}
+
+function downloadCsv(kind) {
+  let rows = []
+  let filename = 'davyn-export.csv'
+  if (kind === 'priority') {
+    filename = 'davyn-priority-queue.csv'
+    rows = [['Score', 'Deal', 'Company', 'Stage', 'Amount', 'Currency', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Urgency', 'Suggested next step', 'Summary']]
+    getOpenPriorityDeals().forEach(d => {
+      rows.push([d.priorityScore, d.name, d.company, d.stage, d.amount, d.currency, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.actionUrgency, d.suggestedStep, d.dealSummary])
+    })
+  } else if (kind === 'stalled') {
+    filename = 'davyn-stalled-deals.csv'
+    rows = [['Deal', 'Company', 'Amount', 'Stage', 'Last touch', 'Days idle', 'Close date', 'Owner', 'Reason', 'Suggested next step']]
+    getStalledDeals().forEach(d => {
+      rows.push([d.name, d.company, d.amount, d.stage, d.lastNoteDate, d.daysSinceLastTouch, d.closeDate, d.owner, d.staleReason, d.suggestedStep])
+    })
+  } else if (kind === 'actions') {
+    filename = 'davyn-next-steps.csv'
+    rows = [['Priority', 'Deal', 'Company', 'Owner', 'Urgency', 'Amount', 'Action', 'Summary']]
+    if (weeklyBrief && weeklyBrief.topActions) {
+      weeklyBrief.topActions.forEach(a => {
+        rows.push([a.priority, a.dealName, a.company, a.owner, a.urgency, '', a.action, ''])
+      })
+    }
+    getOpenPriorityDeals().filter(d => d.suggestedStep).slice(0, 15).forEach((d, i) => {
+      rows.push([i + 1, d.name, d.company, d.owner, d.actionUrgency, d.amount, d.suggestedStep, d.dealSummary])
+    })
+  } else {
+    filename = 'davyn-opportunities.csv'
+    rows = [['Score', 'Deal', 'Company', 'Pipeline', 'Stage', 'Amount', 'Status', 'Last touch', 'Days idle', 'Days in pipe', 'Owner', 'Suggested next step']]
+    getFiltered().forEach(d => {
+      rows.push([d.priorityScore, d.name, d.company, d.pipeline, d.stage, d.amount, d.status, d.lastNoteDate, d.daysSinceLastTouch, d.daysOpen, d.owner, d.suggestedStep])
+    })
+  }
+  const csv = rows.map(r => r.map(csvEscape).join(',')).join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(a.href)
+}
+
+function openDealModal(id) {
+  const d = enrichedDeals.find(x => String(x.id) === String(id))
+  if (!d) return
+  document.getElementById('modal-title').textContent = d.name
+  const hubLink = d.hubspotUrl ? `<p><a href="${esc(d.hubspotUrl)}" target="_blank" rel="noopener">Open in HubSpot</a></p>` : (d.id ? `<p style="color:#94a3b8;font-size:11px">Record ID: ${esc(d.id)}</p>` : '')
+  document.getElementById('modal-body').innerHTML = `
+    ${hubLink}
+    <div class="modal-section"><h4>Status</h4>${flagsHtml(d)} ${d.status} · Score ${d.priorityScore || '—'} · ${esc(d.actionUrgency || '')}</div>
+    <div class="modal-section"><h4>Summary</h4>${esc(d.dealSummary || '—')}</div>
+    <div class="modal-section"><h4>Suggested next step</h4>${esc(d.suggestedStep || '—')}</div>
+    <div class="modal-section"><h4>Details</h4>
+      Company: ${esc(d.company)}<br/>
+      Owner: ${esc(d.owner)}<br/>
+      Stage: ${esc(d.stage)}<br/>
+      Pipeline: ${esc(d.pipeline)}<br/>
+      Amount: ${d.amount != null ? fmt(d.amount, d.currency) : '—'}<br/>
+      Last touch: ${d.lastNoteDate || '—'} (${idleLabel(d)} days idle)<br/>
+      Days in pipeline: ${d.daysOpen != null ? d.daysOpen : '—'}<br/>
+      Close date: ${d.closeDate || '—'}
+    </div>
+    ${d.staleReason ? `<div class="modal-section"><h4>Stale reason</h4>${esc(d.staleReason)}</div>` : ''}
+    <div class="modal-section"><h4>Notes</h4><div class="modal-notes">${d.notes ? esc(d.notes) : '—'}</div></div>
+  `
+  document.getElementById('deal-modal').classList.add('open')
+}
+
+function closeDealModal() {
+  document.getElementById('deal-modal').classList.remove('open')
+}
+
+function rowClickAttr(d) {
+  return `class="clickable-row" onclick="openDealModal(${JSON.stringify(String(d.id))})"`
 }
 
 function compareSort(a, b) {
@@ -703,8 +906,9 @@ function renderKPIs() {
   document.getElementById('kpi-won-sub').textContent = wr + '% win rate'
   document.getElementById('kpi-stale').textContent = stale.length
   document.getElementById('kpi-stale-sub').textContent = open.length ? Math.round(stale.length / open.length * 100) + '% of open' : '—'
-  document.getElementById('kpi-value').textContent = fmt(wonVal, 'USD')
-  document.getElementById('kpi-value-sub').textContent = 'Open pipeline: ' + fmt(openVal, 'USD')
+  document.getElementById('kpi-value').textContent = fmt(openVal, 'USD')
+  const stalePct = open.length ? Math.round(stale.length / open.length * 100) : 0
+  document.getElementById('kpi-value-sub').textContent = stalePct + '% of open are stalled · Won: ' + fmt(wonVal, 'USD')
 }
 
 // ── CHARTS ────────────────────────────────────────────────────────────────
@@ -934,22 +1138,50 @@ function renderCharts() {
   })
 }
 
-// ── NEXT STEPS (rule-based) ───────────────────────────────────────────────
-function renderNextSteps() {
+function renderWeekly() {
   const scoped = getScopedDeals()
-  computeScores(scoped)
+  const open = scoped.filter(d => d.status === 'open')
+  const stale = open.filter(d => d.isStale)
+  const critical = open.filter(d => d.actionUrgency === 'critical')
+  const openVal = open.reduce((s, d) => s + (d.amount || 0), 0)
+
+  document.getElementById('week-kpis').innerHTML = `
+    <div class="week-kpi"><div class="val">${fmt(openVal, 'USD')}</div><div class="lbl">Open pipeline</div></div>
+    <div class="week-kpi"><div class="val">${stale.length}</div><div class="lbl">Stalled deals</div></div>
+    <div class="week-kpi"><div class="val">${critical.length}</div><div class="lbl">Critical urgency</div></div>
+  `
+
+  const briefEl = document.getElementById('week-brief-content')
+  if (weeklyBrief && weeklyBrief.summary) {
+    briefEl.innerHTML = `<div class="action-card urgency-medium"><div class="action-text">${esc(weeklyBrief.summary)}</div><div class="action-meta" style="margin-top:8px">Generated ${esc(weeklyBrief.generatedAt || '')}</div></div>`
+  } else {
+    briefEl.innerHTML = '<p class="empty-state">No weekly brief in this export. Ask Claude to include weeklyBrief in data.json.</p>'
+  }
+
+  const actionsEl = document.getElementById('week-actions')
+  const actions = (weeklyBrief && weeklyBrief.topActions) ? weeklyBrief.topActions : []
+  if (!actions.length) {
+    actionsEl.innerHTML = '<p class="empty-state">No top actions listed.</p>'
+    return
+  }
+  actionsEl.innerHTML = actions.map(a => `
+    <div class="action-card urgency-${a.urgency || 'medium'}">
+      <div class="action-top"><span class="action-deal">#${a.priority} ${esc(a.dealName)}</span><span class="badge badge-open">${esc(a.urgency)}</span></div>
+      <div class="action-meta">${esc(a.company)} · ${esc(a.owner)}</div>
+      <div class="action-text">${esc(a.action)}</div>
+    </div>
+  `).join('')
+}
+
+// ── NEXT STEPS ────────────────────────────────────────────────────────────
+function renderNextSteps() {
   const list = document.getElementById('action-list')
   const empty = document.getElementById('actions-empty')
+  const urgency = document.getElementById('filter-urgency').value
 
-  let deals = scoped
-    .filter(d => d.status === 'open' && d.suggestedStep)
-    .sort((a, b) => {
-      const ua = URGENCY_ORDER[a.actionUrgency] ?? 9
-      const ub = URGENCY_ORDER[b.actionUrgency] ?? 9
-      if (ua !== ub) return ua - ub
-      return b.priorityScore - a.priorityScore
-    })
-    .slice(0, 15)
+  let deals = getOpenPriorityDeals().filter(d => d.suggestedStep)
+  if (urgency !== 'all') deals = deals.filter(d => d.actionUrgency === urgency)
+  deals = deals.slice(0, 15)
 
   if (!deals.length) {
     list.innerHTML = ''
@@ -1042,7 +1274,7 @@ function renderTable() {
     const rowClass = d.status === 'won' ? 'style="background:#f0fdf4"' : d.status === 'lost' ? 'style="background:#fef2f2"' : ''
     const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
     const sc = d.status === 'open' ? d.priorityScore : '—'
-    const mainRow = `<tr ${rowClass}>
+    const mainRow = `<tr ${rowClass} ${rowClickAttr(d)}>
       <td>${d.status === 'open' ? `<span class="score-pill ${scoreClass(d.priorityScore)}">${sc}</span>` : '—'}</td>
       <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
       <td title="${esc(d.company)}">${esc(d.company)}</td>
@@ -1051,32 +1283,25 @@ function renderTable() {
       <td class="amount">${amt}</td>
       <td>${d.lastNoteDate || '—'}</td>
       <td class="num">${idleLabel(d)}</td>
+      <td class="num">${d.daysOpen != null ? d.daysOpen : '—'}</td>
       <td>${d.closeDate || '—'}</td>
       <td title="${esc(d.owner)}">${esc(d.owner)}</td>
       <td>${statusBadge(d.status)}</td>
       <td>${flagsHtml(d)}</td>
       <td>${d.notes
-        ? `<button class="notes-btn" onclick="toggleNotes(${JSON.stringify(String(d.id))})">💬 ${isExp ? 'Close' : 'View'}</button>`
+        ? `<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(${JSON.stringify(String(d.id))})">💬 ${isExp ? 'Close' : 'View'}</button>`
         : '<span style="color:#cbd5e1">—</span>'
       }</td>
     </tr>`
     const notesRow = isExp && d.notes
-      ? `<tr class="notes-row"><td colspan="13">${esc(d.notes)}</td></tr>`
+      ? `<tr class="notes-row"><td colspan="14">${esc(d.notes)}</td></tr>`
       : ''
     return mainRow + notesRow
   }).join('')
 }
 
 function renderPriorityQueue() {
-  const scoped = getScopedDeals()
-  computeScores(scoped)
-  const st = document.getElementById('filter-status').value
-  const q = document.getElementById('search').value.toLowerCase()
-  let deals = scoped.filter(d => d.status === 'open')
-  if (st !== 'all' && st !== 'open') deals = []
-  if (q) deals = deals.filter(d => [d.name, d.company, d.stage, d.notes].join(' ').toLowerCase().includes(q))
-  deals = deals.sort((a, b) => b.priorityScore - a.priorityScore)
-
+  const deals = getOpenPriorityDeals()
   const tbody = document.getElementById('priority-body')
   const empty = document.getElementById('priority-empty')
   document.getElementById('priority-count').textContent = `(${deals.length})`
@@ -1089,7 +1314,7 @@ function renderPriorityQueue() {
   empty.style.display = 'none'
   tbody.innerHTML = deals.map(d => {
     const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
-    return `<tr>
+    return `<tr ${rowClickAttr(d)}>
       <td><span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span></td>
       <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
       <td title="${esc(d.company)}">${esc(d.company)}</td>
@@ -1106,14 +1331,7 @@ function renderPriorityQueue() {
 }
 
 function renderStalled() {
-  const scoped = getScopedDeals()
-  const st = document.getElementById('filter-status').value
-  const q = document.getElementById('search').value.toLowerCase()
-  let deals = scoped.filter(d => d.isStale)
-  if (st !== 'all') deals = deals.filter(d => d.status === st)
-  if (q) deals = deals.filter(d => [d.name, d.company, d.stage, d.notes].join(' ').toLowerCase().includes(q))
-  deals = deals.sort((a, b) => (b.amount || 0) - (a.amount || 0) || (b.daysSinceLastTouch ?? 999) - (a.daysSinceLastTouch ?? 999))
-
+  const deals = getStalledDeals()
   const tbody = document.getElementById('stalled-body')
   const empty = document.getElementById('stalled-empty')
   document.getElementById('stalled-count').textContent = `(${deals.length})`
@@ -1126,7 +1344,7 @@ function renderStalled() {
   empty.style.display = 'none'
   tbody.innerHTML = deals.map(d => {
     const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
-    return `<tr>
+    return `<tr ${rowClickAttr(d)}>
       <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
       <td class="amount">${amt}</td>
       <td title="${esc(d.stage)}">${esc(d.stage)}</td>
@@ -1135,16 +1353,9 @@ function renderStalled() {
       <td>${d.closeDate || '—'}</td>
       <td title="${esc(d.owner)}">${esc(d.owner)}</td>
       <td class="why-text">${esc(d.staleReason)}</td>
-      <td>${d.notes ? `<button class="notes-btn" onclick="toggleNotesStalled(${JSON.stringify(String(d.id))})">View</button>` : '—'}</td>
+      <td><button class="notes-btn" onclick="event.stopPropagation();openDealModal(${JSON.stringify(String(d.id))})">Details</button></td>
     </tr>`
   }).join('')
-}
-
-let stalledNotesId = null
-function toggleNotesStalled(id) {
-  stalledNotesId = stalledNotesId === id ? null : id
-  const d = enrichedDeals.find(x => x.id === id)
-  if (d && d.notes) alert(d.notes)
 }
 
 function toggleNotes(id) {
