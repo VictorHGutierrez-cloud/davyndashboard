@@ -5,8 +5,12 @@ Dashboard estático do parceiro **Davyn Limited** — dados exportados do Introw
 ## Deploy no Vercel
 
 1. Importe este repositório no [Vercel](https://vercel.com)
-2. **Root Directory:** `davyn-v2`
-3. Deploy (sem variáveis de ambiente necessárias)
+2. **Root Directory:** `davyn-v2` (obrigatório)
+3. **Framework Preset:** Other (ou Vite/Static — o importante é não usar Next.js)
+4. O `vercel.json` já define `outputDirectory: public` — não precisa mudar Build Command
+5. Deploy (sem variáveis de ambiente)
+
+Se aparecer **404**, confira no Vercel → Settings → General que **Root Directory** = `davyn-v2` e faça **Redeploy**.
 
 ## Atualizar dados
 
