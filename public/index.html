@@ -104,6 +104,13 @@
   thead th.sortable:hover{color:#1e293b}
   thead th .sort-mark{font-size:9px;color:#94a3b8;margin-left:3px}
   thead th.sorted{color:#1d4ed8}
+  thead tr.filter-row th{padding:6px 8px;background:#fff;vertical-align:middle;cursor:default}
+  thead tr.filter-row th:hover{color:inherit}
+  .col-filter-input{width:100%;min-width:64px;max-width:180px;padding:5px 8px;font-size:11px;border:1.5px solid #e2e8f0;border-radius:6px;background:#fff;color:#334155;outline:none}
+  .col-filter-input:focus{border-color:#2563eb;box-shadow:0 0 0 2px rgba(37,99,235,.12)}
+  .col-filter-input.active{border-color:#2563eb;background:#eff6ff}
+  .btn-clear-filters{background:#fff;color:#64748b;border:1.5px solid #e2e8f0;padding:7px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+  .btn-clear-filters:hover{background:#fef2f2;border-color:#fecaca;color:#b91c1c}
   .btn-columns{background:#fff;color:#475569;border:1.5px solid #e2e8f0;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
   .btn-columns:hover{background:#f8fafc}
   .col-drawer-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:300}
@@ -375,13 +382,17 @@
     <div class="table-card">
       <div class="table-header">
         <div class="table-title">Opportunities <span class="table-count" id="table-count"></span></div>
+        <button type="button" class="btn-clear-filters" onclick="clearColumnFilters('overview')">Clear filters</button>
         <button type="button" class="btn-columns" onclick="openColDrawer('overview')">Columns</button>
         <button type="button" class="btn-download" onclick="downloadCsv('overview')">Download CSV</button>
       </div>
       <div class="mobile-cards" id="table-cards"></div>
       <div class="table-wrap">
         <table>
-          <thead id="overview-thead"><tr id="overview-header-row"></tr></thead>
+          <thead id="overview-thead">
+            <tr id="overview-header-row"></tr>
+            <tr id="overview-filter-row" class="filter-row"></tr>
+          </thead>
           <tbody id="table-body"></tbody>
         </table>
         <div class="empty-state" id="empty-state" style="display:none">No deals found.</div>
@@ -407,13 +418,17 @@
         <div class="table-header">
           <div class="table-title">Priority queue <span class="table-count" id="priority-count"></span></div>
           <span class="table-count">Open deals ranked by score (highest first)</span>
+          <button type="button" class="btn-clear-filters" onclick="clearColumnFilters('priority')">Clear filters</button>
           <button type="button" class="btn-columns" onclick="openColDrawer('priority')">Columns</button>
           <button type="button" class="btn-download" onclick="downloadCsv('priority')">Download CSV</button>
         </div>
         <div class="mobile-cards" id="priority-cards"></div>
         <div class="table-wrap">
           <table>
-            <thead id="priority-thead"><tr id="priority-header-row"></tr></thead>
+            <thead id="priority-thead">
+              <tr id="priority-header-row"></tr>
+              <tr id="priority-filter-row" class="filter-row"></tr>
+            </thead>
             <tbody id="priority-body"></tbody>
           </table>
           <div class="empty-state" id="priority-empty" style="display:none">No open deals in this pipeline filter.</div>
@@ -438,23 +453,15 @@
         <div class="table-header">
           <div class="table-title">Stalled deals <span class="table-count" id="stalled-count"></span></div>
           <span class="table-count">90+ days since last note, or open with no notes</span>
+          <button type="button" class="btn-clear-filters" onclick="clearColumnFilters('stalled')">Clear filters</button>
           <button type="button" class="btn-download" onclick="downloadCsv('stalled')">Download CSV</button>
         </div>
         <div class="mobile-cards" id="stalled-cards"></div>
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>Deal</th>
-                <th>Amount</th>
-                <th>Stage</th>
-                <th>Last touch</th>
-                <th>Days idle</th>
-                <th>Close date</th>
-                <th>Owner</th>
-                <th>Reason</th>
-                <th>Notes</th>
-              </tr>
+            <thead id="stalled-thead">
+              <tr id="stalled-header-row"></tr>
+              <tr id="stalled-filter-row" class="filter-row"></tr>
             </thead>
             <tbody id="stalled-body"></tbody>
           </table>
@@ -559,6 +566,13 @@ const I18N = {
     presetCallDavyn: 'Call with Davyn',
     presetFull: 'Full table',
     presetCompact: 'Compact',
+    filterAll: 'All',
+    filterPlaceholder: 'Filter…',
+    filterFlagsStalled: 'Stalled',
+    filterFlagsHot: 'Hot',
+    filterFlagsRisk: 'At risk',
+    filterFlagsAny: 'Any flag',
+    clearColFilters: 'Clear filters',
     colScore: 'Score',
     colDeal: 'Deal',
     colCompany: 'Company',
@@ -618,6 +632,13 @@ const I18N = {
     presetCallDavyn: 'Call com Davyn',
     presetFull: 'Tabela completa',
     presetCompact: 'Compacta',
+    filterAll: 'Todos',
+    filterPlaceholder: 'Filtrar…',
+    filterFlagsStalled: 'Parado',
+    filterFlagsHot: 'Quente',
+    filterFlagsRisk: 'Em risco',
+    filterFlagsAny: 'Qualquer flag',
+    clearColFilters: 'Limpar filtros',
     colScore: 'Score',
     colDeal: 'Deal',
     colCompany: 'Empresa',
@@ -725,6 +746,7 @@ function applyI18n() {
   if (sEmpty) sEmpty.textContent = t('emptyNoStalled')
 
   document.querySelectorAll('.btn-columns').forEach(b => { b.textContent = t('columnsBtn') })
+  document.querySelectorAll('.btn-clear-filters').forEach(b => { b.textContent = t('clearColFilters') })
   const dt = document.getElementById('col-drawer-title')
   const dh = document.getElementById('col-drawer-hint')
   const dr = document.getElementById('col-drawer-reset')
@@ -733,8 +755,9 @@ function applyI18n() {
   if (dh) dh.textContent = t('columnsHint')
   if (dr) dr.textContent = t('columnsReset')
   if (dd) dd.textContent = t('columnsDone')
-  renderTableHeader('overview')
-  renderTableHeader('priority')
+  renderTableHead('overview')
+  renderTableHead('priority')
+  renderTableHead('stalled')
   if (activeColTable && document.getElementById('col-drawer').classList.contains('open')) {
     buildColDrawer(activeColTable)
   }
@@ -834,8 +857,9 @@ function setView(name) {
   activeView = name
   document.querySelectorAll('.view-tab').forEach(b => b.classList.toggle('active', b.dataset.view === name))
   document.querySelectorAll('.view-panel').forEach(p => p.classList.toggle('active', p.id === 'view-' + name))
-  if (name === 'overview') { renderTableHeader('overview'); renderCharts() }
-  if (name === 'priority') renderTableHeader('priority')
+  if (name === 'overview') { renderTableHead('overview'); renderCharts() }
+  if (name === 'priority') renderTableHead('priority')
+  if (name === 'stalled') renderTableHead('stalled')
   if (name === 'weekly') renderWeekly()
 }
 
@@ -1095,19 +1119,24 @@ function applySearchStatus(deals) {
 }
 
 function getFiltered() {
-  return applySearchStatus(getScopedDeals()).sort((a, b) => compareSort(a, b))
+  let deals = applySearchStatus(getScopedDeals())
+  deals = applyColumnFilters(deals, 'overview')
+  return deals.sort((a, b) => compareSort(a, b))
 }
 
 function getOpenPriorityDeals() {
   const st = document.getElementById('filter-status').value
   let deals = applySearchStatus(getScopedDeals()).filter(d => d.status === 'open')
   if (st !== 'all' && st !== 'open') deals = []
+  deals = applyColumnFilters(deals, 'priority')
   computeScores(getScopedDeals())
   return deals.sort((a, b) => b.priorityScore - a.priorityScore)
 }
 
 function getStalledDeals() {
-  return applySearchStatus(getScopedDeals()).filter(d => d.isStale).sort((a, b) => (b.amount || 0) - (a.amount || 0))
+  let deals = applySearchStatus(getScopedDeals()).filter(d => d.isStale)
+  deals = applyColumnFilters(deals, 'stalled')
+  return deals.sort((a, b) => (b.amount || 0) - (a.amount || 0))
 }
 
 function csvEscape(v) {
@@ -1562,37 +1591,50 @@ function renderNextSteps() {
 // ── COLUMN LAYOUT ─────────────────────────────────────────────────────────
 const TABLE_COLUMN_DEFS = {
   overview: [
-    { id: 'priorityScore', labelKey: 'colScore', sortable: true, default: true },
-    { id: 'name', labelKey: 'colDeal', sortable: true, default: true },
-    { id: 'company', labelKey: 'colCompany', sortable: true, default: true },
-    { id: 'pipeline', labelKey: 'colPipeline', sortable: true, default: true },
-    { id: 'stage', labelKey: 'colStage', sortable: true, default: true },
-    { id: 'amount', labelKey: 'colAmount', sortable: true, default: true },
-    { id: 'lastNoteDate', labelKey: 'colLastTouch', sortable: true, default: true },
-    { id: 'daysSinceLastTouch', labelKey: 'colDaysIdle', sortable: true, default: true },
-    { id: 'daysOpen', labelKey: 'colDaysPipe', sortable: true, default: false },
-    { id: 'closeDate', labelKey: 'colCloseDate', sortable: true, default: false },
-    { id: 'owner', labelKey: 'colOwner', sortable: true, default: true },
-    { id: 'sender', labelKey: 'colOwnerDavyn', sortable: true, default: true },
-    { id: 'status', labelKey: 'colStatus', sortable: true, default: true },
-    { id: 'flags', labelKey: 'colFlags', sortable: false, default: true },
-    { id: 'notes', labelKey: 'colNotes', sortable: false, default: true },
+    { id: 'priorityScore', labelKey: 'colScore', sortable: true, default: true, filterType: 'number' },
+    { id: 'name', labelKey: 'colDeal', sortable: true, default: true, filterType: 'text' },
+    { id: 'company', labelKey: 'colCompany', sortable: true, default: true, filterType: 'text' },
+    { id: 'pipeline', labelKey: 'colPipeline', sortable: true, default: true, filterType: 'text' },
+    { id: 'stage', labelKey: 'colStage', sortable: true, default: true, filterType: 'text' },
+    { id: 'amount', labelKey: 'colAmount', sortable: true, default: true, filterType: 'number' },
+    { id: 'lastNoteDate', labelKey: 'colLastTouch', sortable: true, default: true, filterType: 'text' },
+    { id: 'daysSinceLastTouch', labelKey: 'colDaysIdle', sortable: true, default: true, filterType: 'number' },
+    { id: 'daysOpen', labelKey: 'colDaysPipe', sortable: true, default: false, filterType: 'number' },
+    { id: 'closeDate', labelKey: 'colCloseDate', sortable: true, default: false, filterType: 'text' },
+    { id: 'owner', labelKey: 'colOwner', sortable: true, default: true, filterType: 'text' },
+    { id: 'sender', labelKey: 'colOwnerDavyn', sortable: true, default: true, filterType: 'text' },
+    { id: 'status', labelKey: 'colStatus', sortable: true, default: true, filterType: 'status' },
+    { id: 'flags', labelKey: 'colFlags', sortable: false, default: true, filterType: 'flags' },
+    { id: 'notes', labelKey: 'colNotes', sortable: false, default: true, filterType: 'text' },
   ],
   priority: [
-    { id: 'priorityScore', labelKey: 'colScore', sortable: true, default: true },
-    { id: 'name', labelKey: 'colDeal', sortable: true, default: true },
-    { id: 'company', labelKey: 'colCompany', sortable: true, default: true },
-    { id: 'stage', labelKey: 'colStage', sortable: true, default: true },
-    { id: 'amount', labelKey: 'colAmount', sortable: true, default: true },
-    { id: 'lastNoteDate', labelKey: 'colLastTouch', sortable: true, default: true },
-    { id: 'daysSinceLastTouch', labelKey: 'colDaysIdle', sortable: true, default: true },
-    { id: 'owner', labelKey: 'colOwner', sortable: true, default: true },
-    { id: 'sender', labelKey: 'colOwnerDavyn', sortable: true, default: true },
-    { id: 'flags', labelKey: 'colFlags', sortable: false, default: true },
-    { id: 'priorityWhy', labelKey: 'colWhy', sortable: false, default: true },
-    { id: 'suggestedStep', labelKey: 'colNextStep', sortable: false, default: true },
+    { id: 'priorityScore', labelKey: 'colScore', sortable: true, default: true, filterType: 'number' },
+    { id: 'name', labelKey: 'colDeal', sortable: true, default: true, filterType: 'text' },
+    { id: 'company', labelKey: 'colCompany', sortable: true, default: true, filterType: 'text' },
+    { id: 'stage', labelKey: 'colStage', sortable: true, default: true, filterType: 'text' },
+    { id: 'amount', labelKey: 'colAmount', sortable: true, default: true, filterType: 'number' },
+    { id: 'lastNoteDate', labelKey: 'colLastTouch', sortable: true, default: true, filterType: 'text' },
+    { id: 'daysSinceLastTouch', labelKey: 'colDaysIdle', sortable: true, default: true, filterType: 'number' },
+    { id: 'owner', labelKey: 'colOwner', sortable: true, default: true, filterType: 'text' },
+    { id: 'sender', labelKey: 'colOwnerDavyn', sortable: true, default: true, filterType: 'text' },
+    { id: 'flags', labelKey: 'colFlags', sortable: false, default: true, filterType: 'flags' },
+    { id: 'priorityWhy', labelKey: 'colWhy', sortable: false, default: true, filterType: 'text' },
+    { id: 'suggestedStep', labelKey: 'colNextStep', sortable: false, default: true, filterType: 'text' },
+  ],
+  stalled: [
+    { id: 'name', labelKey: 'colDeal', sortable: true, default: true, filterType: 'text' },
+    { id: 'amount', labelKey: 'colAmount', sortable: true, default: true, filterType: 'number' },
+    { id: 'stage', labelKey: 'colStage', sortable: true, default: true, filterType: 'text' },
+    { id: 'lastNoteDate', labelKey: 'colLastTouch', sortable: true, default: true, filterType: 'text' },
+    { id: 'daysSinceLastTouch', labelKey: 'colDaysIdle', sortable: true, default: true, filterType: 'number' },
+    { id: 'closeDate', labelKey: 'colCloseDate', sortable: true, default: true, filterType: 'text' },
+    { id: 'owner', labelKey: 'colOwner', sortable: true, default: true, filterType: 'text' },
+    { id: 'staleReason', labelKey: 'colReason', sortable: false, default: true, filterType: 'text' },
+    { id: 'notes', labelKey: 'colNotes', sortable: false, default: true, filterType: 'text' },
   ],
 }
+
+let columnFilters = { overview: {}, priority: {}, stalled: {} }
 
 let columnLayouts = { overview: null, priority: null }
 let activeColTable = null
@@ -1661,28 +1703,146 @@ function getVisibleColumnIds(tableId) {
 }
 
 function colDef(tableId, id) {
-  return TABLE_COLUMN_DEFS[tableId].find(c => c.id === id)
+  const defs = TABLE_COLUMN_DEFS[tableId]
+  return defs ? defs.find(c => c.id === id) : null
 }
 
-function renderTableHeader(tableId) {
-  const rowId = tableId === 'overview' ? 'overview-header-row' : 'priority-header-row'
-  const row = document.getElementById(rowId)
-  if (!row) return
-  row.innerHTML = getVisibleColumnIds(tableId).map(id => {
+function getDealFilterText(d, colId) {
+  switch (colId) {
+    case 'priorityScore':
+      return d.status === 'open' ? String(d.priorityScore ?? '') : ''
+    case 'name': return d.name || ''
+    case 'company': return d.company || ''
+    case 'pipeline': return d.pipeline || ''
+    case 'stage': return d.stage || ''
+    case 'amount': return d.amount != null ? String(d.amount) : ''
+    case 'lastNoteDate': return d.lastNoteDate || ''
+    case 'daysSinceLastTouch': return idleLabel(d)
+    case 'daysOpen': return d.daysOpen != null ? String(d.daysOpen) : ''
+    case 'closeDate': return d.closeDate || ''
+    case 'owner': return d.owner || ''
+    case 'sender': return d.sender || ''
+    case 'status': return d.status || ''
+    case 'flags': {
+      const p = []
+      if (d.isStale) p.push('stalled')
+      if (d.atRisk) p.push('at risk')
+      if (d.queueClose) p.push('hot')
+      return p.join(' ')
+    }
+    case 'notes': return d.notes || ''
+    case 'priorityWhy': return d.priorityWhy || ''
+    case 'suggestedStep': return d.suggestedStep || ''
+    case 'staleReason': return d.staleReason || ''
+    default: return ''
+  }
+}
+
+function dealMatchesColumnFilter(d, colId, filterVal) {
+  const f = String(filterVal ?? '').trim()
+  if (!f) return true
+  if (colId === 'status') return d.status === f
+  if (colId === 'flags') {
+    if (f === 'stalled') return !!d.isStale
+    if (f === 'hot') return !!d.queueClose
+    if (f === 'atrisk') return !!d.atRisk
+    if (f === 'any') return !!(d.isStale || d.atRisk || d.queueClose)
+    return true
+  }
+  const raw = getDealFilterText(d, colId)
+  const fl = f.toLowerCase()
+  const numCols = ['priorityScore', 'amount', 'daysSinceLastTouch', 'daysOpen']
+  if (numCols.includes(colId)) {
+    const n = parseFloat(f.replace(/[^\d.-]/g, ''))
+    const v = parseFloat(String(raw).replace(/[^\d.-]/g, ''))
+    if (!isNaN(n) && !isNaN(v)) {
+      if (f.startsWith('<')) return v < n
+      if (f.startsWith('>')) return v > n
+      if (/^\d+(\.\d+)?$/.test(f)) return v === n || String(v).includes(f)
+    }
+  }
+  return String(raw).toLowerCase().includes(fl)
+}
+
+function applyColumnFilters(deals, tableId) {
+  const filters = columnFilters[tableId] || {}
+  const keys = Object.keys(filters).filter(k => String(filters[k] ?? '').trim())
+  if (!keys.length) return deals
+  return deals.filter(d => keys.every(colId => dealMatchesColumnFilter(d, colId, filters[colId])))
+}
+
+function onColumnFilterChange(tableId, colId, value) {
+  if (!columnFilters[tableId]) columnFilters[tableId] = {}
+  columnFilters[tableId][colId] = value
+  onFiltersChanged()
+}
+
+function clearColumnFilters(tableId) {
+  columnFilters[tableId] = {}
+  renderTableHead(tableId)
+  onFiltersChanged()
+}
+
+function renderColumnFilterCell(tableId, colId) {
+  const def = colDef(tableId, colId)
+  if (!def) return '<th></th>'
+  const val = (columnFilters[tableId] || {})[colId] || ''
+  const active = String(val).trim() ? ' active' : ''
+  const ph = t('filterPlaceholder')
+
+  if (def.filterType === 'status') {
+    return `<th><select class="col-filter-input${active}" onchange="onColumnFilterChange('${tableId}','${colId}',this.value)" onclick="event.stopPropagation()">
+      <option value="">${t('filterAll')}</option>
+      <option value="open"${val === 'open' ? ' selected' : ''}>${t('statusOpen')}</option>
+      <option value="won"${val === 'won' ? ' selected' : ''}>${t('statusWon')}</option>
+      <option value="lost"${val === 'lost' ? ' selected' : ''}>${t('statusLost')}</option>
+    </select></th>`
+  }
+  if (def.filterType === 'flags') {
+    return `<th><select class="col-filter-input${active}" onchange="onColumnFilterChange('${tableId}','${colId}',this.value)" onclick="event.stopPropagation()">
+      <option value="">${t('filterAll')}</option>
+      <option value="stalled"${val === 'stalled' ? ' selected' : ''}>${t('filterFlagsStalled')}</option>
+      <option value="hot"${val === 'hot' ? ' selected' : ''}>${t('filterFlagsHot')}</option>
+      <option value="atrisk"${val === 'atrisk' ? ' selected' : ''}>${t('filterFlagsRisk')}</option>
+      <option value="any"${val === 'any' ? ' selected' : ''}>${t('filterFlagsAny')}</option>
+    </select></th>`
+  }
+  const typeAttr = def.filterType === 'number' ? ' text' : ' text'
+  return `<th><input type="${typeAttr.trim()}" class="col-filter-input${active}" placeholder="${ph}" value="${esc(val)}"
+    oninput="onColumnFilterChange('${tableId}','${colId}',this.value)" onclick="event.stopPropagation()"/></th>`
+}
+
+function renderTableHead(tableId) {
+  const headerRowId = tableId + '-header-row'
+  const filterRowId = tableId + '-filter-row'
+  const headerRow = document.getElementById(headerRowId)
+  const filterRow = document.getElementById(filterRowId)
+  if (!headerRow) return
+
+  const cols = tableId === 'stalled'
+    ? TABLE_COLUMN_DEFS.stalled.map(d => d.id)
+    : getVisibleColumnIds(tableId)
+
+  headerRow.innerHTML = cols.map(id => {
     const def = colDef(tableId, id)
     if (!def) return ''
     const sorted = def.sortable && sortKey === id
     const mark = sorted ? (sortAsc ? '↑' : '↓') : (def.sortable ? '↕' : '')
     const cls = [def.sortable ? 'sortable' : '', sorted ? 'sorted' : ''].filter(Boolean).join(' ')
-    const click = def.sortable ? `onclick="sortBy('${id}')"` : ''
+    const click = def.sortable ? `onclick="sortBy('${id}','${tableId}')"` : ''
     return `<th class="${cls}" ${click}>${t(def.labelKey)}${mark ? `<span class="sort-mark">${mark}</span>` : ''}</th>`
   }).join('')
+
+  if (filterRow) {
+    filterRow.innerHTML = cols.map(id => renderColumnFilterCell(tableId, id)).join('')
+  }
 }
 
 function refreshTableForColumns(tableId) {
-  renderTableHeader(tableId)
+  renderTableHead(tableId)
   if (tableId === 'overview') renderTable()
-  else renderPriorityQueue()
+  else if (tableId === 'priority') renderPriorityQueue()
+  else if (tableId === 'stalled') renderStalled()
 }
 
 function toggleColumnVisible(tableId, id, on) {
@@ -1861,6 +2021,23 @@ function renderOverviewCell(d, colId, ctx) {
   }
 }
 
+function renderStalledCell(d, colId) {
+  const amt = formatAmount(d)
+  switch (colId) {
+    case 'name': return `<td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>`
+    case 'amount': return `<td class="amount">${amt}</td>`
+    case 'stage': return `<td title="${esc(d.stage)}">${esc(d.stage)}</td>`
+    case 'lastNoteDate': return `<td>${d.lastNoteDate || '—'}</td>`
+    case 'daysSinceLastTouch': return `<td class="num">${idleLabel(d)}</td>`
+    case 'closeDate': return `<td>${d.closeDate || '—'}</td>`
+    case 'owner': return `<td title="${esc(d.owner)}">${esc(d.owner)}</td>`
+    case 'staleReason': return `<td class="why-text">${esc(d.staleReason)}</td>`
+    case 'notes':
+      return `<td><button class="notes-btn" onclick="event.stopPropagation();openDealModal(${JSON.stringify(String(d.id))})">Details</button></td>`
+    default: return '<td>—</td>'
+  }
+}
+
 function renderPriorityCell(d, colId) {
   const amt = formatAmount(d)
   switch (colId) {
@@ -1881,10 +2058,11 @@ function renderPriorityCell(d, colId) {
 }
 
 // ── TABLE ─────────────────────────────────────────────────────────────────
-function sortBy(key) {
+function sortBy(key, tableId) {
   if (sortKey === key) sortAsc = !sortAsc
   else { sortKey = key; sortAsc = true }
-  renderTableHeader(activeView === 'priority' ? 'priority' : 'overview')
+  const tid = tableId || (activeView === 'priority' ? 'priority' : activeView === 'stalled' ? 'stalled' : 'overview')
+  renderTableHead(tid)
   onFiltersChanged()
 }
 
@@ -2047,19 +2225,9 @@ function renderStalled() {
     return
   }
   empty.style.display = 'none'
+  const cols = TABLE_COLUMN_DEFS.stalled.map(d => d.id)
   tbody.innerHTML = deals.map(d => {
-    const amt = d.amount != null ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount) : '—'
-    return `<tr ${rowClickAttr(d)}>
-      <td class="deal-name" title="${esc(d.name)}">${esc(d.name)}</td>
-      <td class="amount">${amt}</td>
-      <td title="${esc(d.stage)}">${esc(d.stage)}</td>
-      <td>${d.lastNoteDate || '—'}</td>
-      <td class="num">${idleLabel(d)}</td>
-      <td>${d.closeDate || '—'}</td>
-      <td title="${esc(d.owner)}">${esc(d.owner)}</td>
-      <td class="why-text">${esc(d.staleReason)}</td>
-      <td><button class="notes-btn" onclick="event.stopPropagation();openDealModal(${JSON.stringify(String(d.id))})">Details</button></td>
-    </tr>`
+    return `<tr ${rowClickAttr(d)}>${cols.map(c => renderStalledCell(d, c)).join('')}</tr>`
   }).join('')
 
   if (cards) {
