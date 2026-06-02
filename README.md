@@ -1,25 +1,25 @@
 # Davyn Dashboard (v2)
 
-Dashboard estático do parceiro **Davyn Limited** — dados exportados do Introw em `davyn-v2/public/data.json`.
+Dashboard estático do parceiro **Davyn Limited** — dados do Introw em `public/data.json`.
 
 ## Deploy no Vercel
 
-1. Importe este repositório no [Vercel](https://vercel.com)
-2. **Root Directory:** `davyn-v2` (obrigatório)
-3. **Framework Preset:** Other (ou Vite/Static — o importante é não usar Next.js)
-4. O `vercel.json` já define `outputDirectory: public` — não precisa mudar Build Command
-5. Deploy (sem variáveis de ambiente)
+1. Importe [davyndashboard](https://github.com/VictorHGutierrez-cloud/davyndashboard) no Vercel
+2. **Root Directory:** deixe **vazio** (raiz do repositório) — **não** use `davyn-v2`
+3. Deploy — o `vercel.json` na raiz aponta para a pasta `public/`
 
-Se aparecer **404**, confira no Vercel → Settings → General que **Root Directory** = `davyn-v2` e faça **Redeploy**.
+URL: https://davyndashboard.vercel.app
 
-## Atualizar dados
+## Atualizar dados (fluxo Claude → Cursor → Vercel)
 
-Substitua `davyn-v2/public/data.json` pelo arquivo gerado pelo Claude/Introw e faça push na branch `main`.
+1. Claude gera um novo `data.json`
+2. Substitua o arquivo `public/data.json` nesta pasta
+3. Peça push no GitHub → Vercel redeploy automático
 
 ## Teste local
 
 ```bash
-cd davyn-v2/public
+cd public
 python3 -m http.server 8080
 ```
 
