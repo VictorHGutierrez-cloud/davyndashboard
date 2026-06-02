@@ -4,10 +4,13 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Davyn Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
+  body{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b;min-height:100vh}
 
   /* LOGIN */
   #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1e3a5f,#2563eb)}
@@ -28,7 +31,9 @@
   header{background:#fff;border-bottom:1px solid #e2e8f0;position:sticky;top:0;z-index:100;padding:0 24px}
   .header-inner{max-width:1400px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between}
   .header-brand{display:flex;align-items:center;gap:10px}
-  .header-icon{width:32px;height:32px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px}
+  .header-logos{display:flex;align-items:center;gap:10px}
+  .brand-mark{height:22px;width:auto;display:block}
+  .brand-divider{width:1px;height:18px;background:#e2e8f0}
   .header-title{font-size:14px;font-weight:700;color:#1e293b}
   .header-sub{font-size:11px;color:#94a3b8}
   .header-right{display:flex;align-items:center;gap:10px}
@@ -36,6 +41,8 @@
   .btn-sm{font-size:11px;padding:6px 12px;border-radius:8px;border:none;cursor:pointer;display:flex;align-items:center;gap:4px;font-weight:500;transition:.2s}
   .btn-refresh{background:#f1f5f9;color:#475569}.btn-refresh:hover{background:#e2e8f0}
   .btn-logout{background:transparent;color:#ef4444}.btn-logout:hover{background:#fef2f2}
+  .btn-lang{background:#fff;color:#475569;border:1.5px solid #e2e8f0}
+  .btn-lang:hover{background:#f8fafc}
 
   main{max-width:1400px;margin:0 auto;padding:24px}
 
@@ -72,6 +79,23 @@
   .filter-select:focus{border-color:#2563eb}
 
   .table-wrap{overflow-x:auto}
+  .mobile-cards{display:none;padding:14px 14px 18px}
+  .deal-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px 14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .deal-card + .deal-card{margin-top:12px}
+  .deal-card-top{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+  .deal-card-title{font-size:14px;font-weight:800;color:#0f172a;line-height:1.2}
+  .deal-card-sub{font-size:12px;color:#64748b;margin-top:2px}
+  .deal-card-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+  .deal-card-k{font-size:10px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.4px}
+  .deal-card-v{font-size:12px;color:#334155;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .deal-card-actions{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .deal-card-actions a{font-size:12px;color:#2563eb;text-decoration:none;font-weight:700}
+  .deal-card-actions a:hover{text-decoration:underline}
+  @media(max-width:768px){
+    .table-wrap{display:none}
+    .mobile-cards{display:block}
+    .search-wrap input{width:100%}
+  }
   table{width:100%;border-collapse:collapse;font-size:12px}
   thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:#64748b;background:#f8fafc;white-space:nowrap;cursor:pointer;user-select:none}
   thead th:hover{color:#1e293b}
@@ -161,9 +185,11 @@
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo">📊</div>
-    <h1>Davyn Dashboard</h1>
-    <p>Factorial · Partner Opportunities</p>
+    <div class="login-logo" style="background:transparent">
+      <img src="davyn-logo.svg" alt="Davyn" style="height:26px;width:auto;display:block"/>
+    </div>
+    <h1 id="i18n-login-title">Davyn Dashboard</h1>
+    <p id="i18n-login-sub">Factorial · Partner Opportunities</p>
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="inp-email" placeholder="you@factorial.co" autocomplete="email"/>
@@ -173,7 +199,7 @@
       <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password"/>
     </div>
     <div class="login-error" id="login-error">Incorrect email or password.</div>
-    <button class="btn-login" onclick="doLogin()">Sign in</button>
+    <button class="btn-login" id="i18n-login-cta" onclick="doLogin()">Sign in</button>
   </div>
 </div>
 
@@ -182,14 +208,19 @@
   <header>
     <div class="header-inner">
       <div class="header-brand">
-        <div class="header-icon">📊</div>
+        <div class="header-logos" aria-label="Factorial and Davyn">
+          <img class="brand-mark" src="factorial-logo.svg" alt="Factorial"/>
+          <span class="brand-divider" aria-hidden="true"></span>
+          <img class="brand-mark" src="davyn-logo.svg" alt="Davyn"/>
+        </div>
         <div>
-          <div class="header-title">Davyn Dashboard</div>
-          <div class="header-sub">Factorial · Partner Opportunities</div>
+          <div class="header-title" id="i18n-header-title">Davyn Dashboard</div>
+          <div class="header-sub" id="i18n-header-sub">Factorial · Partner Opportunities</div>
         </div>
       </div>
       <div class="header-right">
         <span class="updated-badge" id="updated-badge"></span>
+        <button class="btn-sm btn-lang" id="btn-lang" onclick="toggleLang()">PT</button>
         <button class="btn-sm btn-logout" onclick="doLogout()">⎋ Log out</button>
       </div>
     </div>
@@ -218,7 +249,7 @@
         <option value="low">Low</option>
       </select>
       <div class="search-wrap">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon" aria-hidden="true">⌕</span>
         <input type="text" id="search" placeholder="Search deals…" oninput="onFiltersChanged()"/>
       </div>
       <select class="filter-select" id="filter-status" onchange="onFiltersChanged()">
@@ -241,7 +272,7 @@
     <!-- KPIs -->
     <div class="kpi-grid">
       <div class="kpi">
-        <div class="kpi-icon kpi-blue">📁</div>
+        <div class="kpi-icon kpi-blue" aria-hidden="true">D</div>
         <div>
           <div class="kpi-label">Total Deals</div>
           <div class="kpi-value" id="kpi-total">—</div>
@@ -249,7 +280,7 @@
         </div>
       </div>
       <div class="kpi">
-        <div class="kpi-icon kpi-green">✅</div>
+        <div class="kpi-icon kpi-green" aria-hidden="true">W</div>
         <div>
           <div class="kpi-label">Closed Won</div>
           <div class="kpi-value" id="kpi-won">—</div>
@@ -257,7 +288,7 @@
         </div>
       </div>
       <div class="kpi">
-        <div class="kpi-icon kpi-red">⏸</div>
+        <div class="kpi-icon kpi-red" aria-hidden="true">S</div>
         <div>
           <div class="kpi-label">Stalled (open)</div>
           <div class="kpi-value" id="kpi-stale">—</div>
@@ -265,7 +296,7 @@
         </div>
       </div>
       <div class="kpi">
-        <div class="kpi-icon kpi-amber">💰</div>
+        <div class="kpi-icon kpi-amber" aria-hidden="true">$</div>
         <div>
           <div class="kpi-label">Open Pipeline</div>
           <div class="kpi-value" id="kpi-value">—</div>
@@ -309,6 +340,7 @@
         <div class="table-title">Opportunities <span class="table-count" id="table-count"></span></div>
         <button type="button" class="btn-download" onclick="downloadCsv('overview')">Download CSV</button>
       </div>
+      <div class="mobile-cards" id="table-cards"></div>
       <div class="table-wrap">
         <table>
           <thead>
@@ -356,6 +388,7 @@
           <span class="table-count">Open deals ranked by score (highest first)</span>
           <button type="button" class="btn-download" onclick="downloadCsv('priority')">Download CSV</button>
         </div>
+        <div class="mobile-cards" id="priority-cards"></div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -399,6 +432,7 @@
           <span class="table-count">90+ days since last note, or open with no notes</span>
           <button type="button" class="btn-download" onclick="downloadCsv('stalled')">Download CSV</button>
         </div>
+        <div class="mobile-cards" id="stalled-cards"></div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -471,6 +505,155 @@ if (sessionStorage.getItem('davyn_auth')) showDashboard()
 const DEFAULT_PIPELINE = 'Partners Distribution'
 const STALE_DAYS = 90
 const NOTE_DATE_RE = /\[(\d{4}-\d{2}-\d{2})/g
+let LANG = (localStorage.getItem('davyn_lang') || 'en')
+let UPDATED_AT = null
+
+const I18N = {
+  en: {
+    loginTitle: 'Davyn Dashboard',
+    loginSub: 'Factorial · Partner Opportunities',
+    loginCta: 'Sign in',
+    headerTitle: 'Davyn Dashboard',
+    headerSub: 'Factorial · Partner Opportunities',
+    updatedAsOf: (d) => 'Data as of ' + d,
+    langBtn: 'PT',
+    banner: [
+      'Latest Introw export: weekly brief, deal summaries, and recommended next steps.',
+      '<strong>Last touch</strong> uses the CRM activity date when available; otherwise the newest date in deal notes.',
+      '<strong>Stalled</strong> = open deals with no activity for 90+ days. Click any row for notes and full detail.',
+    ].join(' '),
+    partnerOnly: 'Partner pipeline only',
+    pipelinesAll: 'All pipelines',
+    ownersAll: 'All owners',
+    urgenciesAll: 'All urgencies',
+    statusesAll: 'All statuses',
+    statusWon: 'Won',
+    statusLost: 'Lost',
+    statusOpen: 'Open',
+    searchPlaceholder: 'Search deals…',
+    tabOverview: 'Overview',
+    tabWeekly: 'This week',
+    tabPriority: 'Priority queue',
+    tabStalled: 'Stalled deals',
+    tabActions: 'Next steps',
+    emptyNoDeals: 'No deals found.',
+    emptyNoPriority: 'No open deals in this pipeline filter.',
+    emptyNoStalled: 'No stalled deals for this filter.',
+  },
+  pt: {
+    loginTitle: 'Davyn Dashboard',
+    loginSub: 'Factorial · Oportunidades do Parceiro',
+    loginCta: 'Entrar',
+    headerTitle: 'Davyn Dashboard',
+    headerSub: 'Factorial · Oportunidades do Parceiro',
+    updatedAsOf: (d) => 'Dados em ' + d,
+    langBtn: 'EN',
+    banner: [
+      'Último export do Introw: resumo semanal, sumários dos deals e próximos passos recomendados.',
+      '<strong>Último contato</strong> usa a data de atividade do CRM quando disponível; caso contrário, a data mais recente nas notas.',
+      '<strong>Stalled</strong> = deals abertos sem atividade há 90+ dias. Clique numa linha para ver detalhes e notas.',
+    ].join(' '),
+    partnerOnly: 'Só pipeline de parceiro',
+    pipelinesAll: 'Todos os pipelines',
+    ownersAll: 'Todos os owners',
+    urgenciesAll: 'Todas as urgências',
+    statusesAll: 'Todos os status',
+    statusWon: 'Won',
+    statusLost: 'Lost',
+    statusOpen: 'Open',
+    searchPlaceholder: 'Buscar deals…',
+    tabOverview: 'Visão geral',
+    tabWeekly: 'Esta semana',
+    tabPriority: 'Fila de prioridade',
+    tabStalled: 'Deals parados',
+    tabActions: 'Próximos passos',
+    emptyNoDeals: 'Nenhum deal encontrado.',
+    emptyNoPriority: 'Sem deals abertos neste filtro de pipeline.',
+    emptyNoStalled: 'Sem deals parados para este filtro.',
+  },
+}
+
+function t(key) {
+  const dict = I18N[LANG] || I18N.en
+  return dict[key] != null ? dict[key] : (I18N.en[key] != null ? I18N.en[key] : '')
+}
+
+function applyI18n() {
+  const btn = document.getElementById('btn-lang')
+  if (btn) btn.textContent = t('langBtn')
+
+  if (UPDATED_AT) {
+    const ub = document.getElementById('updated-badge')
+    if (ub) ub.textContent = (I18N[LANG] || I18N.en).updatedAsOf(UPDATED_AT)
+  }
+
+  const banner = document.getElementById('data-hint')
+  if (banner) banner.innerHTML = t('banner')
+
+  const s = document.getElementById('search')
+  if (s) s.placeholder = t('searchPlaceholder')
+
+  const urg = document.getElementById('filter-urgency')
+  if (urg) {
+    const opts = urg.querySelectorAll('option')
+    if (opts[0]) opts[0].textContent = t('urgenciesAll')
+  }
+  const st = document.getElementById('filter-status')
+  if (st) {
+    const opts = st.querySelectorAll('option')
+    if (opts[0]) opts[0].textContent = t('statusesAll')
+    if (opts[1]) opts[1].textContent = t('statusWon')
+    if (opts[2]) opts[2].textContent = t('statusLost')
+    if (opts[3]) opts[3].textContent = t('statusOpen')
+  }
+
+  const partnerLbl = document.querySelector('label[for="filter-partner-only"]')
+  const partnerInput = document.getElementById('filter-partner-only')
+  if (partnerInput && partnerInput.parentElement) {
+    const labelNode = partnerInput.parentElement
+    const txt = labelNode.childNodes[labelNode.childNodes.length - 1]
+    if (txt && txt.nodeType === Node.TEXT_NODE) txt.textContent = ' ' + t('partnerOnly')
+  }
+
+  const tabText = {
+    overview: t('tabOverview'),
+    weekly: t('tabWeekly'),
+    priority: t('tabPriority'),
+    stalled: t('tabStalled'),
+    actions: t('tabActions'),
+  }
+  document.querySelectorAll('.view-tab').forEach(b => {
+    if (tabText[b.dataset.view]) b.textContent = tabText[b.dataset.view]
+  })
+
+  const lt = document.getElementById('i18n-login-title')
+  const ls = document.getElementById('i18n-login-sub')
+  const lc = document.getElementById('i18n-login-cta')
+  if (lt) lt.textContent = t('loginTitle')
+  if (ls) ls.textContent = t('loginSub')
+  if (lc) lc.textContent = t('loginCta')
+
+  const ht = document.getElementById('i18n-header-title')
+  const hs = document.getElementById('i18n-header-sub')
+  if (ht) ht.textContent = t('headerTitle')
+  if (hs) hs.textContent = t('headerSub')
+
+  const empty = document.getElementById('empty-state')
+  if (empty) empty.textContent = t('emptyNoDeals')
+  const pEmpty = document.getElementById('priority-empty')
+  if (pEmpty) pEmpty.textContent = t('emptyNoPriority')
+  const sEmpty = document.getElementById('stalled-empty')
+  if (sEmpty) sEmpty.textContent = t('emptyNoStalled')
+}
+
+function toggleLang() {
+  LANG = (LANG === 'en') ? 'pt' : 'en'
+  localStorage.setItem('davyn_lang', LANG)
+  populatePipelineFilter()
+  populateOwnerFilter()
+  applyI18n()
+  onFiltersChanged()
+}
 const STAGE_WEIGHTS = {
   'Economical Allignment Started': 1.0,
   'Economical Alignment Started': 1.0,
@@ -503,17 +686,19 @@ async function loadData() {
   const json = await res.json()
   weeklyBrief = json.weeklyBrief || null
   enrichedDeals = json.deals.map(enrichDeal)
-  document.getElementById('updated-badge').textContent = 'Data as of ' + json.updatedAt
+  UPDATED_AT = json.updatedAt
+  document.getElementById('updated-badge').textContent = (I18N[LANG] || I18N.en).updatedAsOf(UPDATED_AT)
 
   populatePipelineFilter()
   populateOwnerFilter()
+  applyI18n()
   onFiltersChanged()
 }
 
 function populateOwnerFilter() {
   const sel = document.getElementById('filter-owner')
   const owners = [...new Set(enrichedDeals.map(d => d.owner).filter(Boolean))].sort()
-  sel.innerHTML = '<option value="all">All owners</option>'
+  sel.innerHTML = `<option value="all">${t('ownersAll')}</option>`
   owners.forEach(o => {
     const opt = document.createElement('option')
     opt.value = o
@@ -549,7 +734,7 @@ function onFiltersChanged() {
 function populatePipelineFilter() {
   const sel = document.getElementById('filter-pipeline')
   const pipes = [...new Set(enrichedDeals.map(d => d.pipeline))].sort()
-  sel.innerHTML = '<option value="all">All pipelines</option>'
+  sel.innerHTML = `<option value="all">${t('pipelinesAll')}</option>`
   pipes.forEach(p => {
     const o = document.createElement('option')
     o.value = p
@@ -914,6 +1099,7 @@ function renderKPIs() {
 
 // ── CHARTS ────────────────────────────────────────────────────────────────
 let charts = {}
+let chartsReady = false
 const PALETTE = ['#2563eb', '#7c3aed', '#0891b2', '#059669', '#d97706', '#dc2626', '#db2777', '#4f46e5']
 const FUNNEL_STAGE_ORDER = [
   'New Deals',
@@ -969,32 +1155,33 @@ function renderCharts() {
   const byStageVal = sumByStage(open, d => d.amount || 0)
   const valLabels = Object.keys(byStageVal).sort((a, b) => byStageVal[b] - byStageVal[a]).slice(0, 12)
   const valData = valLabels.map(k => byStageVal[k])
-  destroyChart('pipeline-value')
   const ctx1 = document.getElementById('chart-pipeline-value').getContext('2d')
   const g1 = ctx1.createLinearGradient(0, 0, 400, 0)
   g1.addColorStop(0, '#3b82f6')
   g1.addColorStop(1, '#8b5cf6')
-  charts['pipeline-value'] = new Chart(ctx1, {
-    type: 'bar',
-    data: {
-      labels: valLabels.map(s => s.length > 28 ? s.slice(0, 26) + '…' : s),
-      datasets: [{ label: 'Pipeline value', data: valData, backgroundColor: g1, borderRadius: 8, borderSkipped: false }],
-    },
-    options: chartBaseOptions({
-      indexAxis: 'y',
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: c => moneyTooltipLabel(c) } },
+  if (!chartsReady) {
+    charts['pipeline-value'] = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: valLabels.map(s => s.length > 28 ? s.slice(0, 26) + '…' : s),
+        datasets: [{ label: 'Pipeline value', data: valData, backgroundColor: g1, borderRadius: 8, borderSkipped: false }],
       },
-      scales: {
-        x: {
-          grid: { color: '#f1f5f9' },
-          ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) },
+      options: chartBaseOptions({
+        indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => moneyTooltipLabel(c) } } },
+        scales: {
+          x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) } },
+          y: { ticks: { font: { size: 10 } } },
         },
-        y: { ticks: { font: { size: 10 } } },
-      },
-    }),
-  })
+      }),
+    })
+  } else {
+    const ch = charts['pipeline-value']
+    ch.data.labels = valLabels.map(s => s.length > 28 ? s.slice(0, 26) + '…' : s)
+    ch.data.datasets[0].data = valData
+    ch.data.datasets[0].backgroundColor = g1
+    ch.update()
+  }
 
   // 2) Health buckets
   const buckets = { 'Active (0–30d)': 0, 'Warm (31–60d)': 0, 'Cooling (61–89d)': 0, 'Stale (90+d)': 0, 'No activity data': 0 }
@@ -1011,33 +1198,38 @@ function renderCharts() {
     buckets[b]++
     bucketAmt[b] += d.amount || 0
   })
-  destroyChart('health')
-  charts.health = new Chart(document.getElementById('chart-health'), {
-    type: 'doughnut',
-    data: {
-      labels: Object.keys(buckets),
-      datasets: [{
-        data: Object.values(buckets),
-        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#94a3b8'],
-        borderWidth: 3,
-        borderColor: '#fff',
-        hoverOffset: 12,
-      }],
-    },
-    options: chartBaseOptions({
-      cutout: '58%',
-      plugins: {
-        tooltip: {
-          callbacks: {
-            afterLabel: (c) => {
-              const lab = Object.keys(buckets)[c.dataIndex]
-              return ' Pipeline: ' + fmt(bucketAmt[lab], 'USD')
+  if (!chartsReady) {
+    charts.health = new Chart(document.getElementById('chart-health'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(buckets),
+        datasets: [{
+          data: Object.values(buckets),
+          backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#94a3b8'],
+          borderWidth: 3,
+          borderColor: '#fff',
+          hoverOffset: 12,
+        }],
+      },
+      options: chartBaseOptions({
+        cutout: '58%',
+        plugins: {
+          tooltip: {
+            callbacks: {
+              afterLabel: (c) => {
+                const lab = Object.keys(buckets)[c.dataIndex]
+                return ' Pipeline: ' + fmt(bucketAmt[lab], 'USD')
+              },
             },
           },
         },
-      },
-    }),
-  })
+      }),
+    })
+  } else {
+    charts.health.data.labels = Object.keys(buckets)
+    charts.health.data.datasets[0].data = Object.values(buckets)
+    charts.health.update()
+  }
 
   // 3) Funnel (open count by stage)
   const funnelMap = sumByStage(open, () => 1)
@@ -1045,98 +1237,112 @@ function renderCharts() {
     Object.keys(funnelMap).filter(s => !FUNNEL_STAGE_ORDER.includes(s))
   )
   const funnelData = funnelLabels.map(s => funnelMap[s] || 0)
-  destroyChart('funnel')
-  charts.funnel = new Chart(document.getElementById('chart-funnel'), {
-    type: 'bar',
-    data: {
-      labels: funnelLabels.map(s => (s.length > 22 ? s.slice(0, 20) + '…' : s)),
-      datasets: [{
-        label: 'Open deals',
-        data: funnelData,
-        backgroundColor: funnelLabels.map((_, i) => PALETTE[i % PALETTE.length]),
-        borderRadius: 8,
-      }],
-    },
-    options: chartBaseOptions({
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
-        x: { ticks: { font: { size: 9 }, maxRotation: 35, minRotation: 25 } },
+  if (!chartsReady) {
+    charts.funnel = new Chart(document.getElementById('chart-funnel'), {
+      type: 'bar',
+      data: {
+        labels: funnelLabels.map(s => (s.length > 22 ? s.slice(0, 20) + '…' : s)),
+        datasets: [{
+          label: 'Open deals',
+          data: funnelData,
+          backgroundColor: funnelLabels.map((_, i) => PALETTE[i % PALETTE.length]),
+          borderRadius: 8,
+        }],
       },
-    }),
-  })
+      options: chartBaseOptions({
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+          x: { ticks: { font: { size: 9 }, maxRotation: 35, minRotation: 25 } },
+        },
+      }),
+    })
+  } else {
+    charts.funnel.data.labels = funnelLabels.map(s => (s.length > 22 ? s.slice(0, 20) + '…' : s))
+    charts.funnel.data.datasets[0].data = funnelData
+    charts.funnel.data.datasets[0].backgroundColor = funnelLabels.map((_, i) => PALETTE[i % PALETTE.length])
+    charts.funnel.update()
+  }
 
   // 4) Top deals by value
   const top = [...open].sort((a, b) => (b.amount || 0) - (a.amount || 0)).slice(0, 8)
-  destroyChart('top-deals')
   const ctx4 = document.getElementById('chart-top-deals').getContext('2d')
   const g4 = ctx4.createLinearGradient(0, 0, 0, 260)
   g4.addColorStop(0, '#059669')
   g4.addColorStop(1, '#10b981')
-  charts['top-deals'] = new Chart(ctx4, {
-    type: 'bar',
-    data: {
-      labels: top.map(d => (d.company || d.name).slice(0, 20)),
-      datasets: [{ label: 'Amount', data: top.map(d => d.amount || 0), backgroundColor: g4, borderRadius: 8 }],
-    },
-    options: chartBaseOptions({
-      indexAxis: 'y',
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => moneyTooltipLabel(c) } } },
-      scales: { x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) } } },
-    }),
-  })
+  if (!chartsReady) {
+    charts['top-deals'] = new Chart(ctx4, {
+      type: 'bar',
+      data: {
+        labels: top.map(d => (d.company || d.name).slice(0, 20)),
+        datasets: [{ label: 'Amount', data: top.map(d => d.amount || 0), backgroundColor: g4, borderRadius: 8 }],
+      },
+      options: chartBaseOptions({
+        indexAxis: 'y',
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => moneyTooltipLabel(c) } } },
+        scales: { x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) } } },
+      }),
+    })
+  } else {
+    const ch = charts['top-deals']
+    ch.data.labels = top.map(d => (d.company || d.name).slice(0, 20))
+    ch.data.datasets[0].data = top.map(d => d.amount || 0)
+    ch.data.datasets[0].backgroundColor = g4
+    ch.update()
+  }
 
   // 5) Scatter: idle vs amount
-  destroyChart('scatter')
-  charts.scatter = new Chart(document.getElementById('chart-scatter'), {
-    type: 'bubble',
-    data: {
-      datasets: [{
-        label: 'Open deals',
-        data: open.map(d => ({
-          x: d.daysSinceLastTouch != null ? d.daysSinceLastTouch : 120,
-          y: d.amount || 0,
-          r: Math.max(6, Math.min(22, (d.priorityScore || 10) / 4)),
-          _name: d.name,
-          _idle: d.daysSinceLastTouch,
-          _score: d.priorityScore,
-        })),
-        backgroundColor: open.map(d => (d.isStale ? 'rgba(239,68,68,0.65)' : d.queueClose ? 'rgba(16,185,129,0.7)' : 'rgba(37,99,235,0.55)')),
-        borderColor: '#fff',
-        borderWidth: 2,
-      }],
-    },
-    options: chartBaseOptions({
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: (c) => {
-              const raw = c.raw
-              return [
-                raw._name,
-                'Amount: ' + fmt(raw.y, 'USD'),
-                'Days idle: ' + (raw._idle != null ? raw._idle : 'unknown'),
-                'Score: ' + raw._score,
-              ]
+  const bubbleData = open.map(d => ({
+    x: d.daysSinceLastTouch != null ? d.daysSinceLastTouch : 120,
+    y: d.amount || 0,
+    r: Math.max(6, Math.min(22, (d.priorityScore || 10) / 4)),
+    _name: d.name,
+    _idle: d.daysSinceLastTouch,
+    _score: d.priorityScore,
+  }))
+  const bubbleColors = open.map(d => (d.isStale ? 'rgba(239,68,68,0.65)' : d.queueClose ? 'rgba(16,185,129,0.7)' : 'rgba(37,99,235,0.55)'))
+  if (!chartsReady) {
+    charts.scatter = new Chart(document.getElementById('chart-scatter'), {
+      type: 'bubble',
+      data: {
+        datasets: [{
+          label: 'Open deals',
+          data: bubbleData,
+          backgroundColor: bubbleColors,
+          borderColor: '#fff',
+          borderWidth: 2,
+        }],
+      },
+      options: chartBaseOptions({
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (c) => {
+                const raw = c.raw
+                return [
+                  raw._name,
+                  'Amount: ' + fmt(raw.y, 'USD'),
+                  'Days idle: ' + (raw._idle != null ? raw._idle : 'unknown'),
+                  'Score: ' + raw._score,
+                ]
+              },
             },
           },
         },
-      },
-      scales: {
-        x: {
-          title: { display: true, text: 'Days since last note', font: { size: 11 } },
-          grid: { color: '#f1f5f9' },
-          suggestedMax: 200,
+        scales: {
+          x: { title: { display: true, text: 'Days since last note', font: { size: 11 } }, grid: { color: '#f1f5f9' }, suggestedMax: 200 },
+          y: { title: { display: true, text: 'Deal amount', font: { size: 11 } }, grid: { color: '#f1f5f9' }, ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) } },
         },
-        y: {
-          title: { display: true, text: 'Deal amount', font: { size: 11 } },
-          grid: { color: '#f1f5f9' },
-          ticks: { callback: v => '$' + (v >= 1000 ? (v / 1000) + 'k' : v) },
-        },
-      },
-    }),
-  })
+      }),
+    })
+  } else {
+    charts.scatter.data.datasets[0].data = bubbleData
+    charts.scatter.data.datasets[0].backgroundColor = bubbleColors
+    charts.scatter.update()
+  }
+
+  chartsReady = true
 }
 
 function renderWeekly() {
@@ -1249,16 +1455,71 @@ function flagsHtml(d) {
   return f.length ? f.join(' ') : '<span style="color:#cbd5e1">—</span>'
 }
 
+function dealCardHtml(d, variant) {
+  const amt = d.amount != null
+    ? new Intl.NumberFormat('en-US', { style: 'currency', currency: d.currency || 'USD', maximumFractionDigits: 0 }).format(d.amount)
+    : '—'
+  const title = esc(d.name || '—')
+  const company = esc(d.company || '—')
+  const stage = esc(d.stage || '—')
+  const owner = esc(d.owner || '—')
+  const last = d.lastNoteDate || '—'
+  const idle = idleLabel(d)
+  const score = (d.status === 'open' && d.priorityScore != null) ? `<span class="score-pill ${scoreClass(d.priorityScore)}">${d.priorityScore}</span>` : ''
+  const hub = d.hubspotUrl ? `<a href="${esc(d.hubspotUrl)}" target="_blank" rel="noopener">HubSpot</a>` : ''
+  const details = `<a href="#" onclick="event.preventDefault();openDealModal(${JSON.stringify(String(d.id))})">Details</a>`
+
+  const meta = (k, v) => `<div><div class="deal-card-k">${k}</div><div class="deal-card-v">${v}</div></div>`
+  const rows = []
+  if (variant === 'overview') {
+    rows.push(meta('Stage', stage))
+    rows.push(meta('Amount', amt))
+    rows.push(meta('Last touch', esc(last)))
+    rows.push(meta('Idle days', esc(String(idle))))
+    rows.push(meta('Owner', owner))
+    rows.push(meta('Flags', flagsHtml(d)))
+  } else if (variant === 'priority') {
+    rows.push(meta('Stage', stage))
+    rows.push(meta('Amount', amt))
+    rows.push(meta('Last touch', esc(last)))
+    rows.push(meta('Idle days', esc(String(idle))))
+    rows.push(meta('Owner', owner))
+    rows.push(meta('Why', esc(d.priorityWhy || '—')))
+  } else if (variant === 'stalled') {
+    rows.push(meta('Stage', stage))
+    rows.push(meta('Amount', amt))
+    rows.push(meta('Last touch', esc(last)))
+    rows.push(meta('Idle days', esc(String(idle))))
+    rows.push(meta('Owner', owner))
+    rows.push(meta('Reason', esc(d.staleReason || '—')))
+  }
+
+  return `
+  <div class="deal-card" onclick="openDealModal(${JSON.stringify(String(d.id))})" role="button" tabindex="0">
+    <div class="deal-card-top">
+      <div>
+        <div class="deal-card-title">${title}</div>
+        <div class="deal-card-sub">${company}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;justify-content:flex-end">${score}</div>
+    </div>
+    <div class="deal-card-meta">${rows.join('')}</div>
+    <div class="deal-card-actions">${hub}${hub ? '<span style="color:#cbd5e1">•</span>' : ''}${details}</div>
+  </div>`
+}
+
 function renderTable() {
   const scoped = getScopedDeals()
   computeScores(scoped)
   const filtered = getFiltered()
   const tbody = document.getElementById('table-body')
+  const cards = document.getElementById('table-cards')
   const empty = document.getElementById('empty-state')
   document.getElementById('table-count').textContent = `(${filtered.length} of ${scoped.length})`
 
   if (!filtered.length) {
     tbody.innerHTML = ''
+    if (cards) cards.innerHTML = ''
     empty.style.display = 'block'
     return
   }
@@ -1290,7 +1551,7 @@ function renderTable() {
       <td>${statusBadge(d.status)}</td>
       <td>${flagsHtml(d)}</td>
       <td>${d.notes
-        ? `<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(${JSON.stringify(String(d.id))})">💬 ${isExp ? 'Close' : 'View'}</button>`
+        ? `<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(${JSON.stringify(String(d.id))})">${isExp ? 'Close notes' : 'View notes'}</button>`
         : '<span style="color:#cbd5e1">—</span>'
       }</td>
     </tr>`
@@ -1299,16 +1560,22 @@ function renderTable() {
       : ''
     return mainRow + notesRow
   }).join('')
+
+  if (cards) {
+    cards.innerHTML = filtered.map(d => dealCardHtml(d, 'overview')).join('')
+  }
 }
 
 function renderPriorityQueue() {
   const deals = getOpenPriorityDeals()
   const tbody = document.getElementById('priority-body')
+  const cards = document.getElementById('priority-cards')
   const empty = document.getElementById('priority-empty')
   document.getElementById('priority-count').textContent = `(${deals.length})`
 
   if (!deals.length) {
     tbody.innerHTML = ''
+    if (cards) cards.innerHTML = ''
     empty.style.display = 'block'
     return
   }
@@ -1329,16 +1596,22 @@ function renderPriorityQueue() {
       <td class="why-text">${esc(d.suggestedStep || '—')}</td>
     </tr>`
   }).join('')
+
+  if (cards) {
+    cards.innerHTML = deals.map(d => dealCardHtml(d, 'priority')).join('')
+  }
 }
 
 function renderStalled() {
   const deals = getStalledDeals()
   const tbody = document.getElementById('stalled-body')
+  const cards = document.getElementById('stalled-cards')
   const empty = document.getElementById('stalled-empty')
   document.getElementById('stalled-count').textContent = `(${deals.length})`
 
   if (!deals.length) {
     tbody.innerHTML = ''
+    if (cards) cards.innerHTML = ''
     empty.style.display = 'block'
     return
   }
@@ -1357,6 +1630,10 @@ function renderStalled() {
       <td><button class="notes-btn" onclick="event.stopPropagation();openDealModal(${JSON.stringify(String(d.id))})">Details</button></td>
     </tr>`
   }).join('')
+
+  if (cards) {
+    cards.innerHTML = deals.map(d => dealCardHtml(d, 'stalled')).join('')
+  }
 }
 
 function toggleNotes(id) {
