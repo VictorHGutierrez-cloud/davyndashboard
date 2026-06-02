@@ -104,20 +104,33 @@
   thead th.sortable:hover{color:#1e293b}
   thead th .sort-mark{font-size:9px;color:#94a3b8;margin-left:3px}
   thead th.sorted{color:#1d4ed8}
-  .col-panel-wrap{position:relative}
-  .col-panel{display:none;position:absolute;right:0;top:calc(100% + 6px);background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;min-width:260px;max-height:360px;overflow:auto;z-index:120;box-shadow:0 12px 32px rgba(15,23,42,.12)}
-  .col-panel.open{display:block}
-  .col-panel h4{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:10px}
-  .col-row{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid #f8fafc}
-  .col-row:last-child{border-bottom:none}
-  .col-row label{flex:1;font-size:12px;color:#334155;cursor:pointer}
-  .col-row input[type=checkbox]{accent-color:#2563eb}
-  .col-move{background:#f1f5f9;border:none;border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:12px;color:#475569}
-  .col-move:hover{background:#e2e8f0}
-  .col-move:disabled{opacity:.35;cursor:not-allowed}
   .btn-columns{background:#fff;color:#475569;border:1.5px solid #e2e8f0;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
   .btn-columns:hover{background:#f8fafc}
-  .col-reset{margin-top:10px;width:100%;background:#f8fafc;border:1px solid #e2e8f0;color:#64748b;padding:6px;border-radius:8px;font-size:11px;cursor:pointer}
+  .col-drawer-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:300}
+  .col-drawer-overlay.open{display:block}
+  .col-drawer{position:fixed;top:0;right:0;width:min(360px,92vw);height:100vh;background:#fff;z-index:301;transform:translateX(100%);transition:transform .25s ease;box-shadow:-8px 0 32px rgba(15,23,42,.12);display:flex;flex-direction:column}
+  .col-drawer.open{transform:translateX(0)}
+  .col-drawer-head{display:flex;align-items:flex-start;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #f1f5f9}
+  .col-drawer-head h3{font-size:15px;font-weight:700;color:#1e293b}
+  .col-drawer-hint{font-size:11px;color:#94a3b8;padding:0 20px 12px;line-height:1.4}
+  .col-drawer-close{background:none;border:none;font-size:24px;color:#94a3b8;cursor:pointer;line-height:1;padding:0 4px}
+  .col-drawer-close:hover{color:#475569}
+  .col-presets{padding:0 20px 14px;display:flex;flex-wrap:wrap;gap:8px}
+  .col-preset-btn{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer}
+  .col-preset-btn:hover{background:#dbeafe}
+  .col-drag-list{flex:1;overflow:auto;padding:8px 12px 16px}
+  .col-drag-item{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:6px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;cursor:grab;transition:box-shadow .15s,border-color .15s,opacity .15s}
+  .col-drag-item:active{cursor:grabbing}
+  .col-drag-item.col-dragging{opacity:.45;border-style:dashed}
+  .col-drag-item.col-drag-over{border-color:#2563eb;box-shadow:0 0 0 2px rgba(37,99,235,.2);background:#eff6ff}
+  .col-drag-handle{color:#94a3b8;font-size:14px;letter-spacing:-2px;user-select:none;flex-shrink:0;width:18px;text-align:center}
+  .col-drag-item label{flex:1;font-size:13px;color:#334155;display:flex;align-items:center;gap:8px;cursor:pointer}
+  .col-drag-item input[type=checkbox]{accent-color:#2563eb;width:16px;height:16px;flex-shrink:0}
+  .col-drawer-foot{padding:14px 20px 20px;border-top:1px solid #f1f5f9;display:flex;gap:10px}
+  .col-reset{flex:1;background:#f8fafc;border:1px solid #e2e8f0;color:#64748b;padding:10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+  .col-reset:hover{background:#f1f5f9}
+  .col-done{flex:1;background:#2563eb;color:#fff;border:none;padding:10px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+  .col-done:hover{background:#1d4ed8}
   tbody tr{border-top:1px solid #f8fafc;transition:.1s}
   tbody tr:hover{background:#f8fafc}
   tbody td{padding:10px 14px;color:#475569;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -191,7 +204,7 @@
   .week-kpi .lbl{font-size:11px;color:#64748b;margin-top:4px}
 
   @media print{
-    #login-screen, .view-tabs, .global-filters, .btn-sm, .btn-download, .btn-print, .info-banner, .charts-grid, .table-card, #view-overview, #view-priority, #view-stalled, #view-actions{display:none!important}
+    #login-screen, .view-tabs, .global-filters, .btn-sm, .btn-download, .btn-print, .btn-columns, .info-banner, .charts-grid, .table-card, #view-overview, #view-priority, #view-stalled, #view-actions, .col-drawer, .col-drawer-overlay{display:none!important}
     #dashboard, #view-weekly, main{display:block!important}
     #view-weekly{display:block!important}
     header{position:static;border:none}
@@ -362,10 +375,7 @@
     <div class="table-card">
       <div class="table-header">
         <div class="table-title">Opportunities <span class="table-count" id="table-count"></span></div>
-        <div class="col-panel-wrap">
-          <button type="button" class="btn-columns" id="btn-cols-overview" onclick="toggleColPanel('overview')">Columns</button>
-          <div class="col-panel" id="col-panel-overview"></div>
-        </div>
+        <button type="button" class="btn-columns" onclick="openColDrawer('overview')">Columns</button>
         <button type="button" class="btn-download" onclick="downloadCsv('overview')">Download CSV</button>
       </div>
       <div class="mobile-cards" id="table-cards"></div>
@@ -397,10 +407,7 @@
         <div class="table-header">
           <div class="table-title">Priority queue <span class="table-count" id="priority-count"></span></div>
           <span class="table-count">Open deals ranked by score (highest first)</span>
-          <div class="col-panel-wrap">
-            <button type="button" class="btn-columns" id="btn-cols-priority" onclick="toggleColPanel('priority')">Columns</button>
-            <div class="col-panel" id="col-panel-priority"></div>
-          </div>
+          <button type="button" class="btn-columns" onclick="openColDrawer('priority')">Columns</button>
           <button type="button" class="btn-download" onclick="downloadCsv('priority')">Download CSV</button>
         </div>
         <div class="mobile-cards" id="priority-cards"></div>
@@ -458,6 +465,21 @@
 
   </main>
 </div>
+
+<div class="col-drawer-overlay" id="col-drawer-overlay" onclick="closeColDrawer()"></div>
+<aside class="col-drawer" id="col-drawer" aria-hidden="true">
+  <div class="col-drawer-head">
+    <h3 id="col-drawer-title">Customize columns</h3>
+    <button type="button" class="col-drawer-close" onclick="closeColDrawer()" aria-label="Close">&times;</button>
+  </div>
+  <p class="col-drawer-hint" id="col-drawer-hint"></p>
+  <div class="col-presets" id="col-presets"></div>
+  <div class="col-drag-list" id="col-drag-list"></div>
+  <div class="col-drawer-foot">
+    <button type="button" class="col-reset" id="col-drawer-reset" onclick="resetColumnLayout(activeColTable)"></button>
+    <button type="button" class="col-done" id="col-drawer-done" onclick="closeColDrawer()"></button>
+  </div>
+</aside>
 
 <div class="modal-overlay" id="deal-modal" onclick="if(event.target===this)closeDealModal()">
   <div class="modal-box">
@@ -530,8 +552,13 @@ const I18N = {
     ownerDavynNone: 'No Owner (Davyn)',
     colOwnerDavyn: 'Owner (Davyn)',
     columnsBtn: 'Columns',
-    columnsTitle: 'Organize columns',
+    columnsTitle: 'Customize columns',
+    columnsHint: 'Drag rows to reorder. Toggle checkboxes to show or hide.',
     columnsReset: 'Reset to default',
+    columnsDone: 'Done',
+    presetCallDavyn: 'Call with Davyn',
+    presetFull: 'Full table',
+    presetCompact: 'Compact',
     colScore: 'Score',
     colDeal: 'Deal',
     colCompany: 'Company',
@@ -584,8 +611,13 @@ const I18N = {
     ownerDavynNone: 'Sem Owner (Davyn)',
     colOwnerDavyn: 'Owner (Davyn)',
     columnsBtn: 'Colunas',
-    columnsTitle: 'Organizar colunas',
+    columnsTitle: 'Personalizar colunas',
+    columnsHint: 'Arraste as linhas para reordenar. Use as caixas para mostrar ou esconder.',
     columnsReset: 'Restaurar padrão',
+    columnsDone: 'Concluir',
+    presetCallDavyn: 'Call com Davyn',
+    presetFull: 'Tabela completa',
+    presetCompact: 'Compacta',
     colScore: 'Score',
     colDeal: 'Deal',
     colCompany: 'Empresa',
@@ -693,10 +725,19 @@ function applyI18n() {
   if (sEmpty) sEmpty.textContent = t('emptyNoStalled')
 
   document.querySelectorAll('.btn-columns').forEach(b => { b.textContent = t('columnsBtn') })
+  const dt = document.getElementById('col-drawer-title')
+  const dh = document.getElementById('col-drawer-hint')
+  const dr = document.getElementById('col-drawer-reset')
+  const dd = document.getElementById('col-drawer-done')
+  if (dt) dt.textContent = t('columnsTitle')
+  if (dh) dh.textContent = t('columnsHint')
+  if (dr) dr.textContent = t('columnsReset')
+  if (dd) dd.textContent = t('columnsDone')
   renderTableHeader('overview')
   renderTableHeader('priority')
-  buildColPanel('overview')
-  buildColPanel('priority')
+  if (activeColTable && document.getElementById('col-drawer').classList.contains('open')) {
+    buildColDrawer(activeColTable)
+  }
 }
 
 function toggleLang() {
@@ -1554,6 +1595,31 @@ const TABLE_COLUMN_DEFS = {
 }
 
 let columnLayouts = { overview: null, priority: null }
+let activeColTable = null
+let dragColId = null
+
+const COLUMN_PRESETS = {
+  overview: {
+    call: {
+      order: ['name', 'company', 'sender', 'stage', 'amount', 'lastNoteDate', 'daysSinceLastTouch', 'owner', 'flags', 'notes'],
+      hide: ['priorityScore', 'pipeline', 'daysOpen', 'closeDate', 'status'],
+    },
+    compact: {
+      order: ['priorityScore', 'name', 'sender', 'stage', 'amount', 'lastNoteDate', 'status'],
+      hide: ['company', 'pipeline', 'daysSinceLastTouch', 'daysOpen', 'closeDate', 'owner', 'flags', 'notes'],
+    },
+  },
+  priority: {
+    call: {
+      order: ['name', 'sender', 'suggestedStep', 'amount', 'stage', 'lastNoteDate', 'priorityScore', 'owner'],
+      hide: ['company', 'daysSinceLastTouch', 'flags', 'priorityWhy'],
+    },
+    compact: {
+      order: ['priorityScore', 'name', 'sender', 'suggestedStep', 'amount', 'lastNoteDate'],
+      hide: ['company', 'stage', 'daysSinceLastTouch', 'owner', 'flags', 'priorityWhy'],
+    },
+  },
+}
 
 function defaultColumnLayout(tableId) {
   const defs = TABLE_COLUMN_DEFS[tableId]
@@ -1613,45 +1679,7 @@ function renderTableHeader(tableId) {
   }).join('')
 }
 
-function buildColPanel(tableId) {
-  const panel = document.getElementById('col-panel-' + tableId)
-  if (!panel) return
-  const layout = columnLayouts[tableId]
-  const defs = TABLE_COLUMN_DEFS[tableId]
-  panel.innerHTML = `<h4>${t('columnsTitle')}</h4>` + layout.order.map((id, idx) => {
-    const def = defs.find(d => d.id === id)
-    if (!def) return ''
-    const checked = layout.visible[id] !== false ? 'checked' : ''
-    return `<div class="col-row">
-      <button type="button" class="col-move" ${idx === 0 ? 'disabled' : ''} onclick="moveColumn('${tableId}','${id}',-1)" title="Up">↑</button>
-      <button type="button" class="col-move" ${idx === layout.order.length - 1 ? 'disabled' : ''} onclick="moveColumn('${tableId}','${id}',1)" title="Down">↓</button>
-      <input type="checkbox" id="col-vis-${tableId}-${id}" ${checked} onchange="toggleColumnVisible('${tableId}','${id}',this.checked)"/>
-      <label for="col-vis-${tableId}-${id}">${t(def.labelKey)}</label>
-    </div>`
-  }).join('') + `<button type="button" class="col-reset" onclick="resetColumnLayout('${tableId}')">${t('columnsReset')}</button>`
-}
-
-function toggleColPanel(tableId) {
-  document.querySelectorAll('.col-panel').forEach(p => {
-    if (p.id !== 'col-panel-' + tableId) p.classList.remove('open')
-  })
-  const panel = document.getElementById('col-panel-' + tableId)
-  if (panel) {
-    panel.classList.toggle('open')
-    if (panel.classList.contains('open')) buildColPanel(tableId)
-  }
-}
-
-function moveColumn(tableId, id, delta) {
-  const layout = columnLayouts[tableId]
-  const i = layout.order.indexOf(id)
-  const j = i + delta
-  if (i < 0 || j < 0 || j >= layout.order.length) return
-  const tmp = layout.order[i]
-  layout.order[i] = layout.order[j]
-  layout.order[j] = tmp
-  saveColumnLayout(tableId)
-  buildColPanel(tableId)
+function refreshTableForColumns(tableId) {
   renderTableHeader(tableId)
   if (tableId === 'overview') renderTable()
   else renderPriorityQueue()
@@ -1660,25 +1688,143 @@ function moveColumn(tableId, id, delta) {
 function toggleColumnVisible(tableId, id, on) {
   columnLayouts[tableId].visible[id] = on
   saveColumnLayout(tableId)
-  renderTableHeader(tableId)
-  if (tableId === 'overview') renderTable()
-  else renderPriorityQueue()
+  refreshTableForColumns(tableId)
 }
 
 function resetColumnLayout(tableId) {
+  if (!tableId) return
   columnLayouts[tableId] = defaultColumnLayout(tableId)
   saveColumnLayout(tableId)
-  buildColPanel(tableId)
-  renderTableHeader(tableId)
-  if (tableId === 'overview') renderTable()
-  else renderPriorityQueue()
+  buildColDrawer(tableId)
+  refreshTableForColumns(tableId)
 }
 
-document.addEventListener('click', e => {
-  if (!e.target.closest('.col-panel-wrap')) {
-    document.querySelectorAll('.col-panel').forEach(p => p.classList.remove('open'))
+function reorderColumns(tableId, fromId, toId) {
+  const layout = columnLayouts[tableId]
+  const order = layout.order
+  const fromIdx = order.indexOf(fromId)
+  const toIdx = order.indexOf(toId)
+  if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) return
+  order.splice(fromIdx, 1)
+  order.splice(toIdx, 0, fromId)
+  saveColumnLayout(tableId)
+  buildColDrawer(tableId)
+  refreshTableForColumns(tableId)
+}
+
+function buildColDrawerPresets(tableId) {
+  const el = document.getElementById('col-presets')
+  if (!el) return
+  el.innerHTML = `
+    <button type="button" class="col-preset-btn" onclick="applyColumnPreset('${tableId}','call')">${t('presetCallDavyn')}</button>
+    <button type="button" class="col-preset-btn" onclick="applyColumnPreset('${tableId}','compact')">${t('presetCompact')}</button>
+    <button type="button" class="col-preset-btn" onclick="applyColumnPreset('${tableId}','full')">${t('presetFull')}</button>
+  `
+}
+
+function buildColDrawer(tableId) {
+  const list = document.getElementById('col-drag-list')
+  if (!list) return
+  const layout = columnLayouts[tableId]
+  const defs = TABLE_COLUMN_DEFS[tableId]
+  list.innerHTML = layout.order.map(id => {
+    const def = defs.find(d => d.id === id)
+    if (!def) return ''
+    const checked = layout.visible[id] !== false ? 'checked' : ''
+    return `<div class="col-drag-item" draggable="true" data-col-id="${id}" data-table-id="${tableId}">
+      <span class="col-drag-handle" aria-hidden="true">⋮⋮</span>
+      <label><input type="checkbox" ${checked} onchange="toggleColumnVisible('${tableId}','${id}',this.checked)"/>${t(def.labelKey)}</label>
+    </div>`
+  }).join('')
+  bindColDragList(list)
+  buildColDrawerPresets(tableId)
+}
+
+function bindColDragList(list) {
+  list.querySelectorAll('.col-drag-item').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      dragColId = item.dataset.colId
+      e.dataTransfer.effectAllowed = 'move'
+      e.dataTransfer.setData('text/plain', dragColId)
+      item.classList.add('col-dragging')
+    })
+    item.addEventListener('dragend', () => {
+      item.classList.remove('col-dragging')
+      list.querySelectorAll('.col-drag-item').forEach(el => el.classList.remove('col-drag-over'))
+      dragColId = null
+    })
+    item.addEventListener('dragover', e => {
+      e.preventDefault()
+      e.dataTransfer.dropEffect = 'move'
+    })
+    item.addEventListener('dragenter', e => {
+      e.preventDefault()
+      if (item.dataset.colId !== dragColId) item.classList.add('col-drag-over')
+    })
+    item.addEventListener('dragleave', () => item.classList.remove('col-drag-over'))
+    item.addEventListener('drop', e => {
+      e.preventDefault()
+      item.classList.remove('col-drag-over')
+      const tableId = item.dataset.tableId
+      const targetId = item.dataset.colId
+      if (dragColId && tableId && targetId) reorderColumns(tableId, dragColId, targetId)
+    })
+    const cb = item.querySelector('input[type=checkbox]')
+    if (cb) {
+      cb.addEventListener('click', e => e.stopPropagation())
+      cb.addEventListener('mousedown', e => e.stopPropagation())
+    }
+  })
+}
+
+function openColDrawer(tableId) {
+  activeColTable = tableId
+  const overlay = document.getElementById('col-drawer-overlay')
+  const drawer = document.getElementById('col-drawer')
+  if (!overlay || !drawer) return
+  document.getElementById('col-drawer-title').textContent = t('columnsTitle')
+  document.getElementById('col-drawer-hint').textContent = t('columnsHint')
+  document.getElementById('col-drawer-reset').textContent = t('columnsReset')
+  document.getElementById('col-drawer-done').textContent = t('columnsDone')
+  buildColDrawer(tableId)
+  overlay.classList.add('open')
+  drawer.classList.add('open')
+  drawer.setAttribute('aria-hidden', 'false')
+  document.body.style.overflow = 'hidden'
+}
+
+function closeColDrawer() {
+  const overlay = document.getElementById('col-drawer-overlay')
+  const drawer = document.getElementById('col-drawer')
+  if (overlay) overlay.classList.remove('open')
+  if (drawer) {
+    drawer.classList.remove('open')
+    drawer.setAttribute('aria-hidden', 'true')
   }
+  document.body.style.overflow = ''
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeColDrawer()
 })
+
+function applyColumnPreset(tableId, presetKey) {
+  if (presetKey === 'full') {
+    resetColumnLayout(tableId)
+    return
+  }
+  const preset = COLUMN_PRESETS[tableId] && COLUMN_PRESETS[tableId][presetKey]
+  if (!preset) return
+  const defs = TABLE_COLUMN_DEFS[tableId]
+  const visible = {}
+  defs.forEach(d => { visible[d.id] = !preset.hide.includes(d.id) })
+  const order = [...preset.order]
+  defs.forEach(d => { if (!order.includes(d.id)) order.push(d.id) })
+  columnLayouts[tableId] = { order, visible }
+  saveColumnLayout(tableId)
+  buildColDrawer(tableId)
+  refreshTableForColumns(tableId)
+}
 
 function formatAmount(d) {
   return d.amount != null
