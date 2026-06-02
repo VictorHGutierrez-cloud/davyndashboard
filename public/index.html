@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -104,15 +104,15 @@
     <h1>Davyn Dashboard</h1>
     <p>Factorial · Partner Opportunities</p>
     <div class="form-group">
-      <label>E-mail</label>
+      <label>Email</label>
       <input type="email" id="inp-email" placeholder="you@factorial.co" autocomplete="email"/>
     </div>
     <div class="form-group">
-      <label>Senha</label>
+      <label>Password</label>
       <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password"/>
     </div>
-    <div class="login-error" id="login-error">E-mail ou senha incorretos.</div>
-    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error">Incorrect email or password.</div>
+    <button class="btn-login" onclick="doLogin()">Sign in</button>
   </div>
 </div>
 
@@ -129,7 +129,7 @@
       </div>
       <div class="header-right">
         <span class="updated-badge" id="updated-badge"></span>
-        <button class="btn-sm btn-logout" onclick="doLogout()">⎋ Sair</button>
+        <button class="btn-sm btn-logout" onclick="doLogout()">⎋ Log out</button>
       </div>
     </div>
   </header>
@@ -140,7 +140,7 @@
       <div class="kpi">
         <div class="kpi-icon kpi-blue">📁</div>
         <div>
-          <div class="kpi-label">Total de Deals</div>
+          <div class="kpi-label">Total Deals</div>
           <div class="kpi-value" id="kpi-total">—</div>
           <div class="kpi-sub" id="kpi-total-sub"></div>
         </div>
@@ -164,7 +164,7 @@
       <div class="kpi">
         <div class="kpi-icon kpi-amber">💰</div>
         <div>
-          <div class="kpi-label">Valor Won (USD)</div>
+          <div class="kpi-label">Won Value (USD)</div>
           <div class="kpi-value" id="kpi-value">—</div>
           <div class="kpi-sub" id="kpi-value-sub"></div>
         </div>
@@ -174,11 +174,11 @@
     <!-- CHARTS ROW -->
     <div class="charts-grid">
       <div class="chart-card">
-        <h3>Deals por Pipeline</h3>
+        <h3>Deals by Pipeline</h3>
         <div class="chart-wrap"><canvas id="chart-pipeline"></canvas></div>
       </div>
       <div class="chart-card">
-        <h3>Status Geral</h3>
+        <h3>Overall Status</h3>
         <div class="chart-wrap"><canvas id="chart-status"></canvas></div>
       </div>
     </div>
@@ -192,19 +192,19 @@
     <!-- TABLE -->
     <div class="table-card">
       <div class="table-header">
-        <div class="table-title">Oportunidades <span class="table-count" id="table-count"></span></div>
+        <div class="table-title">Opportunities <span class="table-count" id="table-count"></span></div>
         <div class="search-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="search" placeholder="Buscar deal, empresa, notas…" oninput="renderTable()"/>
+          <input type="text" id="search" placeholder="Search deals, companies, notes…" oninput="renderTable()"/>
         </div>
         <select class="filter-select" id="filter-status" onchange="renderTable()">
-          <option value="all">Todos os status</option>
+          <option value="all">All statuses</option>
           <option value="won">Won</option>
           <option value="lost">Lost</option>
-          <option value="open">Em Aberto</option>
+          <option value="open">Open</option>
         </select>
         <select class="filter-select" id="filter-pipeline" onchange="renderTable()">
-          <option value="all">Todos os pipelines</option>
+          <option value="all">All pipelines</option>
         </select>
       </div>
       <div class="table-wrap">
@@ -212,19 +212,19 @@
           <thead>
             <tr>
               <th onclick="sortBy('name')">Deal ↕</th>
-              <th onclick="sortBy('company')">Empresa ↕</th>
+              <th onclick="sortBy('company')">Company ↕</th>
               <th onclick="sortBy('pipeline')">Pipeline ↕</th>
               <th onclick="sortBy('stage')">Stage ↕</th>
-              <th onclick="sortBy('amount')">Valor ↕</th>
+              <th onclick="sortBy('amount')">Amount ↕</th>
               <th onclick="sortBy('closeDate')">Close Date ↕</th>
               <th onclick="sortBy('owner')">Owner ↕</th>
               <th onclick="sortBy('status')">Status ↕</th>
-              <th>Notas</th>
+              <th>Notes</th>
             </tr>
           </thead>
           <tbody id="table-body"></tbody>
         </table>
-        <div class="empty-state" id="empty-state" style="display:none">Nenhum deal encontrado.</div>
+        <div class="empty-state" id="empty-state" style="display:none">No deals found.</div>
       </div>
     </div>
   </main>
@@ -279,7 +279,7 @@ async function loadData() {
   const res  = await fetch('data.json?v=' + Date.now())
   const json = await res.json()
   allDeals   = json.deals
-  document.getElementById('updated-badge').textContent = 'Dados de ' + json.updatedAt
+  document.getElementById('updated-badge').textContent = 'Data as of ' + json.updatedAt
 
   populatePipelineFilter()
   renderKPIs()
@@ -312,11 +312,11 @@ function renderKPIs() {
   const wr = allDeals.length ? Math.round(won.length/allDeals.length*100) : 0
 
   document.getElementById('kpi-total').textContent     = allDeals.length
-  document.getElementById('kpi-total-sub').textContent = open.length + ' em aberto'
+  document.getElementById('kpi-total-sub').textContent = open.length + ' open'
   document.getElementById('kpi-won').textContent       = won.length
   document.getElementById('kpi-won-sub').textContent   = wr + '% win rate'
   document.getElementById('kpi-lost').textContent      = lost.length
-  document.getElementById('kpi-lost-sub').textContent  = lost.length + ' deals perdidos'
+  document.getElementById('kpi-lost-sub').textContent  = lost.length + ' deals lost'
   document.getElementById('kpi-value').textContent     = fmt(wonVal, 'USD')
   document.getElementById('kpi-value-sub').textContent = 'Pipeline: ' + fmt(openVal,'USD')
 }
@@ -350,7 +350,7 @@ function renderCharts() {
   charts['status'] = new Chart(document.getElementById('chart-status'), {
     type:'doughnut',
     data:{
-      labels:['Won','Lost','Em Aberto'],
+      labels:['Won','Lost','Open'],
       datasets:[{data:[won,lost,open], backgroundColor:['#10b981','#ef4444','#3b82f6'], borderWidth:2}]
     },
     options:{
@@ -404,7 +404,7 @@ function renderTable() {
   const filtered = getFiltered()
   const tbody = document.getElementById('table-body')
   const empty = document.getElementById('empty-state')
-  document.getElementById('table-count').textContent = `(${filtered.length} de ${allDeals.length})`
+  document.getElementById('table-count').textContent = `(${filtered.length} of ${allDeals.length})`
 
   if (!filtered.length) {
     tbody.innerHTML = ''
@@ -416,7 +416,7 @@ function renderTable() {
   const statusBadge = s => ({
     won:  '<span class="badge badge-won">Won</span>',
     lost: '<span class="badge badge-lost">Lost</span>',
-    open: '<span class="badge badge-open">Em Aberto</span>',
+    open: '<span class="badge badge-open">Open</span>',
   }[s] || s)
 
   tbody.innerHTML = filtered.map(d => {
@@ -433,7 +433,7 @@ function renderTable() {
       <td title="${d.owner}">${d.owner}</td>
       <td>${statusBadge(d.status)}</td>
       <td>${d.notes
-        ? `<button class="notes-btn" onclick="toggleNotes('${d.id}')">💬 ${isExp?'Fechar':'Ver notas'}</button>`
+        ? `<button class="notes-btn" onclick="toggleNotes('${d.id}')">💬 ${isExp?'Close':'View notes'}</button>`
         : '<span style="color:#cbd5e1">—</span>'
       }</td>
     </tr>`
