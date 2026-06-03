@@ -204,8 +204,9 @@
   .badge-lost{background:#fee2e2;color:#b91c1c}
   .badge-open{background:#dbeafe;color:#1d4ed8}
 
-  .notes-btn{background:none;border:none;color:#2563eb;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:3px;padding:2px 0;white-space:nowrap}
+  .notes-btn{background:none;border:none;color:#2563eb;cursor:pointer;font-size:11px;display:inline-flex;align-items:center;gap:3px;padding:4px 6px;white-space:nowrap;position:relative;z-index:2;pointer-events:auto}
   .notes-btn:hover{text-decoration:underline}
+  td.notes-cell{overflow:visible;max-width:none}
   .notes-row td{background:#fffbeb;padding:12px 20px;font-size:11px;color:#475569;white-space:pre-wrap;line-height:1.6;max-width:none}
 
   .empty-state{text-align:center;padding:40px;color:#94a3b8;font-size:13px}
@@ -1257,6 +1258,7 @@ let activeView = 'overview'
 async function showDashboard() {
   document.getElementById('login-screen').classList.remove('show')
   document.getElementById('dashboard').style.display = 'block'
+  initTableClickHandlers()
   await loadData()
   setupTabs()
   applyViewFromUrl()
@@ -1849,7 +1851,37 @@ function closeDealModal() {
 }
 
 function rowClickAttr(d) {
-  return `class="clickable-row" onclick="openDealModal(${JSON.stringify(String(d.id))})"`
+  return `class="clickable-row" data-deal-id="${esc(String(d.id))}"`
+}
+
+function initTableClickHandlers() {
+  if (initTableClickHandlers.done) return
+  initTableClickHandlers.done = true
+  document.addEventListener('click', e => {
+    const notesBtn = e.target.closest('.notes-btn[data-action="toggle-notes"]')
+    if (notesBtn) {
+      e.preventDefault()
+      e.stopPropagation()
+      toggleNotes(notesBtn.getAttribute('data-deal-id'))
+      return
+    }
+    const detailsBtn = e.target.closest('.notes-btn[data-action="open-modal"]')
+    if (detailsBtn) {
+      e.preventDefault()
+      e.stopPropagation()
+      openDealModal(detailsBtn.getAttribute('data-deal-id'))
+      return
+    }
+    const row = e.target.closest('tr.clickable-row[data-deal-id]')
+    if (!row) return
+    if (e.target.closest('button, a, input, select, label')) return
+    openDealModal(row.getAttribute('data-deal-id'))
+  })
+}
+
+function notesBtnHtml(d, action, label) {
+  const id = esc(String(d.id))
+  return `<button type="button" class="notes-btn" data-deal-id="${id}" data-action="${action}">${label}</button>`
 }
 
 function compareSort(a, b) {
@@ -2785,8 +2817,8 @@ function renderOverviewCell(d, colId, ctx) {
     case 'status': return `<td>${statusBadge(d.status)}</td>`
     case 'flags': return `<td>${flagsHtml(d)}</td>`
     case 'notes':
-      return `<td>${d.notes
-        ? `<button class="notes-btn" onclick="event.stopPropagation();toggleNotes(${JSON.stringify(String(d.id))})">${isExp ? 'Close notes' : 'View notes'}</button>`
+      return `<td class="notes-cell">${d.notes
+        ? notesBtnHtml(d, 'toggle-notes', isExp ? 'Close notes' : 'View notes')
         : '<span style="color:#cbd5e1">—</span>'
       }</td>`
     default: return '<td>—</td>'
@@ -2805,7 +2837,7 @@ function renderStalledCell(d, colId) {
     case 'owner': return `<td title="${esc(d.ownerLabel || d.owner)}">${esc(d.ownerLabel || d.owner || '—')}</td>`
     case 'staleReason': return `<td class="why-text">${esc(d.staleReason)}</td>`
     case 'notes':
-      return `<td><button class="notes-btn" onclick="event.stopPropagation();openDealModal(${JSON.stringify(String(d.id))})">Details</button></td>`
+      return `<td class="notes-cell">${notesBtnHtml(d, 'open-modal', 'Details')}</td>`
     default: return '<td>—</td>'
   }
 }
@@ -2944,11 +2976,11 @@ function renderTable() {
   const cols = getVisibleColumnIds('overview')
   const colSpan = cols.length
   tbody.innerHTML = filtered.map(d => {
-    const isExp = expandedId === d.id
+    const isExp = String(expandedId) === String(d.id)
     const rowClass = d.status === 'won' ? 'style="background:#f0fdf4"' : d.status === 'lost' ? 'style="background:#fef2f2"' : ''
     const ctx = { statusBadge, isExp }
     const mainRow = `<tr ${rowClass} ${rowClickAttr(d)}>${cols.map(c => renderOverviewCell(d, c, ctx)).join('')}</tr>`
-    const notesRow = isExp && d.notes && cols.includes('notes')
+    const notesRow = isExp && d.notes
       ? `<tr class="notes-row"><td colspan="${colSpan}">${esc(d.notes)}</td></tr>`
       : ''
     return mainRow + notesRow
@@ -3008,10 +3040,19 @@ function renderStalled() {
 }
 
 function toggleNotes(id) {
-  expandedId = expandedId === id ? null : id
+  const sid = String(id)
+  if (expandedId === sid) {
+    expandedId = null
+    renderTable()
+    return
+  }
+  expandedId = sid
   renderTable()
+  const row = document.querySelector(`tr.notes-row`)
+  if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
 }
 
+initTableClickHandlers()
 applyI18n()
 </script>
 </body>
